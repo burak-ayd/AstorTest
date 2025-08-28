@@ -45,8 +45,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')  # Sadece tag push
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew clean
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --parallel --max-workers=8 --build-cache
 
       # Upload APK to GitHub Releases
       - name: Upload APK to Release
