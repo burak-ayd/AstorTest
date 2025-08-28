@@ -39,7 +39,7 @@ export default function Index() {
 					await RNFS.writeFile(metaPath, remoteLastModified, "utf8");
 
 					Alert.alert(
-						"Uygulama Güncellendi !!!",
+						"Uygulama Güncellendi !!",
 						"Yeniden başlatılıyor..."
 					);
 					RNRestart.Restart(); // react-native-restart paketine ihtiyaç var
