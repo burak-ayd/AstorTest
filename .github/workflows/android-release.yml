@@ -7,7 +7,8 @@ on:
     branches:
       - main           # OTA trigger
   workflow_dispatch: {} # manuel tetikleme için
-
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,13 +41,15 @@ jobs:
           MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
           EOF
       - name: Set up JDK
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 21
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: reactivecircus/setup-android@v2
         with:
           api-level: 33
           build-tools: "33.0.2"
@@ -67,7 +70,7 @@ jobs:
         with:
           files: android/app/build/outputs/apk/release/*.apk
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       - name: Install React Native CLI
         run: yarn add --dev @react-native-community/cli@latest
       # OTA Update
