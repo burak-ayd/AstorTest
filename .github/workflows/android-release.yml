@@ -56,7 +56,8 @@ jobs:
           files: android/app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Install React Native CLI
+        run: yarn add --dev @react-native-community/cli@latest
       # OTA Update
       - name: Bundle React Native JS for OTA
         if: github.ref == 'refs/heads/main'  # sadece main branch push
