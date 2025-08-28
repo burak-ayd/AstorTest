@@ -35,11 +35,17 @@ jobs:
         run: |
           cat >> android/gradle.properties <<EOF
           MYAPP_UPLOAD_STORE_FILE=release.keystore
-          MYAPP_UPLOAD_STORE_PASSWORD=${ANDROID_KEYSTORE_PASSWORD}
-          MYAPP_UPLOAD_KEY_ALIAS=${ANDROID_KEY_ALIAS}
-          MYAPP_UPLOAD_KEY_PASSWORD=${ANDROID_KEY_PASSWORD}
+          MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
           EOF
-
+      - name: Set up JDK and SDK
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: default
+          arch: x86_64
+          force-avd-creation: true
       # Build APK
       - name: Build Release APK
         if: startsWith(github.ref, 'refs/tags/v')  # Sadece tag push
