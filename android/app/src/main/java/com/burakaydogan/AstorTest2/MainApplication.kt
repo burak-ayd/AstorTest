@@ -28,7 +28,42 @@ class MainApplication : Application(), ReactApplication {
             return packages
           }
 
-          override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
+          override fun getJSMainModuleName(): String = "index"
+
+          override fun getBundleAssteName():String? {
+            if (BuildConfig.DEBUG)
+            {
+              return super.getBundleAssteName()
+            }
+
+            val context = applicationContext
+            val bundlePath = "${context.filesDir.absolutePath}/index.android.bundle"
+            vaş bundleFile = File(bundlePath)
+
+            return if(bundleFile.exists()){
+              "file://$bundlePath"
+            }
+            else {
+              super.getBundleAssteName()
+            }
+          }
+
+          override fun getJSBundleFile():String? {
+            if (BuildConfig.DEBUG)
+            {
+              return super.getJSBundleFile()
+            }
+
+            val context = applicationContext
+            val bundlePath = "${context.filesDir.absolutePath}/index.android.bundle"
+            vaş bundleFile = File(bundlePath)
+
+            return if(bundleFile.exists()){
+              bundlePath
+            }
+            else {
+              super.getJSBundleFile()
+            }
 
           override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
