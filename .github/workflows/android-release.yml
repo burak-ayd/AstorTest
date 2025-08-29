@@ -73,6 +73,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       - name: Install React Native CLI
         run: yarn add --dev @react-native-community/cli@latest
+      - name: Install babel-plugin-module-resolver
+        run: yarn add babel-plugin-module-resolver
       # OTA Update
       - name: Bundle React Native JS for OTA
         if: github.ref == 'refs/heads/main'  # sadece main branch push
@@ -81,10 +83,11 @@ jobs:
           npx react-native bundle \
             --platform android \
             --dev false \
-            --entry-file .expo/.virtual-metro-entry.js \
+            --entry-file index.js \
             --bundle-output index.android.bundle \
             --minify true \
             --assets-dest ota
+            --reset-cache
 
       - name: Upload OTA to GitHub Pages
         if: github.ref == 'refs/heads/main'

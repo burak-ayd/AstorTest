@@ -20,15 +20,11 @@ class MainApplication : Application(), ReactApplication {
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
-  val packages = PackageList(this).packages
-  // Bu satırı ekleyin:
-  packages.add(object : ReactPackage {
-    override fun createNativeModules(reactContext: ReactApplicationContext) = 
-      listOf(DebugModule(reactContext))
-    override fun createViewManagers(reactContext: ReactApplicationContext) = emptyList<ViewManager<*, *>>()
-  })
-  return packages
-}
+            val packages = PackageList(this).packages
+            // Packages that cannot be autolinked yet can be added manually here, for example:
+            // packages.add(MyReactNativePackage())
+            return packages
+          }
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
 
@@ -53,7 +49,27 @@ class MainApplication : Application(), ReactApplication {
             
             if (bundlePath.exists()) {
               println("OTA Bundle Size: ${bundlePath.length()} bytes")
-              return bundlePath.absolutePath
+              
+              // Bundle'ın geçerli olduğunu kontrol et
+              try {
+                val bundleContent = bundlePath.readText()
+                if (bundleContent.length < 1000) {
+                  println("OTA Bundle çok küçük, assets kullanılıyor")
+                  return super.getJSBundleFile()
+                }
+                
+                // Bundle'ın JavaScript içerdiğini kontrol et
+                if (!bundleContent.contains("__d(function") && !bundleContent.contains("(function("))))) {
+                  println("OTA Bundle geçersiz format, assets kullanılıyor")
+                  return super.getJSBundleFile()
+                }
+                
+                println("OTA Bundle geçerli, yükleniyor")
+                return bundlePath.absolutePath
+              } catch (e: Exception) {
+                println("OTA Bundle okuma hatası: ${e.message}")
+                return super.getJSBundleFile()
+              }
             }
             
             return super.getJSBundleFile()

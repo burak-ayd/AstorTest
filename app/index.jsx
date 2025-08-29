@@ -135,6 +135,26 @@ export default function Index() {
 							console.log("Eski bundle silindi");
 						}
 
+						// Cache temizliği için eski meta dosyalarını da sil
+						try {
+							if (await RNFS.exists(metaPath)) {
+								await RNFS.unlink(metaPath);
+							}
+
+							// Expo cache dosyalarını temizle
+							const cacheDir =
+								RNFS.DocumentDirectoryPath + "/.expo";
+							if (await RNFS.exists(cacheDir)) {
+								await RNFS.unlink(cacheDir);
+								console.log("Expo cache temizlendi");
+							}
+						} catch (e) {
+							console.log(
+								"Cache temizleme hatası (normal):",
+								e.message
+							);
+						}
+
 						// Yeni bundle'ı kaydet
 						await RNFS.writeFile(LOCAL_BUNDLE, bundleCode, "utf8");
 
@@ -147,6 +167,20 @@ export default function Index() {
 							throw new Error(
 								"Bundle yazma hatası - boyut uyuşmuyor"
 							);
+						}
+
+						// Tab dosyalarının bundle'da olduğunu kontrol et
+						const tabFiles = ["(tabs)", "_layout", "TrafoKayip"];
+						const missingFiles = tabFiles.filter(
+							(file) => !bundleCode.includes(file)
+						);
+						if (missingFiles.length > 0) {
+							console.warn(
+								"Bundle'da eksik dosyalar:",
+								missingFiles
+							);
+						} else {
+							console.log("Tüm tab dosyaları bundle'da mevcut");
 						}
 
 						// Meta dosyasını kaydet

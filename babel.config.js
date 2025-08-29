@@ -5,19 +5,19 @@ module.exports = function (api) {
 			["babel-preset-expo", { jsxImportSource: "nativewind" }],
 			"nativewind/babel",
 		],
-		// plugins: [
-		// 	[
-		// 		"module-resolver",
-		// 		{
-		// 			root: ["./"],
-		// 			alias: {
-		// 				"@": "./", // @ = proje kökü
-		// 				"@components": "./components", // örnek
-		// 				"@screens": "./screens",
-		// 				"@assets": "./assets",
-		// 			},
-		// 		},
-		// 	],
-		// ],
+		plugins: [
+			[
+				"module-resolver",
+				{
+					root: ["./"],
+					alias: {
+						"@": "./", // @ = proje kökü
+						"@components": "./components", // örnek
+						"@screens": "./screens",
+						"@assets": "./assets",
+					},
+				},
+			],
+		],
 	};
 };
