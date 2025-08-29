@@ -2,6 +2,7 @@ package com.burakaydogan.AstorTest2
 
 import android.app.Application
 import android.content.res.Configuration
+import java.io.File
 
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -23,45 +24,40 @@ class MainApplication : Application(), ReactApplication {
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
             val packages = PackageList(this).packages
-            // Packages that cannot be autolinked yet can be added manually here, for example:
-            // packages.add(MyReactNativePackage())
+            // Packages that cannot be autolinked yet can be added manually here
             return packages
           }
 
           override fun getJSMainModuleName(): String = "index"
 
-          override fun getBundleAssteName():String? {
-            if (BuildConfig.DEBUG)
-            {
-              return super.getBundleAssteName()
+          override fun getBundleAssetName(): String? {
+            if (BuildConfig.DEBUG) {
+              return super.getBundleAssetName()
             }
 
             val context = applicationContext
             val bundlePath = "${context.filesDir.absolutePath}/index.android.bundle"
-            vaş bundleFile = File(bundlePath)
+            val bundleFile = File(bundlePath)
 
-            return if(bundleFile.exists()){
-              "file://$bundlePath"
-            }
-            else {
-              super.getBundleAssteName()
+            return if (bundleFile.exists()) {
+              "index.android.bundle" // asset olarak yüklenmesi için sadece dosya adı
+            } else {
+              super.getBundleAssetName()
             }
           }
 
-          override fun getJSBundleFile():String? {
-            if (BuildConfig.DEBUG)
-            {
+          override fun getJSBundleFile(): String? {
+            if (BuildConfig.DEBUG) {
               return super.getJSBundleFile()
             }
 
             val context = applicationContext
             val bundlePath = "${context.filesDir.absolutePath}/index.android.bundle"
-            vaş bundleFile = File(bundlePath)
+            val bundleFile = File(bundlePath)
 
-            return if(bundleFile.exists()){
-              bundlePath
-            }
-            else {
+            return if (bundleFile.exists()) {
+              bundlePath // absolute path
+            } else {
               super.getJSBundleFile()
             }
           }
@@ -80,7 +76,6 @@ class MainApplication : Application(), ReactApplication {
     super.onCreate()
     SoLoader.init(this, OpenSourceMergedSoMapping)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-      // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
