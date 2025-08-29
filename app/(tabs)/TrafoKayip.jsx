@@ -406,7 +406,7 @@ export default function TrafoKayip() {
 
 						{/* AG Gerilimi */}
 						<View className="flex-1">
-							<Text className="text-text">AG Gerilimi (kV)</Text>
+							<Text className="text-text">AGGerilimi (kV)</Text>
 							<Input
 								value={agGerilimi}
 								onChangeText={setAgGerilimi}
