@@ -20,11 +20,15 @@ class MainApplication : Application(), ReactApplication {
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
-            val packages = PackageList(this).packages
-            // Packages that cannot be autolinked yet can be added manually here, for example:
-            // packages.add(MyReactNativePackage())
-            return packages
-          }
+  val packages = PackageList(this).packages
+  // Bu satırı ekleyin:
+  packages.add(object : ReactPackage {
+    override fun createNativeModules(reactContext: ReactApplicationContext) = 
+      listOf(DebugModule(reactContext))
+    override fun createViewManagers(reactContext: ReactApplicationContext) = emptyList<ViewManager<*, *>>()
+  })
+  return packages
+}
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
 
@@ -34,42 +38,39 @@ class MainApplication : Application(), ReactApplication {
 
           override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
 
-          // OTA bundle desteği için bundle dosyasının konumunu override et
+          // OTA bundle desteği - Bundle yükleme önceliği
           override fun getJSBundleFile(): String? {
-            // Sadece release modda OTA bundle'ını kontrol et
             if (BuildConfig.DEBUG) {
               return super.getJSBundleFile()
             }
 
             val context = applicationContext
-            // DocumentDirectoryPath ile uyumlu olması için filesDir/Documents kullan
-            val documentsDir = File(context.filesDir, "Documents")
-            if (!documentsDir.exists()) {
-              documentsDir.mkdirs()
+            val bundlePath = File(context.filesDir, "index.android.bundle")
+            
+            // Log ekleyin debug için
+            println("OTA Bundle Check: ${bundlePath.absolutePath}")
+            println("OTA Bundle Exists: ${bundlePath.exists()}")
+            
+            if (bundlePath.exists()) {
+              println("OTA Bundle Size: ${bundlePath.length()} bytes")
+              return bundlePath.absolutePath
             }
             
-            val bundlePath = File(documentsDir, "index.android.bundle")
-            
-            return if (bundlePath.exists()) {
-              bundlePath.absolutePath
-            } else {
-              super.getJSBundleFile()
-            }
+            return super.getJSBundleFile()
           }
 
-          // Bundle asset ismini override et
+          // Asset bundle'ını tamamen devre dışı bırak OTA varsa
           override fun getBundleAssetName(): String? {
-            // Debug modda varsayılan davranışı kullan
             if (BuildConfig.DEBUG) {
               return super.getBundleAssetName()
             }
 
             val context = applicationContext
-            val documentsDir = File(context.filesDir, "Documents")
-            val bundlePath = File(documentsDir, "index.android.bundle")
+            val bundlePath = File(context.filesDir, "index.android.bundle")
             
+            // OTA bundle varsa asset bundle kullanma
             return if (bundlePath.exists()) {
-              null // JSBundleFile kullanıldığında null döndür
+              null
             } else {
               super.getBundleAssetName()
             }

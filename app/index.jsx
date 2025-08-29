@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	Alert,
+	NativeModules,
 	Platform,
 	Text,
 	View,
@@ -12,8 +13,11 @@ import {
 import RNFS from "react-native-fs";
 import RNRestart from "react-native-restart";
 
+const { DebugModule } = NativeModules;
+
 const OTA_URL = "https://burak-ayd.github.io/AstorTest/index.android.bundle";
-// Native koddaki path ile uyumlu olması için aynı konumu kullan
+// Android'de RNFS.DocumentDirectoryPath aslında /data/data/{package}/files dizinini işaret eder
+// Bu native koddaki context.filesDir ile aynıdır
 const LOCAL_BUNDLE = RNFS.DocumentDirectoryPath + "/index.android.bundle";
 
 export default function Index() {
@@ -91,7 +95,7 @@ export default function Index() {
 					const bundleTimeoutId = setTimeout(
 						() => bundleController.abort(),
 						30000
-					); // 30 saniye timeout
+					);
 
 					const bundleResp = await fetch(OTA_URL, {
 						signal: bundleController.signal,
@@ -103,15 +107,49 @@ export default function Index() {
 					if (bundleResp.status === 200) {
 						const bundleCode = await bundleResp.text();
 
-						// Bundle boyutunu kontrol et
+						// Bundle boyutunu ve içeriğini kontrol et
 						if (bundleCode.length < 1000) {
 							throw new Error(
 								"Bundle çok küçük, geçersiz olabilir"
 							);
 						}
 
-						// Bundle'ı kaydet
+						// Bundle içeriğinin JavaScript olduğunu kontrol et
+						if (
+							!bundleCode.includes("__d(function") &&
+							!bundleCode.includes("(function(")
+						) {
+							throw new Error(
+								"Bundle içeriği geçersiz görünüyor"
+							);
+						}
+
+						console.log(
+							"Bundle validation passed - Size:",
+							bundleCode.length
+						);
+
+						// Önce eski bundle'ı sil (varsa)
+						if (await RNFS.exists(LOCAL_BUNDLE)) {
+							await RNFS.unlink(LOCAL_BUNDLE);
+							console.log("Eski bundle silindi");
+						}
+
+						// Yeni bundle'ı kaydet
 						await RNFS.writeFile(LOCAL_BUNDLE, bundleCode, "utf8");
+
+						// Dosyanın gerçekten yazıldığını kontrol et
+						const writtenFile = await RNFS.readFile(
+							LOCAL_BUNDLE,
+							"utf8"
+						);
+						if (writtenFile.length !== bundleCode.length) {
+							throw new Error(
+								"Bundle yazma hatası - boyut uyuşmuyor"
+							);
+						}
+
+						// Meta dosyasını kaydet
 						await RNFS.writeFile(
 							metaPath,
 							remoteLastModified,
@@ -127,18 +165,25 @@ export default function Index() {
 							bundleCode.length,
 							"karakter"
 						);
+						console.log(
+							"Dosya yazıldı - boyut kontrol:",
+							writtenFile.length
+						);
 
 						setUpdateStatus("Güncelleme uygulanıyor...");
 
-						// Kısa bir gecikme ekleyin
+						// Başarı mesajı göster ve restart yap
 						setTimeout(() => {
 							Alert.alert(
 								"Uygulama Güncellendi!",
-								"Yeni sürüm yüklendi. Uygulama yeniden başlatılıyor...",
+								`Yeni sürüm yüklendi (${Math.round(bundleCode.length / 1024)}KB). Uygulama yeniden başlatılıyor...`,
 								[
 									{
-										text: "Tamam",
+										text: "Yeniden Başlat",
 										onPress: () => {
+											console.log(
+												"Uygulama yeniden başlatılıyor..."
+											);
 											RNRestart.Restart();
 										},
 									},
@@ -147,7 +192,7 @@ export default function Index() {
 							);
 						}, 1000);
 
-						return; // Alert gösterildikten sonra return et
+						return;
 					} else {
 						throw new Error(
 							`Bundle download failed: ${bundleResp.status}`
@@ -155,6 +200,21 @@ export default function Index() {
 					}
 				} else {
 					console.log("Bundle güncel, güncelleme gerekmiyor");
+					console.log(
+						"Bundle mevcut mu:",
+						await RNFS.exists(LOCAL_BUNDLE)
+					);
+
+					// Native'den bundle bilgilerini kontrol et
+					if (DebugModule) {
+						try {
+							const bundleInfo =
+								await DebugModule.checkBundleFile();
+							console.log("Native Bundle Info:", bundleInfo);
+						} catch (e) {
+							console.log("Native bundle check failed:", e);
+						}
+					}
 				}
 			} catch (error) {
 				console.log("OTA update failed:", error);
