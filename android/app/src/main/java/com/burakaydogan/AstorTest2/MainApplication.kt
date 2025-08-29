@@ -64,6 +64,7 @@ class MainApplication : Application(), ReactApplication {
             else {
               super.getJSBundleFile()
             }
+          }
 
           override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
