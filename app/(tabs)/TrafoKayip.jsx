@@ -410,7 +410,7 @@ export default function TrafoKayip() {
 							<Input
 								value={agGerilimi}
 								onChangeText={setAgGerilimi}
-								placeholder="0,4 kV"
+								placeholder="0,8 kV"
 							/>
 						</View>
 					</View>
