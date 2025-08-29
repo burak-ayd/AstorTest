@@ -58,8 +58,8 @@ class MainApplication : Application(), ReactApplication {
                   return super.getJSBundleFile()
                 }
                 
-                // Bundle'ın JavaScript içerdiğini kontrol et
-                if (!bundleContent.contains("__d(function") && !bundleContent.contains("(function("))))) {
+                // Bundle'ın JavaScript içerdiğini kontrol et - FİX: Parantez hatası düzeltildi
+                if (!bundleContent.contains("__d(function") && !bundleContent.contains("(function(")) {
                   println("OTA Bundle geçersiz format, assets kullanılıyor")
                   return super.getJSBundleFile()
                 }

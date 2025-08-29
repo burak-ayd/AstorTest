@@ -13,12 +13,13 @@ import {
 import RNFS from "react-native-fs";
 import RNRestart from "react-native-restart";
 
-const { DebugModule } = NativeModules;
+const { DebugModule, BundleReloadModule } = NativeModules;
 
 const OTA_URL = "https://burak-ayd.github.io/AstorTest/index.android.bundle";
 // Android'de RNFS.DocumentDirectoryPath aslında /data/data/{package}/files dizinini işaret eder
 // Bu native koddaki context.filesDir ile aynıdır
 const LOCAL_BUNDLE = RNFS.DocumentDirectoryPath + "/index.android.bundle";
+const VERSION_FILE = RNFS.DocumentDirectoryPath + "/bundle-version.txt";
 
 export default function Index() {
 	const [ready, setReady] = useState(false);
@@ -68,11 +69,21 @@ export default function Index() {
 					response.headers.get("last-modified");
 				const metaPath = LOCAL_BUNDLE + ".meta";
 				let localLastModified = null;
+				let currentBundleVersion = null;
 
 				// Documents klasörünün var olduğundan emin ol
 				const documentsDir = RNFS.DocumentDirectoryPath;
 				if (!(await RNFS.exists(documentsDir))) {
 					await RNFS.mkdir(documentsDir);
+				}
+
+				// Mevcut bundle versiyonunu kontrol et
+				if (await RNFS.exists(VERSION_FILE)) {
+					currentBundleVersion = await RNFS.readFile(
+						VERSION_FILE,
+						"utf8"
+					);
+					console.log("Mevcut Bundle Version:", currentBundleVersion);
 				}
 
 				// Yerel meta dosyasını kontrol et
@@ -129,18 +140,23 @@ export default function Index() {
 							bundleCode.length
 						);
 
-						// Önce eski bundle'ı sil (varsa)
-						if (await RNFS.exists(LOCAL_BUNDLE)) {
-							await RNFS.unlink(LOCAL_BUNDLE);
-							console.log("Eski bundle silindi");
+						// Önce tüm eski dosyaları temizle
+						const filesToClean = [
+							LOCAL_BUNDLE,
+							metaPath,
+							VERSION_FILE,
+							RNFS.DocumentDirectoryPath + "/bundle.checksum",
+						];
+
+						for (const file of filesToClean) {
+							if (await RNFS.exists(file)) {
+								await RNFS.unlink(file);
+								console.log("Silindi:", file);
+							}
 						}
 
 						// Cache temizliği için eski meta dosyalarını da sil
 						try {
-							if (await RNFS.exists(metaPath)) {
-								await RNFS.unlink(metaPath);
-							}
-
 							// Expo cache dosyalarını temizle
 							const cacheDir =
 								RNFS.DocumentDirectoryPath + "/.expo";
@@ -157,6 +173,18 @@ export default function Index() {
 
 						// Yeni bundle'ı kaydet
 						await RNFS.writeFile(LOCAL_BUNDLE, bundleCode, "utf8");
+
+						// Bundle checksum oluştur (değişiklikleri garantilemek için)
+						const bundleHash = bundleCode.length + "_" + Date.now();
+						await RNFS.writeFile(
+							RNFS.DocumentDirectoryPath + "/bundle.checksum",
+							bundleHash,
+							"utf8"
+						);
+
+						// Yeni versiyon kaydet
+						const newVersion = Date.now().toString();
+						await RNFS.writeFile(VERSION_FILE, newVersion, "utf8");
 
 						// Dosyanın gerçekten yazıldığını kontrol et
 						const writtenFile = await RNFS.readFile(
@@ -206,25 +234,49 @@ export default function Index() {
 
 						setUpdateStatus("Güncelleme uygulanıyor...");
 
-						// Başarı mesajı göster ve restart yap
+						// Başarı mesajı göster ve advanced restart yap
 						setTimeout(() => {
 							Alert.alert(
 								"Uygulama Güncellendi!",
-								`Yeni sürüm yüklendi (${Math.round(bundleCode.length / 1024)}KB). Uygulama yeniden başlatılıyor...`,
+								`Yeni sürüm yüklendi (${Math.round(bundleCode.length / 1024)}KB). Bundle yeniden yüklenecek...`,
 								[
 									{
-										text: "Yeniden Başlat",
-										onPress: () => {
+										text: "Bundle Reload",
+										onPress: async () => {
 											console.log(
-												"Uygulama yeniden başlatılıyor..."
+												"Bundle reload yapılıyor..."
 											);
+											try {
+												if (BundleReloadModule) {
+													await BundleReloadModule.reloadBundle();
+													console.log(
+														"Bundle reload başarılı"
+													);
+												} else {
+													console.log(
+														"BundleReloadModule bulunamadı, RNRestart kullanılıyor"
+													);
+													RNRestart.Restart();
+												}
+											} catch (e) {
+												console.log(
+													"Bundle reload hatası, RNRestart kullanılıyor:",
+													e
+												);
+												RNRestart.Restart();
+											}
+										},
+									},
+									{
+										text: "Hard Restart",
+										onPress: () => {
 											RNRestart.Restart();
 										},
 									},
 								],
 								{ cancelable: false }
 							);
-						}, 1000);
+						}, 1500);
 
 						return;
 					} else {
