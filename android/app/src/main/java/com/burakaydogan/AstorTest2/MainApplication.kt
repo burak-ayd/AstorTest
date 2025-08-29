@@ -2,8 +2,6 @@ package com.burakaydogan.AstorTest2
 
 import android.app.Application
 import android.content.res.Configuration
-import java.io.File
-
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
@@ -13,59 +11,69 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
-
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
+import java.io.File
 
 class MainApplication : Application(), ReactApplication {
-
   override val reactNativeHost: ReactNativeHost = ReactNativeHostWrapper(
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
             val packages = PackageList(this).packages
-            // Packages that cannot be autolinked yet can be added manually here
+            // Packages that cannot be autolinked yet can be added manually here, for example:
+            // packages.add(MyReactNativePackage())
             return packages
           }
 
-          override fun getJSMainModuleName(): String = "index"
+          override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
 
-          override fun getBundleAssetName(): String? {
-            if (BuildConfig.DEBUG) {
-              return super.getBundleAssetName()
-            }
+          override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
-            val context = applicationContext
-            val bundlePath = "${context.filesDir.absolutePath}/index.android.bundle"
-            val bundleFile = File(bundlePath)
+          override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
 
-            return if (bundleFile.exists()) {
-              "index.android.bundle" // asset olarak yüklenmesi için sadece dosya adı
-            } else {
-              super.getBundleAssetName()
-            }
-          }
+          override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
 
+          // OTA bundle desteği için bundle dosyasının konumunu override et
           override fun getJSBundleFile(): String? {
+            // Sadece release modda OTA bundle'ını kontrol et
             if (BuildConfig.DEBUG) {
               return super.getJSBundleFile()
             }
 
             val context = applicationContext
-            val bundlePath = "${context.filesDir.absolutePath}/index.android.bundle"
-            val bundleFile = File(bundlePath)
-
-            return if (bundleFile.exists()) {
-              bundlePath // absolute path
+            // DocumentDirectoryPath ile uyumlu olması için filesDir/Documents kullan
+            val documentsDir = File(context.filesDir, "Documents")
+            if (!documentsDir.exists()) {
+              documentsDir.mkdirs()
+            }
+            
+            val bundlePath = File(documentsDir, "index.android.bundle")
+            
+            return if (bundlePath.exists()) {
+              bundlePath.absolutePath
             } else {
               super.getJSBundleFile()
             }
           }
 
-          override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
+          // Bundle asset ismini override et
+          override fun getBundleAssetName(): String? {
+            // Debug modda varsayılan davranışı kullan
+            if (BuildConfig.DEBUG) {
+              return super.getBundleAssetName()
+            }
 
-          override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
-          override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+            val context = applicationContext
+            val documentsDir = File(context.filesDir, "Documents")
+            val bundlePath = File(documentsDir, "index.android.bundle")
+            
+            return if (bundlePath.exists()) {
+              null // JSBundleFile kullanıldığında null döndür
+            } else {
+              super.getBundleAssetName()
+            }
+          }
       }
   )
 
@@ -76,6 +84,7 @@ class MainApplication : Application(), ReactApplication {
     super.onCreate()
     SoLoader.init(this, OpenSourceMergedSoMapping)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+      // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
