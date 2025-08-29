@@ -84,7 +84,7 @@ jobs:
             --platform android \
             --dev false \
             --entry-file index.js \
-            --bundle-output index.android.bundle \
+            --bundle-output ota/index.android.bundle \
             --minify true \
             --assets-dest ota \
             --reset-cache
