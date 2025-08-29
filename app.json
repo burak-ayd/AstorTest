@@ -2,8 +2,8 @@
 	"expo": {
 		"name": "AstorTest",
 		"slug": "AstorTest",
-		"version": "1.0.5",
-		"jsVersion": "1.0.5",
+		"version": "1.0.92",
+		"jsVersion": "1.0.92",
 		"orientation": "default",
 		"icon": "./assets/images/icon.png",
 		"scheme": "astortest",
