@@ -86,7 +86,7 @@ jobs:
             --entry-file index.js \
             --bundle-output index.android.bundle \
             --minify true \
-            --assets-dest ota
+            --assets-dest ota \
             --reset-cache
 
       - name: Upload OTA to GitHub Pages
