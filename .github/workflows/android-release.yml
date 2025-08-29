@@ -81,8 +81,9 @@ jobs:
           npx react-native bundle \
             --platform android \
             --dev false \
-            --entry-file app/index.jsx \
-            --bundle-output ota/index.android.bundle \
+            --entry-file .expo/.virtual-metro-entry.js \
+            --bundle-output index.android.bundle \
+            --minify true \
             --assets-dest ota
 
       - name: Upload OTA to GitHub Pages
