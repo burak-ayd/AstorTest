@@ -61,7 +61,7 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew clean
-          ./gradlew assembleRelease --parallel --max-workers=8 --build-cache
+          ./gradlew assembleRelease --parallel --max-workers=16 --build-cache
 
       # Upload APK to GitHub Releases
       - name: Upload APK to Release
@@ -70,7 +70,7 @@ jobs:
         with:
           files: android/app/build/outputs/apk/release/*.apk
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install React Native CLI
         run: yarn add --dev @react-native-community/cli@latest
       - name: Install babel-plugin-module-resolver
@@ -93,5 +93,5 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./ota
