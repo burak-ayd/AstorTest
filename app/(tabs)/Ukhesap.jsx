@@ -1,16 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
-	KeyboardAvoidingView,
-	Platform,
-	StatusBar,
 	StyleSheet,
 	Text,
 	TextInput,
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Kök 3 sabitini önceden hesaplayalım
 const SQRT3 = Math.sqrt(3);
@@ -165,104 +161,87 @@ export default function UkHesap() {
 	}
 
 	return (
-		<SafeAreaView
-			edges={["right", "bottom", "left", "top"]}
-			className="flex-1 bg-background">
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor="#f3f4f6"
-				translucent={true}
-			/>
-			<KeyboardAvoidingView
-				style={{
-					flex: 1,
-				}}
-				className="mx-auto"
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
-				{/* Başlık ve Formül */}
-				<View style={styles.header}>
-					<Text style={styles.title}>Trafo Uk (%) Hesaplayıcı</Text>
-					<Text style={styles.formulaText}>
-						Uk(%) = (Uçıkılan · √3 · 100 · Ikademe) / (Ukademe ·
-						Içıkılan)
-					</Text>
+		<View>
+			{/* Başlık ve Formül */}
+			<View style={styles.header}>
+				<Text style={styles.title}>Trafo Uk (%) Hesaplayıcı</Text>
+				<Text style={styles.formulaText}>
+					Uk(%) = (Uçıkılan · √3 · 100 · Ikademe) / (Ukademe ·
+					Içıkılan)
+				</Text>
+			</View>
+
+			{/* Hesaplama Kartı */}
+			<View style={styles.card}>
+				<View style={styles.grid}>
+					<InputGroup
+						label="Çıkılan Gerilim"
+						unit="kV"
+						value={cikilanGerilim}
+						onChangeText={setCikilanGerilim}
+						placeholder="ör. 0,4"
+					/>
+					<InputGroup
+						label="Çıkılan Akım"
+						unit="A"
+						value={cikilanAkim}
+						onChangeText={setCikilanAkim}
+						placeholder="ör. 180"
+					/>
+					<InputGroup
+						label="Kademe Gerilimi"
+						unit="kV"
+						value={kademeGerilimi}
+						onChangeText={setKademeGerilimi}
+						placeholder="ör. 33"
+					/>
+					<InputGroup
+						label="Kademe Akımı"
+						unit="A"
+						value={kademeAkimi}
+						onChangeText={setKademeAkimi}
+						placeholder="ör. 210"
+					/>
 				</View>
 
-				{/* Hesaplama Kartı */}
-				<View style={styles.card}>
-					<View style={styles.grid}>
-						<InputGroup
-							label="Çıkılan Gerilim"
-							unit="kV"
-							value={cikilanGerilim}
-							onChangeText={setCikilanGerilim}
-							placeholder="ör. 0,4"
-						/>
-						<InputGroup
-							label="Çıkılan Akım"
-							unit="A"
-							value={cikilanAkim}
-							onChangeText={setCikilanAkim}
-							placeholder="ör. 180"
-						/>
-						<InputGroup
-							label="Kademe Gerilimi"
-							unit="kV"
-							value={kademeGerilimi}
-							onChangeText={setKademeGerilimi}
-							placeholder="ör. 33"
-						/>
-						<InputGroup
-							label="Kademe Akımı"
-							unit="A"
-							value={kademeAkimi}
-							onChangeText={setKademeAkimi}
-							placeholder="ör. 210"
-						/>
-					</View>
-
-					<View style={styles.actions}>
-						<TouchableOpacity
-							style={styles.button}
-							onPress={gecmisKaydet}>
-							<Text style={styles.buttonText}>Kaydet</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={[styles.button, styles.secondaryButton]}
-							onPress={temizle}>
-							<Text
-								style={[
-									styles.buttonText,
-									styles.secondaryButtonText,
-								]}>
-								Temizle
-							</Text>
-						</TouchableOpacity>
-					</View>
-
-					{error && (
-						<Text style={styles.errorText}>
-							Lütfen tüm alanlara geçerli sayılar girin.
+				<View style={styles.actions}>
+					<TouchableOpacity
+						style={styles.button}
+						onPress={gecmisKaydet}>
+						<Text style={styles.buttonText}>Kaydet</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={[styles.button, styles.secondaryButton]}
+						onPress={temizle}>
+						<Text
+							style={[
+								styles.buttonText,
+								styles.secondaryButtonText,
+							]}>
+							Temizle
 						</Text>
-					)}
-
-					{result && (
-						<View style={styles.resultContainer}>
-							<View>
-								<Text style={styles.resultLabel}>
-									Uk Değeri
-								</Text>
-								<Text style={styles.resultHint}>
-									Kısa devre gerilimi (%)
-								</Text>
-							</View>
-							<Text style={styles.resultValue}>{result}</Text>
-						</View>
-					)}
+					</TouchableOpacity>
 				</View>
-			</KeyboardAvoidingView>
-		</SafeAreaView>
+
+				{error && (
+					<Text style={styles.errorText}>
+						Lütfen tüm alanlara geçerli sayılar girin.
+					</Text>
+				)}
+
+				{result && (
+					<View style={styles.resultContainer}>
+						<View>
+							<Text style={styles.resultLabel}>Uk Değeri</Text>
+							<Text style={styles.resultHint}>
+								Kısa devre gerilimi (%)
+							</Text>
+						</View>
+						<Text style={styles.resultValue}>{result}</Text>
+					</View>
+				)}
+			</View>
+		</View>
 	);
 }
 

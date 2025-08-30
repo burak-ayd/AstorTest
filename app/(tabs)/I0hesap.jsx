@@ -1,14 +1,6 @@
 import Input from "@/components/input";
 import { useEffect, useState } from "react";
-import {
-	KeyboardAvoidingView,
-	Platform,
-	StatusBar,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function I0Hesap() {
 	const [guc, setGuc] = useState("");
@@ -52,82 +44,65 @@ export default function I0Hesap() {
 	const expression = `I_0(\\%) = \\frac{\\text{AG Akımı}}{\\frac{\\text{Güç}}{\\text{AG Gerilimi} \\times \\surd{3}}}\\times100`;
 
 	return (
-		<SafeAreaView
-			edges={["right", "bottom", "left", "top"]}
-			className="flex-1 bg-background">
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor="#f3f4f6"
-				translucent={true}
-			/>
-			<KeyboardAvoidingView
-				style={{
-					flex: 1,
-				}}
-				className="my-3"
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
-				{/* Başlık ve Formül */}
+		<View>
+			{/* Başlık ve Formül */}
 
-				<View style={styles.header}>
-					<Text style={styles.title}>Trafo I0 (%) Hesaplayıcı</Text>
-				</View>
-				<View className="flex p-4 w-[400px] mx-auto elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
-					<View className="flex-col justify-between gap-6">
-						{/* Güç */}
-						<View className="">
-							<Text className="text-text">Güç (kVA)</Text>
-							<Input
-								value={guc}
-								onChangeText={setGuc}
-								placeholder="2500 kVA"
-							/>
-						</View>
-
-						<View className="">
-							{/* AG Gerilimi */}
-							<Text className="text-text">AG Gerilimi (kV)</Text>
-							<Input
-								value={agGerilimi}
-								onChangeText={setAgGerilimi}
-								placeholder="0,4 kV"
-							/>
-						</View>
-
-						{/* Boşta Çıkılan Akım */}
-						<View className="">
-							<Text className="text-text">
-								Boşta Çıkılan Akım (A)
-							</Text>
-							<Input
-								value={kademeAkimi}
-								onChangeText={setKademeAkimi}
-								placeholder="10 A"
-							/>
-						</View>
+			<View style={styles.header}>
+				<Text style={styles.title}>Trafo I0 (%) Hesaplayıcı</Text>
+			</View>
+			<View className="flex p-4 w-[400px] mx-auto elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
+				<View className="flex-col justify-between gap-6">
+					{/* Güç */}
+					<View className="">
+						<Text className="text-text">Güç (kVA)</Text>
+						<Input
+							value={guc}
+							onChangeText={setGuc}
+							placeholder="2500 kVA"
+						/>
 					</View>
-					{error && (
-						<Text style={styles.errorText}>
-							Lütfen tüm alanlara geçerli sayılar girin.
-						</Text>
-					)}
 
-					{result && (
-						<View style={styles.resultContainer}>
-							<View>
-								<Text style={styles.resultLabel}>
-									Uk Değeri
-								</Text>
-								<Text style={styles.resultHint}>
-									Kısa devre gerilimi (%)
-								</Text>
-							</View>
-							<Text style={styles.resultValue}>{result}</Text>
-						</View>
-					)}
+					<View className="">
+						{/* AG Gerilimi */}
+						<Text className="text-text">AG Gerilimi (kV)</Text>
+						<Input
+							value={agGerilimi}
+							onChangeText={setAgGerilimi}
+							placeholder="0,4 kV"
+						/>
+					</View>
+
+					{/* Boşta Çıkılan Akım */}
+					<View className="">
+						<Text className="text-text">
+							Boşta Çıkılan Akım (A)
+						</Text>
+						<Input
+							value={kademeAkimi}
+							onChangeText={setKademeAkimi}
+							placeholder="10 A"
+						/>
+					</View>
 				</View>
-			</KeyboardAvoidingView>
-		</SafeAreaView>
+				{error && (
+					<Text style={styles.errorText}>
+						Lütfen tüm alanlara geçerli sayılar girin.
+					</Text>
+				)}
+
+				{result && (
+					<View style={styles.resultContainer}>
+						<View>
+							<Text style={styles.resultLabel}>Uk Değeri</Text>
+							<Text style={styles.resultHint}>
+								Kısa devre gerilimi (%)
+							</Text>
+						</View>
+						<Text style={styles.resultValue}>{result}</Text>
+					</View>
+				)}
+			</View>
+		</View>
 	);
 }
 const styles = StyleSheet.create({

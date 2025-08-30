@@ -1,11 +1,21 @@
 // app/(tabs)/_layout.jsx
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	KeyboardAvoidingView,
+	Platform,
+	StatusBar,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Sayfa importları
 import SheetHandle from "@/components/sheetHandle";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import History from "./History";
 import I0hesap from "./I0hesap";
 import TrafoKayip from "./TrafoKayip";
@@ -62,49 +72,72 @@ export default function TabLayout() {
 	};
 
 	return (
-		<GestureHandlerRootView style={styles.container}>
-			{/* Ekran */}
-			<View style={{ flex: 1 }}>{renderScreen()}</View>
+		<SafeAreaView
+			// style={{
+			// 	// flex: 1,
+			// 	paddingTop:
+			// 		Platform.OS === "android" ? StatusBar.currentHeight : 0,
+			// 	// backgroundColor: "#f3f4f6", // Tailwind bg-gray-100
+			// }}
+			edges={["right", "bottom", "left", "top"]}
+			className="flex-1 bg-background">
+			<StatusBar
+				barStyle="light-content"
+				backgroundColor="#fff"
+				translucent={false}
+			/>
+			<KeyboardAvoidingView
+				style={{
+					flex: 1,
+				}}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
+				<GestureHandlerRootView style={styles.container}>
+					{/* Ekran */}
 
-			{/* Menü */}
-			<BottomSheet
-				ref={bottomSheetRef}
-				index={0}
-				snapPoints={snapPoints}
-				// Tutamak çizgisini gizler
-				handleIndicatorStyle={{ height: 0 }}
-				// Özel tutamak bileşenini kullanır
-				onChange={(index) => setSheetIndex(index)}
-				handleComponent={() => (
-					<SheetHandle
-						sheetIndex={sheetIndex}
-						onPress={toggleSheet}
-					/>
-				)}
-				enablePanDownToClose={false}>
-				<BottomSheetView style={styles.menuContainer}>
-					{menuItems.map((item) => (
-						<TouchableOpacity
-							key={item.id}
-							style={[
-								styles.menuItem,
-								selectedScreen === item.key &&
-									styles.activeItem,
-							]}
-							onPress={() => handleMenuSelect(item.key)}>
-							<Text
-								style={[
-									styles.menuText,
-									selectedScreen === item.key &&
-										styles.activeText,
-								]}>
-								{item.label}
-							</Text>
-						</TouchableOpacity>
-					))}
-				</BottomSheetView>
-			</BottomSheet>
-		</GestureHandlerRootView>
+					<View style={{ flex: 1 }}>{renderScreen()}</View>
+
+					{/* Menü */}
+					<BottomSheet
+						ref={bottomSheetRef}
+						index={0}
+						snapPoints={snapPoints}
+						// Tutamak çizgisini gizler
+						handleIndicatorStyle={{ height: 0 }}
+						// Özel tutamak bileşenini kullanır
+						onChange={(index) => setSheetIndex(index)}
+						handleComponent={() => (
+							<SheetHandle
+								sheetIndex={sheetIndex}
+								onPress={toggleSheet}
+							/>
+						)}
+						enablePanDownToClose={false}>
+						<BottomSheetView style={styles.menuContainer}>
+							{menuItems.map((item) => (
+								<TouchableOpacity
+									key={item.id}
+									style={[
+										styles.menuItem,
+										selectedScreen === item.key &&
+											styles.activeItem,
+									]}
+									onPress={() => handleMenuSelect(item.key)}>
+									<Text
+										style={[
+											styles.menuText,
+											selectedScreen === item.key &&
+												styles.activeText,
+										]}>
+										{item.label}
+									</Text>
+								</TouchableOpacity>
+							))}
+						</BottomSheetView>
+					</BottomSheet>
+				</GestureHandlerRootView>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 }
 

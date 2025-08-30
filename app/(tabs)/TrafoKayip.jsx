@@ -4,16 +4,7 @@ import Input from "@components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useCallback, useEffect, useState } from "react";
-import {
-	KeyboardAvoidingView,
-	Platform,
-	ScrollView,
-	// SafeAreaView,
-	StatusBar,
-	Text,
-	View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, Text, View } from "react-native";
 export default function TrafoKayip() {
 	const [error, setError] = useState(false);
 	const [errorPac, setErrorPAC] = useState(false);
@@ -350,333 +341,291 @@ export default function TrafoKayip() {
 	}, [history]);
 
 	return (
-		<SafeAreaView
-			// style={{
-			// 	// flex: 1,
-			// 	paddingTop:
-			// 		Platform.OS === "android" ? StatusBar.currentHeight : 0,
-			// 	// backgroundColor: "#f3f4f6", // Tailwind bg-gray-100
-			// }}
-			edges={["right", "bottom", "left", "top"]}
-			className="flex-1 bg-background">
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor="#fff"
-				translucent={false}
-			/>
-			<KeyboardAvoidingView
-				style={{
-					flex: 1,
-				}}
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
-				<ScrollView
-					contentContainerStyle={{
-						paddingHorizontal: 16,
-						paddingTop: 8,
-					}}
-					keyboardShouldPersistTaps="handled"
-					className="h-full bg-card">
-					<Text className="text-xl font-bold text-center mb-2 text-text ">
-						Trafo Yükte Kayıp Hesaplayıcı
-					</Text>
+		<ScrollView
+			contentContainerStyle={{
+				paddingHorizontal: 16,
+				paddingTop: 8,
+			}}
+			keyboardShouldPersistTaps="handled"
+			className="h-full bg-card">
+			<Text className="text-xl font-bold text-center mb-2 text-text ">
+				Trafo Yükte Kayıp Hesaplayıcı
+			</Text>
 
-					<View className="flex-row justify-between gap-6 mb-2">
-						{/* Güç */}
-						<View className="flex-1">
-							<Text className="text-text">Güç (kVA)</Text>
-							<Input
-								value={guc}
-								onChangeText={setGuc}
-								placeholder="2500 kVA"
-							/>
-						</View>
+			<View className="flex-row justify-between gap-6 mb-2">
+				{/* Güç */}
+				<View className="flex-1">
+					<Text className="text-text">Güç (kVA)</Text>
+					<Input
+						value={guc}
+						onChangeText={setGuc}
+						placeholder="2500 kVA"
+					/>
+				</View>
 
-						<View className="flex-1">
-							{/* Kademe Gerilimi */}
-							<Text className="text-text">
-								Kdm. Gerilimi (kV)
-							</Text>
-							<Input
-								value={kademeGerilimi}
-								onChangeText={setKademeGerilimi}
-								placeholder="33 kV"
-							/>
-						</View>
+				<View className="flex-1">
+					{/* Kademe Gerilimi */}
+					<Text className="text-text">Kdm. Gerilimi (kV)</Text>
+					<Input
+						value={kademeGerilimi}
+						onChangeText={setKademeGerilimi}
+						placeholder="33 kV"
+					/>
+				</View>
 
-						{/* AG Gerilimi */}
-						<View className="flex-1">
-							<Text className="text-text">AG Gerilimi (kV)</Text>
-							<Input
-								value={agGerilimi}
-								onChangeText={setAgGerilimi}
-								placeholder="0,4 kV"
-							/>
-						</View>
+				{/* AG Gerilimi */}
+				<View className="flex-1">
+					<Text className="text-text">AG Gerilimi (kV)</Text>
+					<Input
+						value={agGerilimi}
+						onChangeText={setAgGerilimi}
+						placeholder="0,4 kV"
+					/>
+				</View>
+			</View>
+
+			<View className="flex-row justify-between gap-6 mb-2">
+				<View className="flex-1">
+					{/* Sargı Tipi */}
+					<Text className="text-text">Sargı Tipi</Text>
+					<View className="border border-border rounded-xl p-[1px]">
+						<Picker
+							selectedValue={sargiTipi}
+							onValueChange={setSargiTipi}
+							style={{
+								color: "#eaf0ff",
+								placeholderTextColor: "#eaf0ff",
+							}}>
+							<Picker.Item label="Alüminyum" value="al" />
+							<Picker.Item label="Bakır" value="cu" />
+						</Picker>
 					</View>
+				</View>
+				<View className="flex-1"></View>
+			</View>
 
-					<View className="flex-row justify-between gap-6 mb-2">
-						<View className="flex-1">
-							{/* Sargı Tipi */}
-							<Text className="text-text">Sargı Tipi</Text>
-							<View className="border border-border rounded-xl p-[1px]">
-								<Picker
-									selectedValue={sargiTipi}
-									onValueChange={setSargiTipi}
-									style={{
-										color: "#eaf0ff",
-										placeholderTextColor: "#eaf0ff",
-									}}>
-									<Picker.Item label="Alüminyum" value="al" />
-									<Picker.Item label="Bakır" value="cu" />
-								</Picker>
-							</View>
-						</View>
-						<View className="flex-1"></View>
+			<View className="flex-row justify-between gap-4 mb-2">
+				<View className="flex-1 flex-col">
+					<View className=" flex-col md:flex-row">
+						<Text className="text-text">Referans Sıcaklık </Text>
+						<Text className="text-text">(°C)</Text>
 					</View>
+					<Input
+						id="refTemp"
+						value={refTemp}
+						onChangeText={setRefTemp}
+						placeholder="75 °C"
+					/>
+				</View>
+				<View className="flex-1 flex-col">
+					<View className=" flex-col md:flex-row">
+						<Text className="text-text">Direnç Ölçüm </Text>
+						<Text className="text-text">Sıcaklığı (°C)</Text>
+					</View>
+					<Input
+						id="dirençTemp"
+						value={direncTemp}
+						onChangeText={setDirencTemp}
+						placeholder="25 °C"
+					/>
+				</View>
+				<View className="flex-1 flex-col">
+					<View className=" flex-col md:flex-row">
+						<Text className="text-text">Yükte Ölçüm </Text>
+						<Text className="text-text">Sıcaklığı (°C)</Text>
+					</View>
+					<Input
+						id="yükteTemp"
+						value={yukteTemp}
+						onChangeText={setYukteTemp}
+						placeholder="25 °C"
+					/>
+				</View>
+			</View>
 
-					<View className="flex-row justify-between gap-4 mb-2">
-						<View className="flex-1 flex-col">
-							<View className=" flex-col md:flex-row">
-								<Text className="text-text">
-									Referans Sıcaklık{" "}
-								</Text>
-								<Text className="text-text">(°C)</Text>
-							</View>
-							<Input
-								id="refTemp"
-								value={refTemp}
-								onChangeText={setRefTemp}
-								placeholder="75 °C"
-							/>
-						</View>
-						<View className="flex-1 flex-col">
-							<View className=" flex-col md:flex-row">
-								<Text className="text-text">Direnç Ölçüm </Text>
-								<Text className="text-text">
-									Sıcaklığı (°C)
-								</Text>
-							</View>
-							<Input
-								id="dirençTemp"
-								value={direncTemp}
-								onChangeText={setDirencTemp}
-								placeholder="25 °C"
-							/>
-						</View>
-						<View className="flex-1 flex-col">
-							<View className=" flex-col md:flex-row">
-								<Text className="text-text">Yükte Ölçüm </Text>
-								<Text className="text-text">
-									Sıcaklığı (°C)
-								</Text>
-							</View>
-							<Input
-								id="yükteTemp"
-								value={yukteTemp}
-								onChangeText={setYukteTemp}
-								placeholder="25 °C"
-							/>
-						</View>
-					</View>
+			<View className="flex justify-center mb-2 mx-auto">
+				<View className="title">
+					<Text className="text-text text-xl">YG Direnç</Text>
+				</View>
+			</View>
+			<View className="flex-row justify-between gap-4 mb-2">
+				<View className="flex-1 flex-col">
+					<Text className="text-text">1U-1V (Ω)</Text>
+					<Input
+						id="dirençAB"
+						value={direncAB}
+						onChangeText={setDirencAB}
+						placeholder="1,5 Ω"
+					/>
 
-					<View className="flex justify-center mb-2 mx-auto">
-						<View className="title">
-							<Text className="text-text text-xl">YG Direnç</Text>
-						</View>
-					</View>
-					<View className="flex-row justify-between gap-4 mb-2">
-						<View className="flex-1 flex-col">
-							<Text className="text-text">1U-1V (Ω)</Text>
-							<Input
-								id="dirençAB"
-								value={direncAB}
-								onChangeText={setDirencAB}
-								placeholder="1,5 Ω"
-							/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+				<View className="flex-1 flex-col">
+					<Text className="text-text">1V-1W (Ω)</Text>
+					<Input
+						id="dirençBC"
+						value={direncBC}
+						onChangeText={setDirencBC}
+						placeholder="1,5 Ω"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+				<View className="flex-1 flex-col">
+					<Text className="text-text">1W-1U (Ω)</Text>
+					<Input
+						id="dirençBC"
+						value={direncCA}
+						onChangeText={setDirencCA}
+						placeholder="1,5 Ω"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+			</View>
 
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-						<View className="flex-1 flex-col">
-							<Text className="text-text">1V-1W (Ω)</Text>
-							<Input
-								id="dirençBC"
-								value={direncBC}
-								onChangeText={setDirencBC}
-								placeholder="1,5 Ω"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-						<View className="flex-1 flex-col">
-							<Text className="text-text">1W-1U (Ω)</Text>
-							<Input
-								id="dirençBC"
-								value={direncCA}
-								onChangeText={setDirencCA}
-								placeholder="1,5 Ω"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-					</View>
+			<View className="flex justify-center mb-2 mx-auto">
+				<View className="title">
+					<Text className="text-text text-xl">AG Direnç</Text>
+				</View>
+			</View>
+			<View className="flex-row justify-between gap-4 mb-2">
+				<View className="flex-1 flex-col">
+					<Text className="text-text">2u-2v (mΩ)</Text>
+					<Input
+						id="dirençab"
+						value={direncab}
+						onChangeText={setDirencab}
+						placeholder="1,5 mΩ"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+				<View className="flex-1 flex-col">
+					<Text className="text-text">2v-2w (mΩ)</Text>
+					<Input
+						id="dirençbc"
+						value={direncbc}
+						onChangeText={setDirencbc}
+						placeholder="1,5 mΩ"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+				<View className="flex-1 flex-col">
+					<Text className="text-text">2w-2u (mΩ)</Text>
+					<Input
+						id="dirençca"
+						value={direncca}
+						onChangeText={setDirencca}
+						placeholder="1,5 mΩ"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+			</View>
 
-					<View className="flex justify-center mb-2 mx-auto">
-						<View className="title">
-							<Text className="text-text text-xl">AG Direnç</Text>
-						</View>
-					</View>
-					<View className="flex-row justify-between gap-4 mb-2">
-						<View className="flex-1 flex-col">
-							<Text className="text-text">2u-2v (mΩ)</Text>
-							<Input
-								id="dirençab"
-								value={direncab}
-								onChangeText={setDirencab}
-								placeholder="1,5 mΩ"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-						<View className="flex-1 flex-col">
-							<Text className="text-text">2v-2w (mΩ)</Text>
-							<Input
-								id="dirençbc"
-								value={direncbc}
-								onChangeText={setDirencbc}
-								placeholder="1,5 mΩ"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-						<View className="flex-1 flex-col">
-							<Text className="text-text">2w-2u (mΩ)</Text>
-							<Input
-								id="dirençca"
-								value={direncca}
-								onChangeText={setDirencca}
-								placeholder="1,5 mΩ"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-					</View>
+			<View className="flex justify-center mb-2 mx-auto">
+				<View className="title">
+					<Text className="text-text text-xl">Ölçüm Değerleri</Text>
+				</View>
+			</View>
+			<View className="flex-row justify-between gap-4 mb-2">
+				<View className="flex-1 flex-col">
+					<Text className="text-text">Çıkılan Akım (A)</Text>
+					<Input
+						id="cikilanAkim"
+						value={cikilanAkim}
+						onChangeText={setCikilanAkim}
+						placeholder="115 A"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+				<View className="flex-1 flex-col">
+					<Text className="text-text">Ölçülen Kayıp (W)</Text>
+					<Input
+						id="kayip"
+						value={kayip}
+						onChangeText={setKayip}
+						placeholder="2000 W"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+				<View className="flex-1 flex-col">
+					<Text className="text-text">Ölçülen Gerilim (V)</Text>
+					<Input
+						id="cikilanGerilim"
+						value={cikilanGerilim}
+						onChangeText={setCikilanGerilim}
+						placeholder="850 V"
+					/>
+					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				</View>
+			</View>
 
-					<View className="flex justify-center mb-2 mx-auto">
-						<View className="title">
-							<Text className="text-text text-xl">
-								Ölçüm Değerleri
-							</Text>
-						</View>
-					</View>
-					<View className="flex-row justify-between gap-4 mb-2">
-						<View className="flex-1 flex-col">
-							<Text className="text-text">Çıkılan Akım (A)</Text>
-							<Input
-								id="cikilanAkim"
-								value={cikilanAkim}
-								onChangeText={setCikilanAkim}
-								placeholder="115 A"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-						<View className="flex-1 flex-col">
-							<Text className="text-text">Ölçülen Kayıp (W)</Text>
-							<Input
-								id="kayip"
-								value={kayip}
-								onChangeText={setKayip}
-								placeholder="2000 W"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-						<View className="flex-1 flex-col">
-							<Text className="text-text">
-								Ölçülen Gerilim (V)
-							</Text>
-							<Input
-								id="cikilanGerilim"
-								value={cikilanGerilim}
-								onChangeText={setCikilanGerilim}
-								placeholder="850 V"
-							/>
-							{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-						</View>
-					</View>
+			{/* Butonlar */}
+			<View className="flex-row flex flex-1 gap-2 mt-2 flex-wrap">
+				<Button func={Hesapla} text={"Hesapla"} />
+				<Button func={Temizle} text={"Temizle"} secondary={true} />
+				<Button func={gecmisKaydet} text={"Kaydet"} secondary={true} />
+			</View>
 
-					{/* Butonlar */}
-					<View className="flex-row flex flex-1 gap-2 mt-2 flex-wrap">
-						<Button func={Hesapla} text={"Hesapla"} />
-						<Button
-							func={Temizle}
-							text={"Temizle"}
-							secondary={true}
-						/>
-						<Button
-							func={gecmisKaydet}
-							text={"Kaydet"}
-							secondary={true}
-						/>
-					</View>
-
-					{/* Hata */}
-					{error && (
-						<Text
-							className="block mt-5  p-3 border border-solid border-[#ff6b6b73] 
+			{/* Hata */}
+			{error && (
+				<Text
+					className="block mt-5  p-3 border border-solid border-[#ff6b6b73] 
 						bg-[#ff6b6b1f] rounded-xl color-[#ffd5d5] font-semibold">
-							Lütfen tüm alanlara geçerli sayılar girin.
-						</Text>
-					)}
+					Lütfen tüm alanlara geçerli sayılar girin.
+				</Text>
+			)}
 
-					{errorPac && (
-						<View
-							className="flex flex-row gap-4 justify-between mt-5 p-3 border border-solid border-[#ff6b6b73] 
+			{errorPac && (
+				<View
+					className="flex flex-row gap-4 justify-between mt-5 p-3 border border-solid border-[#ff6b6b73] 
 						bg-[#d420204f] rounded-xl color-[#ffd5d5] font-semibold">
-							<Text className="text-white text-xl font-extrabold">
-								Pac Negatif
-							</Text>
-							<Text className="text-white text-xl font-extrabold">
-								Pac= {pac ? pac.toFixed(2) : 0.0} W
-							</Text>
-						</View>
-					)}
+					<Text className="text-white text-xl font-extrabold">
+						Pac Negatif
+					</Text>
+					<Text className="text-white text-xl font-extrabold">
+						Pac= {pac ? pac.toFixed(2) : 0.0} W
+					</Text>
+				</View>
+			)}
 
-					{/* Sonuç */}
-					{pk75 ? (
-						<View className="flex flex-col md:flex-row gap-4 justify-end mt-4">
-							<View
-								className="flex-1 flex flex-row items-start justify-center gap-4
+			{/* Sonuç */}
+			{pk75 ? (
+				<View className="flex flex-col md:flex-row gap-4 justify-end mt-4">
+					<View
+						className="flex-1 flex flex-row items-start justify-center gap-4
 							p-4  border border-solid border-[#7bd38959] 
 							bg-[#7bd3891f] rounded-xl">
-								<View className="flex-1">
-									<Text className="text-white text-3xl font-extrabold">
-										Uk (%):{" "}
-									</Text>
-									<Text className="text-sm mt-1 color-[#9fb1d1]">
-										Kısa devre gerilimi (%)
-									</Text>
-								</View>
-								<Text className="text-white text-3xl font-extrabold">
-									{uk75 ? (uk75 * 100).toFixed(4) : 0.0}
-								</Text>
-							</View>
-							<View //result
-								className="flex-1 flex flex-row items-start justify-center gap-4
+						<View className="flex-1">
+							<Text className="text-white text-3xl font-extrabold">
+								Uk (%):{" "}
+							</Text>
+							<Text className="text-sm mt-1 color-[#9fb1d1]">
+								Kısa devre gerilimi (%)
+							</Text>
+						</View>
+						<Text className="text-white text-3xl font-extrabold">
+							{uk75 ? (uk75 * 100).toFixed(4) : 0.0}
+						</Text>
+					</View>
+					<View //result
+						className="flex-1 flex flex-row items-start justify-center gap-4
 							p-4 border border-solid border-[#7bd38959] 
 							bg-[#7bd3891f] rounded-xl">
-								<View className="flex-1">
-									<Text className="text-white text-3xl font-extrabold">
-										Hesaplanan Pk (W):{" "}
-									</Text>
-									<Text className="text-sm mt-1 color-[#9fb1d1]">
-										Toplam İcralı Kayıp (W)
-									</Text>
-								</View>
-								<Text className="text-white text-3xl font-extrabold">
-									{pk75 ? pk75.toFixed(1) : 0.0}
-								</Text>
-							</View>
+						<View className="flex-1">
+							<Text className="text-white text-3xl font-extrabold">
+								Hesaplanan Pk (W):{" "}
+							</Text>
+							<Text className="text-sm mt-1 color-[#9fb1d1]">
+								Toplam İcralı Kayıp (W)
+							</Text>
 						</View>
-					) : (
-						<View></View>
-					)}
-				</ScrollView>
-			</KeyboardAvoidingView>
-		</SafeAreaView>
+						<Text className="text-white text-3xl font-extrabold">
+							{pk75 ? pk75.toFixed(1) : 0.0}
+						</Text>
+					</View>
+				</View>
+			) : (
+				<View></View>
+			)}
+		</ScrollView>
 	);
 }

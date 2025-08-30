@@ -1,16 +1,8 @@
 import Button from "@/components/button";
 import Input from "@/components/input";
 import { useEffect, useState } from "react";
-import {
-	KeyboardAvoidingView,
-	Platform,
-	StatusBar,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Kök 3 sabitini önceden hesaplayalım
 const SQRT3 = Math.sqrt(3);
@@ -156,121 +148,102 @@ export default function NewProject() {
 	}
 
 	return (
-		<SafeAreaView
-			edges={["right", "bottom", "left", "top"]}
-			className="flex-1 bg-background">
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor="#f3f4f6"
-				translucent={true}
-			/>
-			<KeyboardAvoidingView
-				style={{
-					flex: 1,
-				}}
-				className="m-4"
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
-				{/* Başlık ve Formül */}
-				<View style={styles.header}>
-					<Text style={styles.title}>Yeni Proje Hesaplama</Text>
+		<View className="mx-4">
+			{/* Başlık ve Formül */}
+			<View style={styles.header}>
+				<Text style={styles.title}>Yeni Proje Hesaplama</Text>
+			</View>
+
+			{/* Hesaplama Kartı */}
+			<View className="p-4 mx-auto w-full flex elevation rounded-xl bg-card border focus:border-borderFocus border-border">
+				<View className="flex-row justify-between gap-6 mb-2">
+					{/* Güç */}
+					<View className="flex-1">
+						<Text className="text-text">Güç (kVA)</Text>
+						<Input
+							value={guc}
+							onChangeText={setGuc}
+							placeholder="2500 kVA"
+						/>
+					</View>
+
+					{/* AG Gerilimi */}
+					<View className="flex-1">
+						<Text className="text-text">AG Gerilimi (V)</Text>
+						<Input
+							value={agGerilimi}
+							onChangeText={setAgGerilimi}
+							placeholder="400 V"
+						/>
+					</View>
+				</View>
+				<View className="flex-row justify-between gap-6 mb-2">
+					{/* İlk Kademe Gerilimi */}
+					<View className="flex-1">
+						<Text className="text-text">
+							İlk Kademe Gerilimi (kV)
+						</Text>
+						<Input
+							value={ilkKademe}
+							onChangeText={setIlkKademe}
+							placeholder="28,5 kV"
+						/>
+					</View>
+
+					<View className="flex-1">
+						{/* Nominal Kademe Gerilimi */}
+						<Text className="text-text">
+							Nominal Kademe Gerilimi (kV)
+						</Text>
+						<Input
+							value={nominalKademe}
+							onChangeText={setNominalKademe}
+							placeholder="33 kV"
+						/>
+					</View>
+
+					{/* Son Kademe Gerilimi */}
+					<View className="flex-1">
+						<Text className="text-text">
+							Son Kademe Gerilimi (kV)
+						</Text>
+						<Input
+							value={sonKademe}
+							onChangeText={setSonKademe}
+							placeholder="36 kV"
+						/>
+					</View>
 				</View>
 
-				{/* Hesaplama Kartı */}
-				<View className="p-4 mx-auto w-full flex elevation rounded-xl bg-card border focus:border-borderFocus border-border">
-					<View className="flex-row justify-between gap-6 mb-2">
-						{/* Güç */}
-						<View className="flex-1">
-							<Text className="text-text">Güç (kVA)</Text>
-							<Input
-								value={guc}
-								onChangeText={setGuc}
-								placeholder="2500 kVA"
-							/>
-						</View>
-
-						{/* AG Gerilimi */}
-						<View className="flex-1">
-							<Text className="text-text">AG Gerilimi (V)</Text>
-							<Input
-								value={agGerilimi}
-								onChangeText={setAgGerilimi}
-								placeholder="400 V"
-							/>
-						</View>
-					</View>
-					<View className="flex-row justify-between gap-6 mb-2">
-						{/* İlk Kademe Gerilimi */}
-						<View className="flex-1">
-							<Text className="text-text">
-								İlk Kademe Gerilimi (kV)
-							</Text>
-							<Input
-								value={ilkKademe}
-								onChangeText={setIlkKademe}
-								placeholder="28,5 kV"
-							/>
-						</View>
-
-						<View className="flex-1">
-							{/* Nominal Kademe Gerilimi */}
-							<Text className="text-text">
-								Nominal Kademe Gerilimi (kV)
-							</Text>
-							<Input
-								value={nominalKademe}
-								onChangeText={setNominalKademe}
-								placeholder="33 kV"
-							/>
-						</View>
-
-						{/* Son Kademe Gerilimi */}
-						<View className="flex-1">
-							<Text className="text-text">
-								Son Kademe Gerilimi (kV)
-							</Text>
-							<Input
-								value={sonKademe}
-								onChangeText={setSonKademe}
-								placeholder="36 kV"
-							/>
-						</View>
-					</View>
-
-					{/* Butonlar */}
-					<View className="flex-row flex gap-2 mt-2 flex-wrap">
-						{/* <Button func={Hesapla} text={"Hesapla"} /> */}
-						<Button
-							func={Temizle}
-							text={"Temizle"}
-							secondary={true}
-						/>
-						{/* <Button
+				{/* Butonlar */}
+				<View className="flex-row flex gap-2 mt-2 flex-wrap">
+					{/* <Button func={Hesapla} text={"Hesapla"} /> */}
+					<Button func={Temizle} text={"Temizle"} secondary={true} />
+					{/* <Button
                                                 func={gecmisKaydet}
                                                 text={"Kaydet"}
                                                 secondary={true}
                                             /> */}
-					</View>
-
-					{error && (
-						<Text style={styles.errorText}>
-							Lütfen tüm alanlara geçerli sayılar girin.
-						</Text>
-					)}
-
-					{result && (
-						<View className="flex flex-col md:flex-row gap-4 justify-end mt-4">
-							<FlatList
-								contentContainerStyle={{ alignSelf: "stretch" }}
-								data={result}
-								renderItem={renderItem}
-								keyExtractor={(item, index) => index.toString()}
-							/>
-						</View>
-					)}
 				</View>
-			</KeyboardAvoidingView>
-		</SafeAreaView>
+
+				{error && (
+					<Text style={styles.errorText}>
+						Lütfen tüm alanlara geçerli sayılar girin.
+					</Text>
+				)}
+
+				{result && (
+					<View className="flex flex-col md:flex-row gap-4 justify-end mt-4">
+						<FlatList
+							contentContainerStyle={{ alignSelf: "stretch" }}
+							data={result}
+							renderItem={renderItem}
+							keyExtractor={(item, index) => index.toString()}
+						/>
+					</View>
+				)}
+			</View>
+		</View>
 	);
 }
 

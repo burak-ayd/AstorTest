@@ -5,14 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import "moment/locale/tr"; // Bu satırın eklendiğinden emin olun
 import { useCallback, useEffect, useState } from "react";
-import {
-	StatusBar,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function History() {
 	const [history, setHistory] = useState([]);
@@ -173,14 +166,7 @@ export default function History() {
 	}
 
 	return (
-		<SafeAreaView
-			edges={["right", "bottom", "left", "top"]}
-			className="flex-1 bg-[#161e36] flex-col">
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor="#f3f4f6"
-				translucent={true}
-			/>
+		<View className="flex-1">
 			<View
 				style={{
 					flexDirection: "row",
@@ -280,7 +266,7 @@ export default function History() {
 					</BottomSheetView>
 				</BottomSheet>
 			</GestureHandlerRootView> */}
-		</SafeAreaView>
+		</View>
 	);
 }
 
