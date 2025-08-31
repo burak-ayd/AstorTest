@@ -40,6 +40,8 @@ class APKUpdateModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
             cleanupReceiver()
             
             val apkFileName = "AstorTest2-update.apk"
+            // Önce eski dosyaları temizle
+            deleteOldAPKFiles()
             val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             
             val request = DownloadManager.Request(Uri.parse(downloadUrl)).apply {
@@ -420,6 +422,47 @@ class APKUpdateModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
         downloadReceiver?.let {
             try { reactApplicationContext.unregisterReceiver(it) } catch (_: Exception) {}
             downloadReceiver = null
+        }
+    }
+
+        private fun deleteOldAPKFiles() {
+        try {
+            Log.d("APKUpdateModule", "Eski APK dosyaları temizleniyor...")
+            
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            if (!downloadsDir.exists()) {
+                Log.d("APKUpdateModule", "Downloads klasörü bulunamadı")
+                return
+            }
+            
+            // Belirli dosya ismini sil
+            val targetFile = File(downloadsDir, "AstorTest2-update.apk")
+            if (targetFile.exists()) {
+                val deleted = targetFile.delete()
+                Log.d("APKUpdateModule", "Eski AstorTest2-update.apk dosyası silindi: $deleted")
+            }
+            
+            // Uygulamanızla ilgili tüm APK dosyalarını sil (isteğe bağlı)
+            val apkFiles = downloadsDir.listFiles { _, name -> 
+                name.contains("AstorTest2") && name.endsWith(".apk")
+            }
+            
+            if (apkFiles != null && apkFiles.isNotEmpty()) {
+                Log.d("APKUpdateModule", "Bulunan eski APK dosyaları: ${apkFiles.size}")
+                apkFiles.forEach { file ->
+                    try {
+                        val deleted = file.delete()
+                        Log.d("APKUpdateModule", "  - ${file.name} silindi: $deleted")
+                    } catch (e: Exception) {
+                        Log.e("APKUpdateModule", "  - ${file.name} silinirken hata: ${e.message}")
+                    }
+                }
+            } else {
+                Log.d("APKUpdateModule", "Silinecek eski APK dosyası bulunamadı")
+            }
+            
+        } catch (e: Exception) {
+            Log.e("APKUpdateModule", "deleteOldAPKFiles hata: ${e.message}")
         }
     }
 
