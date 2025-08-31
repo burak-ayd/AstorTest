@@ -7,14 +7,14 @@ on:
     branches:
       - main           # OTA trigger
   workflow_dispatch: {} # manuel tetikleme için
+
 permissions:
   contents: write
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    env:
-      OTA_BRANCH: ${{ secrets.OTA_BRANCH }}
 
+jobs:
+  apk-build:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') # sadece tag push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,14 +24,34 @@ jobs:
         with:
           node-version: 20
 
+      # Cache Node Modules
+      - name: Cache Node Modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      # Cache Gradle
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       # Keystore Decode
       - name: Decode Keystore
-        if: startsWith(github.ref, 'refs/tags/v')  # Sadece APK release için
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+
       - name: Create gradle.properties for signing
         run: |
           cat >> android/gradle.properties <<EOF
@@ -40,44 +60,67 @@ jobs:
           MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
           MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
           EOF
+
       - name: Set up JDK
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 21
 
       - name: Set up Android SDK
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: android-actions/setup-android@v3
         with:
           api-level: 33
           build-tools: "33.0.2"
           ndk: 23.1.7779620
+
       # Build APK
       - name: Build Release APK
-        if: startsWith(github.ref, 'refs/tags/v')  # Sadece tag push
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew clean
-          ./gradlew assembleRelease --parallel --max-workers=16 --build-cache
+          ./gradlew assembleRelease --parallel --max-workers=32 --build-cache
 
       # Upload APK to GitHub Releases
       - name: Upload APK to Release
-        if: startsWith(github.ref, 'refs/tags/v')  # Sadece tag push
         uses: softprops/action-gh-release@v2
         with:
           files: android/app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ota-build:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # sadece main branch push
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Cache Node Modules
+      - name: Cache Node Modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Install React Native CLI
         run: yarn add --dev @react-native-community/cli@latest
+
       - name: Install babel-plugin-module-resolver
         run: yarn add babel-plugin-module-resolver
+
       # OTA Update
       - name: Bundle React Native JS for OTA
-        if: github.ref == 'refs/heads/main'  # sadece main branch push
         run: |
           mkdir -p ota
           npx react-native bundle \
@@ -90,7 +133,6 @@ jobs:
             --reset-cache
 
       - name: Upload OTA to GitHub Pages
-        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
