@@ -367,7 +367,7 @@ export default function Index() {
 				// Mevcut sürümü al
 				const currentVersionInfo =
 					await APKUpdateModule.getCurrentVersion();
-				const currentVersion = currentVersionInfo.versionName;
+				const currentVersion = "v" + currentVersionInfo.versionName;
 
 				console.log("Mevcut sürüm:", currentVersion);
 				console.log("En son sürüm:", latestVersion);
