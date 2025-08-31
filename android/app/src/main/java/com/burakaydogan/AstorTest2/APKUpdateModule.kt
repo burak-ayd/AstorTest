@@ -45,7 +45,8 @@ class APKUpdateModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
             val request = DownloadManager.Request(Uri.parse(downloadUrl)).apply {
                 setTitle("Uygulama Güncelleniyor")
                 setDescription("Yeni sürüm indiriliyor...")
-                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                // setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                 setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
                 setAllowedOverRoaming(true)
                 
