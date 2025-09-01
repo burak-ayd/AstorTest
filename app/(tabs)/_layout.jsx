@@ -1,4 +1,4 @@
-// app/(tabs)/_layout.jsx
+// Alternatif çözüm - Bottom sheet'i gizlemeden
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useMemo, useRef, useState, useEffect } from "react";
 import {
@@ -10,6 +10,7 @@ import {
 	TouchableOpacity,
 	View,
 	Keyboard,
+	Dimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -23,30 +24,41 @@ import TrafoKayip from "./TrafoKayip";
 import UkHesap from "./Ukhesap";
 import NewProject from "./newProject";
 
+const { height: screenHeight } = Dimensions.get('window');
+
 export default function TabLayout() {
 	const bottomSheetRef = useRef(null);
-	const snapPoints = useMemo(() => ["5%", "50%"], []);
 	const [sheetIndex, setSheetIndex] = useState(0);
 	const [selectedScreen, setSelectedScreen] = useState("TrafoKayip");
-	const [keyboardVisible, setKeyboardVisible] = useState(false);
+	const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+	// Klavye yüksekliğine göre dinamik snap points
+	const snapPoints = useMemo(() => {
+		const baseSnapPoint = keyboardHeight > 0 ? "3%" : "5%";
+		const expandedSnapPoint = keyboardHeight > 0 ? "30%" : "50%";
+		return [baseSnapPoint, expandedSnapPoint];
+	}, [keyboardHeight]);
 
 	// Klavye event listeners
 	useEffect(() => {
 		const keyboardDidShowListener = Keyboard.addListener(
-			'keyboardDidShow',
-			() => {
-				setKeyboardVisible(true);
+			Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+			(event) => {
+				setKeyboardHeight(event.endCoordinates.height);
+				// Bottom sheet'i küçük konuma getir
+				if (sheetIndex > 0) {
+					bottomSheetRef.current?.snapToIndex(0);
+				}
 			}
 		);
+
 		const keyboardDidHideListener = Keyboard.addListener(
-			'keyboardDidHide',
+			Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
 			() => {
-				setKeyboardVisible(false);
-				// Klavye kapandığında bottom sheet'i orijinal konumuna döndür
+				setKeyboardHeight(0);
+				// Klavye kapandığında snap points yeniden ayarlanacak
 				setTimeout(() => {
-					if (sheetIndex === 0) {
-						bottomSheetRef.current?.snapToIndex(0);
-					}
+					bottomSheetRef.current?.snapToIndex(0);
 				}, 100);
 			}
 		);
@@ -57,6 +69,13 @@ export default function TabLayout() {
 		};
 	}, [sheetIndex]);
 
+	// Snap points değiştiğinde bottom sheet'i güncelle
+	useEffect(() => {
+		if (bottomSheetRef.current) {
+			bottomSheetRef.current.snapToIndex(0);
+		}
+	}, [snapPoints]);
+
 	// Menü öğeleri
 	const menuItems = [
 		{ id: "1", label: "Trafo Kayıp", key: "TrafoKayip" },
@@ -66,7 +85,6 @@ export default function TabLayout() {
 		{ id: "5", label: "Geçmiş", key: "History" },
 	];
 
-	// seçilen ekrana göre render
 	const renderScreen = () => {
 		switch (selectedScreen) {
 			case "TrafoKayip":
@@ -106,72 +124,69 @@ export default function TabLayout() {
 				backgroundColor="#fff"
 				translucent={false}
 			/>
-			<KeyboardAvoidingView
-				style={styles.keyboardContainer}
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}>
-				<GestureHandlerRootView style={styles.container}>
-					{/* Ekran */}
-					<View style={styles.screenContainer}>
+			<GestureHandlerRootView style={styles.container}>
+				{/* Ekran - KeyboardAvoidingView içinde */}
+				<KeyboardAvoidingView
+					style={styles.screenContainer}
+					behavior={Platform.OS === "ios" ? "padding" : "height"}
+					keyboardVerticalOffset={0}>
+					<View style={styles.contentContainer}>
 						{renderScreen()}
 					</View>
+				</KeyboardAvoidingView>
 
-					{/* Menü - Klavye açıkken gizle */}
-					{!keyboardVisible && (
-						<BottomSheet
-							ref={bottomSheetRef}
-							index={0}
-							snapPoints={snapPoints}
-							handleIndicatorStyle={{ height: 0 }}
-							onChange={(index) => setSheetIndex(index)}
-							handleComponent={() => (
-								<SheetHandle
-									sheetIndex={sheetIndex}
-									onPress={toggleSheet}
-								/>
-							)}
-							enablePanDownToClose={false}
-							// Android için ek ayarlar
-							android_keyboardInputMode="adjustResize"
-							keyboardBehavior="interactive"
-							keyboardBlurBehavior="restore">
-							<BottomSheetView style={styles.menuContainer}>
-								{menuItems.map((item) => (
-									<TouchableOpacity
-										key={item.id}
-										style={[
-											styles.menuItem,
-											selectedScreen === item.key &&
-												styles.activeItem,
-										]}
-										onPress={() => handleMenuSelect(item.key)}>
-										<Text
-											style={[
-												styles.menuText,
-												selectedScreen === item.key &&
-													styles.activeText,
-											]}>
-											{item.label}
-										</Text>
-									</TouchableOpacity>
-								))}
-							</BottomSheetView>
-						</BottomSheet>
+				{/* Menü - Sabit konumda */}
+				<BottomSheet
+					ref={bottomSheetRef}
+					index={0}
+					snapPoints={snapPoints}
+					handleIndicatorStyle={{ height: 0 }}
+					onChange={(index) => setSheetIndex(index)}
+					handleComponent={() => (
+						<SheetHandle
+							sheetIndex={sheetIndex}
+							onPress={toggleSheet}
+						/>
 					)}
-				</GestureHandlerRootView>
-			</KeyboardAvoidingView>
+					enablePanDownToClose={false}
+					android_keyboardInputMode="adjustResize"
+					keyboardBehavior="interactive"
+					keyboardBlurBehavior="restore">
+					<BottomSheetView style={styles.menuContainer}>
+						{menuItems.map((item) => (
+							<TouchableOpacity
+								key={item.id}
+								style={[
+									styles.menuItem,
+									selectedScreen === item.key &&
+										styles.activeItem,
+								]}
+								onPress={() => handleMenuSelect(item.key)}>
+								<Text
+									style={[
+										styles.menuText,
+										selectedScreen === item.key &&
+											styles.activeText,
+									]}>
+									{item.label}
+								</Text>
+							</TouchableOpacity>
+						))}
+					</BottomSheetView>
+				</BottomSheet>
+			</GestureHandlerRootView>
 		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
-	keyboardContainer: {
-		flex: 1,
-	},
 	container: {
 		flex: 1,
 	},
 	screenContainer: {
+		flex: 1,
+	},
+	contentContainer: {
 		flex: 1,
 	},
 	menuContainer: {
