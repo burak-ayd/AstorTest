@@ -90,7 +90,7 @@ export default function TabLayout() {
 				style={{
 					flex: 1,
 				}}
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				behavior={Platform.OS === "ios" ? "padding" : "position"}
 				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
 				<GestureHandlerRootView style={styles.container}>
 					{/* Ekran */}
