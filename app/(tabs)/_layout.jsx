@@ -1,6 +1,6 @@
 // app/(tabs)/_layout.jsx
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import {
 	KeyboardAvoidingView,
 	Platform,
@@ -9,6 +9,7 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
+	Keyboard,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -26,8 +27,35 @@ export default function TabLayout() {
 	const bottomSheetRef = useRef(null);
 	const snapPoints = useMemo(() => ["5%", "50%"], []);
 	const [sheetIndex, setSheetIndex] = useState(0);
-	// 👉 Varsayılan ekran: TrafoKayıp
 	const [selectedScreen, setSelectedScreen] = useState("TrafoKayip");
+	const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+	// Klavye event listeners
+	useEffect(() => {
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+				setKeyboardVisible(true);
+			}
+		);
+		const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+				setKeyboardVisible(false);
+				// Klavye kapandığında bottom sheet'i orijinal konumuna döndür
+				setTimeout(() => {
+					if (sheetIndex === 0) {
+						bottomSheetRef.current?.snapToIndex(0);
+					}
+				}, 100);
+			}
+		);
+
+		return () => {
+			keyboardDidShowListener?.remove();
+			keyboardDidHideListener?.remove();
+		};
+	}, [sheetIndex]);
 
 	// Menü öğeleri
 	const menuItems = [
@@ -51,7 +79,6 @@ export default function TabLayout() {
 				return <NewProject />;
 			case "History":
 				return <History />;
-
 			default:
 				return <TrafoKayip />;
 		}
@@ -60,25 +87,18 @@ export default function TabLayout() {
 	const handleMenuSelect = (key) => {
 		setSelectedScreen(key);
 		bottomSheetRef.current?.snapToIndex(0);
-		// bottomSheetRef.current?.close(); // 👉 seçim sonrası otomatik kapanır
 	};
 
 	const toggleSheet = () => {
 		if (sheetIndex > 0) {
 			bottomSheetRef.current?.snapToIndex(0);
 		} else {
-			bottomSheetRef.current?.expand(); // veya snapToIndex(1)
+			bottomSheetRef.current?.expand();
 		}
 	};
 
 	return (
 		<SafeAreaView
-			// style={{
-			// 	// flex: 1,
-			// 	paddingTop:
-			// 		Platform.OS === "android" ? StatusBar.currentHeight : 0,
-			// 	// backgroundColor: "#f3f4f6", // Tailwind bg-gray-100
-			// }}
 			edges={["right", "bottom", "left", "top"]}
 			className="flex-1 bg-background">
 			<StatusBar
@@ -87,54 +107,57 @@ export default function TabLayout() {
 				translucent={false}
 			/>
 			<KeyboardAvoidingView
-				style={{
-					flex: 1,
-				}}
-				behavior={Platform.OS === "ios" ? "padding" : "position"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
+				style={styles.keyboardContainer}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}>
 				<GestureHandlerRootView style={styles.container}>
 					{/* Ekran */}
+					<View style={styles.screenContainer}>
+						{renderScreen()}
+					</View>
 
-					<View style={{ flex: 1 }}>{renderScreen()}</View>
-
-					{/* Menü */}
-					<BottomSheet
-						ref={bottomSheetRef}
-						index={0}
-						snapPoints={snapPoints}
-						// Tutamak çizgisini gizler
-						handleIndicatorStyle={{ height: 0 }}
-						// Özel tutamak bileşenini kullanır
-						onChange={(index) => setSheetIndex(index)}
-						handleComponent={() => (
-							<SheetHandle
-								sheetIndex={sheetIndex}
-								onPress={toggleSheet}
-							/>
-						)}
-						enablePanDownToClose={false}>
-						<BottomSheetView style={styles.menuContainer}>
-							{menuItems.map((item) => (
-								<TouchableOpacity
-									key={item.id}
-									style={[
-										styles.menuItem,
-										selectedScreen === item.key &&
-											styles.activeItem,
-									]}
-									onPress={() => handleMenuSelect(item.key)}>
-									<Text
+					{/* Menü - Klavye açıkken gizle */}
+					{!keyboardVisible && (
+						<BottomSheet
+							ref={bottomSheetRef}
+							index={0}
+							snapPoints={snapPoints}
+							handleIndicatorStyle={{ height: 0 }}
+							onChange={(index) => setSheetIndex(index)}
+							handleComponent={() => (
+								<SheetHandle
+									sheetIndex={sheetIndex}
+									onPress={toggleSheet}
+								/>
+							)}
+							enablePanDownToClose={false}
+							// Android için ek ayarlar
+							android_keyboardInputMode="adjustResize"
+							keyboardBehavior="interactive"
+							keyboardBlurBehavior="restore">
+							<BottomSheetView style={styles.menuContainer}>
+								{menuItems.map((item) => (
+									<TouchableOpacity
+										key={item.id}
 										style={[
-											styles.menuText,
+											styles.menuItem,
 											selectedScreen === item.key &&
-												styles.activeText,
-										]}>
-										{item.label}
-									</Text>
-								</TouchableOpacity>
-							))}
-						</BottomSheetView>
-					</BottomSheet>
+												styles.activeItem,
+										]}
+										onPress={() => handleMenuSelect(item.key)}>
+										<Text
+											style={[
+												styles.menuText,
+												selectedScreen === item.key &&
+													styles.activeText,
+											]}>
+											{item.label}
+										</Text>
+									</TouchableOpacity>
+								))}
+							</BottomSheetView>
+						</BottomSheet>
+					)}
 				</GestureHandlerRootView>
 			</KeyboardAvoidingView>
 		</SafeAreaView>
@@ -142,7 +165,13 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+	keyboardContainer: {
+		flex: 1,
+	},
 	container: {
+		flex: 1,
+	},
+	screenContainer: {
 		flex: 1,
 	},
 	menuContainer: {
