@@ -578,10 +578,10 @@ export default function TrafoKayip() {
 				<View
 					className="flex flex-row gap-4 justify-between mt-5 p-3 border border-solid border-[#ff6b6b73] 
 						bg-[#d420204f] rounded-xl color-[#ffd5d5] font-semibold">
-					<Text className="text-white text-xl font-extrabold">
+					<Text className="text-text text-xl font-extrabold">
 						Pac Negatif
 					</Text>
-					<Text className="text-white text-xl font-extrabold">
+					<Text className="text-text text-xl font-extrabold">
 						Pac= {pac ? pac.toFixed(2) : 0.0} W
 					</Text>
 				</View>
@@ -595,14 +595,14 @@ export default function TrafoKayip() {
 							p-4  border border-solid border-[#7bd38959] 
 							bg-[#7bd3891f] rounded-xl">
 						<View className="flex-1">
-							<Text className="text-white text-3xl font-extrabold">
+							<Text className="text-text text-3xl font-extrabold">
 								Uk (%):{" "}
 							</Text>
 							<Text className="text-sm mt-1 color-[#9fb1d1]">
 								Kısa devre gerilimi (%)
 							</Text>
 						</View>
-						<Text className="text-white text-3xl font-extrabold">
+						<Text className="text-text text-3xl font-extrabold">
 							{uk75 ? (uk75 * 100).toFixed(4) : 0.0}
 						</Text>
 					</View>
@@ -611,14 +611,14 @@ export default function TrafoKayip() {
 							p-4 border border-solid border-[#7bd38959] 
 							bg-[#7bd3891f] rounded-xl">
 						<View className="flex-1">
-							<Text className="text-white text-3xl font-extrabold">
+							<Text className="text-text text-3xl font-extrabold">
 								Hesaplanan Pk (W):{" "}
 							</Text>
 							<Text className="text-sm mt-1 color-[#9fb1d1]">
 								Toplam İcralı Kayıp (W)
 							</Text>
 						</View>
-						<Text className="text-white text-3xl font-extrabold">
+						<Text className="text-text text-3xl font-extrabold">
 							{pk75 ? pk75.toFixed(1) : 0.0}
 						</Text>
 					</View>
