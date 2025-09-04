@@ -328,7 +328,7 @@ export default function TrafoKayip() {
 		} catch (e) {
 			console.error("Geçmiş kaydedilirken hata:", e);
 		}
-		Temizle();
+		
 	}
 
 	useEffect(() => {
