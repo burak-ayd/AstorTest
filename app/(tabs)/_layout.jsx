@@ -1,7 +1,9 @@
 // Alternatif çözüm - Bottom sheet'i gizlemeden
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+	Dimensions,
+	Keyboard,
 	KeyboardAvoidingView,
 	Platform,
 	StatusBar,
@@ -9,8 +11,6 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-	Keyboard,
-	Dimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -18,13 +18,14 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SheetHandle from "@/components/sheetHandle";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import DirencHesabi from "./DirencHesabi";
 import History from "./History";
 import I0hesap from "./I0hesap";
 import TrafoKayip from "./TrafoKayip";
 import UkHesap from "./Ukhesap";
 import NewProject from "./newProject";
 
-const { height: screenHeight } = Dimensions.get('window');
+const { height: screenHeight } = Dimensions.get("window");
 
 export default function TabLayout() {
 	const bottomSheetRef = useRef(null);
@@ -42,7 +43,7 @@ export default function TabLayout() {
 	// Klavye event listeners
 	useEffect(() => {
 		const keyboardDidShowListener = Keyboard.addListener(
-			Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+			Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
 			(event) => {
 				setKeyboardHeight(event.endCoordinates.height);
 				// Bottom sheet'i küçük konuma getir
@@ -53,7 +54,7 @@ export default function TabLayout() {
 		);
 
 		const keyboardDidHideListener = Keyboard.addListener(
-			Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+			Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
 			() => {
 				setKeyboardHeight(0);
 				// Klavye kapandığında snap points yeniden ayarlanacak
@@ -82,7 +83,8 @@ export default function TabLayout() {
 		{ id: "2", label: "UK", key: "Ukhesap" },
 		{ id: "3", label: "I0", key: "I0hesap" },
 		{ id: "4", label: "Yeni Proje", key: "NewProject" },
-		{ id: "5", label: "Geçmiş", key: "History" },
+		{ id: "5", label: "Kabul Direnç Hesabı", key: "DirencHesabi" },
+		{ id: "99", label: "Geçmiş", key: "History" },
 	];
 
 	const renderScreen = () => {
@@ -95,6 +97,8 @@ export default function TabLayout() {
 				return <I0hesap />;
 			case "NewProject":
 				return <NewProject />;
+			case "DirencHesabi":
+				return <DirencHesabi />;
 			case "History":
 				return <History />;
 			default:
