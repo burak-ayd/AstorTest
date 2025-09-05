@@ -27,7 +27,7 @@ export default function DirencHesabi() {
 			: x.toLocaleString("tr-TR", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2,
-				}) + " %";
+				}) + " Ω";
 
 	function hesapla() {
 		const olculenKayipValue = parseNum(olculenKayip);
