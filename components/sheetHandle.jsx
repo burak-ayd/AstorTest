@@ -1,17 +1,8 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { useFonts } from "expo-font";
+import { AntDesign } from "@react-native-vector-icons/ant-design";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const SheetHandle = ({ sheetIndex, onPress }) => {
-	// AntDesign ikonları için doğru font yükleme
-	const [fontsLoaded] = useFonts({
-		...AntDesign.font, // paket ile uyumlu font mapping
-	});
-
-	if (!fontsLoaded) {
-		return null; // font yüklenene kadar boş render
-	}
-
+	// sheetIndex değeri 0'dan büyükse, sheet açık demektir
 	const isSheetOpen = sheetIndex > 0;
 	const iconName = isSheetOpen ? "down" : "up";
 

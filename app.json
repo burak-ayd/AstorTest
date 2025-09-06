@@ -11,18 +11,14 @@
 		"ios": {
 			"supportsTablet": true
 		},
-		"assetBundlePatterns": [
-			"**/*",
-			"node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/*.ttf",
-			"assets/fonts/*"
-		],
+		"assetBundlePatterns": ["**/*", "assets/fonts/*"],
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/images/icon.png",
 				"backgroundColor": "#000000"
 			},
 			"edgeToEdgeEnabled": true,
-			"package": "com.burakaydogan.AstorTest"
+			"package": "com.burakaydogan.AstorTest2"
 		},
 		"web": {
 			"bundler": "metro",
@@ -30,7 +26,6 @@
 			"favicon": "./assets/images/favicon.png"
 		},
 		"plugins": [
-			"react-native-ota-hot-update",
 			[
 				"expo-font",
 				{
@@ -47,9 +42,6 @@
 					"backgroundColor": "#ffffff"
 				}
 			]
-		],
-		"experiments": {
-			"typedRoutes": true
-		}
+		]
 	}
 }

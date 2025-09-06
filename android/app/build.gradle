@@ -233,47 +233,47 @@ dependencies {
     }
 }
 
-// 👇 Vector Icon Fonts için task'lar eklendi
-task copyVectorIconFonts(type: Copy) {
-    description 'Copy vector icon fonts to Android assets folder'
-    from '../../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts'
-    into 'src/main/assets/fonts'
-    include "*.ttf"
+// // 👇 Vector Icon Fonts için task'lar eklendi
+// task copyVectorIconFonts(type: Copy) {
+//     description 'Copy vector icon fonts to Android assets folder'
+//     from '../../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts'
+//     into 'src/main/assets/fonts'
+//     include "*.ttf"
     
-    doFirst {
-        println "🔤 Vector icon fontları kopyalanıyor..."
-        file('src/main/assets/fonts').mkdirs() // Klasörü oluştur
-    }
+//     doFirst {
+//         println "🔤 Vector icon fontları kopyalanıyor..."
+//         file('src/main/assets/fonts').mkdirs() // Klasörü oluştur
+//     }
     
-    doLast {
-        println "✅ Vector icon fontları başarıyla kopyalandı!"
+//     doLast {
+//         println "✅ Vector icon fontları başarıyla kopyalandı!"
         
-        // Kopyalanan dosyaları listele
-        def fontsDir = file('src/main/assets/fonts')
-        if (fontsDir.exists()) {
-            def fontFiles = fontsDir.listFiles()?.findAll { it.name.endsWith('.ttf') }
-            println "📁 Kopyalanan font dosyaları (${fontFiles?.size() ?: 0}):"
-            fontFiles?.each { println "   - ${it.name}" }
-        }
-    }
-}
+//         // Kopyalanan dosyaları listele
+//         def fontsDir = file('src/main/assets/fonts')
+//         if (fontsDir.exists()) {
+//             def fontFiles = fontsDir.listFiles()?.findAll { it.name.endsWith('.ttf') }
+//             println "📁 Kopyalanan font dosyaları (${fontFiles?.size() ?: 0}):"
+//             fontFiles?.each { println "   - ${it.name}" }
+//         }
+//     }
+// }
 
-// Tüm build variant'ları için font kopyalama task'ını çalıştır
-android.applicationVariants.all { variant ->
-    variant.preBuild.dependsOn copyVectorIconFonts
+// // Tüm build variant'ları için font kopyalama task'ını çalıştır
+// android.applicationVariants.all { variant ->
+//     variant.preBuild.dependsOn copyVectorIconFonts
     
-    // Her variant için özel log
-    variant.assembleProvider.get().doFirst {
-        println "🔧 ${variant.name} build'i için fontlar hazırlanıyor..."
-    }
-}
+//     // Her variant için özel log
+//     variant.assembleProvider.get().doFirst {
+//         println "🔧 ${variant.name} build'i için fontlar hazırlanıyor..."
+//     }
+// }
 
-// Bundle task için de (eğer bundle alıyorsanız)
-gradle.projectsEvaluated {
-    android.applicationVariants.all { variant ->
-        def bundleTask = tasks.findByName("bundle${variant.name.capitalize()}JsAndAssets")
-        if (bundleTask != null) {
-            bundleTask.dependsOn copyVectorIconFonts
-        }
-    }
-}
+// // Bundle task için de (eğer bundle alıyorsanız)
+// gradle.projectsEvaluated {
+//     android.applicationVariants.all { variant ->
+//         def bundleTask = tasks.findByName("bundle${variant.name.capitalize()}JsAndAssets")
+//         if (bundleTask != null) {
+//             bundleTask.dependsOn copyVectorIconFonts
+//         }
+//     }
+// }
