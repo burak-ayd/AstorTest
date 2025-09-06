@@ -12,7 +12,7 @@ import {
 import RNFS from "react-native-fs";
 import RNRestart from "react-native-restart";
 
-const { BundleReloadModule, APKUpdateModule } = NativeModules;
+const { APKUpdateModule } = NativeModules;
 
 const OTA_URL = "https://burak-ayd.github.io/AstorTest/index.android.bundle";
 const GITHUB_API_URL =

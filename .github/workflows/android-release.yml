@@ -123,10 +123,10 @@ jobs:
       - name: Bundle React Native JS for OTA
         run: |
           mkdir -p ota
-          npx react-native bundle \
+          npx expo export:embed \
             --platform android \
             --dev false \
-            --entry-file index.js \
+            --entry-file node_modules/expo-router/entry.js \
             --bundle-output ota/index.android.bundle \
             --minify true \
             --assets-dest ota \

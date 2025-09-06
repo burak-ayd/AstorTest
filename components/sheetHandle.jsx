@@ -1,18 +1,23 @@
-import { AntDesign } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useFonts } from "expo-font";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-// sheetIndex prop'unu alacak şekilde güncellendi
 const SheetHandle = ({ sheetIndex, onPress }) => {
-	// sheetIndex değeri 0'dan büyükse, sheet açık demektir
-	const isSheetOpen = sheetIndex > 0;
+	// AntDesign ikonları için doğru font yükleme
+	const [fontsLoaded] = useFonts({
+		...AntDesign.font, // paket ile uyumlu font mapping
+	});
 
-	// Duruma göre ikon adını belirle
+	if (!fontsLoaded) {
+		return null; // font yüklenene kadar boş render
+	}
+
+	const isSheetOpen = sheetIndex > 0;
 	const iconName = isSheetOpen ? "down" : "up";
 
 	return (
 		<TouchableOpacity
 			onPress={onPress}
-			// style={styles.handleContainer}
 			className="flex flex-row justify-center items-center mt-4 md:mt-2">
 			<Text style={styles.handleText}>Menü </Text>
 			<AntDesign
@@ -26,14 +31,6 @@ const SheetHandle = ({ sheetIndex, onPress }) => {
 };
 
 const styles = StyleSheet.create({
-	handleContainer: {
-		// flex: 1,
-		// display: "flex",
-		// flexDirection: "row",
-		// alignItems: "center",
-		// justifyContent: "center",
-		// paddingVertical: 0,
-	},
 	icon: {
 		marginLeft: 8,
 	},

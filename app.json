@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "Astor Trafo Test",
 		"slug": "AstorTest",
-		"version": "1.1.7",
+		"version": "1.2.0",
 		"orientation": "default",
 		"icon": "./assets/images/icon.png",
 		"scheme": "astortest",
@@ -13,7 +13,8 @@
 		},
 		"assetBundlePatterns": [
 			"**/*",
-			"node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/*.ttf"
+			"node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/*.ttf",
+			"assets/fonts/*"
 		],
 		"android": {
 			"adaptiveIcon": {
@@ -21,7 +22,7 @@
 				"backgroundColor": "#000000"
 			},
 			"edgeToEdgeEnabled": true,
-			"package": "com.burakaydogan.AstorTest2"
+			"package": "com.burakaydogan.AstorTest"
 		},
 		"web": {
 			"bundler": "metro",
@@ -29,6 +30,13 @@
 			"favicon": "./assets/images/favicon.png"
 		},
 		"plugins": [
+			"react-native-ota-hot-update",
+			[
+				"expo-font",
+				{
+					"fonts": ["./assets/fonts/AntDesign.ttf"]
+				}
+			],
 			"expo-router",
 			[
 				"expo-splash-screen",
