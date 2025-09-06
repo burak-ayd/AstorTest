@@ -8,9 +8,9 @@ export default function RootLayout() {
 		...AntDesign.font, // paket ile uyumlu font mapping
 	});
 
-	if (!fontsLoaded) {
-		return null; // font yüklenene kadar boş render
-	}
+	// if (!fontsLoaded) {
+	// 	return null; // font yüklenene kadar boş render
+	// }
 
 	return (
 		<Stack

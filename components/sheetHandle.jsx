@@ -3,15 +3,16 @@ import { useFonts } from "expo-font";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const SheetHandle = ({ sheetIndex, onPress }) => {
-	// AntDesign ikonları için doğru font yükleme
+	// 1. yöntem: manuel kopyalanan TTF dosyasını kullanıyoruz
 	const [fontsLoaded] = useFonts({
-		...AntDesign.font, // paket ile uyumlu font mapping
+		AntDesign: require("../assets/fonts/AntDesign.ttf"),
 	});
 
 	if (!fontsLoaded) {
-		return null; // font yüklenene kadar boş render
+		return null; // Font yüklenene kadar render etme
 	}
 
+	// sheetIndex değeri 0'dan büyükse, sheet açık demektir
 	const isSheetOpen = sheetIndex > 0;
 	const iconName = isSheetOpen ? "down" : "up";
 
