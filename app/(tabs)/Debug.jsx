@@ -1,4 +1,9 @@
-import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+	AntDesign,
+	FontAwesome,
+	Ionicons,
+	MaterialIcons,
+} from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Platform, ScrollView, Text, View } from "react-native";
 
@@ -66,6 +71,11 @@ const FontDebugComponent = () => {
 					<View style={{ alignItems: "center" }}>
 						<AntDesign name="home" size={40} color="red" />
 						<Text>AntDesign</Text>
+						<Text style={{ fontSize: 10 }}>home</Text>
+					</View>
+					<View style={{ alignItems: "center" }}>
+						<FontAwesome name="home" size={40} color="red" />
+						<Text>FontAwesome</Text>
 						<Text style={{ fontSize: 10 }}>home</Text>
 					</View>
 				</View>

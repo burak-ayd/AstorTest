@@ -454,6 +454,17 @@ export default function Index() {
 		};
 	}, []);
 
+	function compareVersions(v1, v2) {
+		const v1parts = v1.replace(/^v/, "").split(".").map(Number);
+		const v2parts = v2.replace(/^v/, "").split(".").map(Number);
+
+		for (let i = 0; i < 3; i++) {
+			if (v1parts[i] > v2parts[i]) return 1; // v1 daha yeni
+			if (v1parts[i] < v2parts[i]) return -1; // v1 daha eski
+		}
+		return 0; // eşit
+	}
+
 	const checkForAPKUpdate = async () => {
 		try {
 			setUpdateStatus("GitHub releases kontrol ediliyor...");
@@ -485,7 +496,7 @@ export default function Index() {
 				console.log("En son sürüm:", latestVersion);
 
 				// Sürüm karşılaştırması
-				if (latestVersion !== currentVersion) {
+				if (compareVersions(latestVersion, currentVersion) > 0) {
 					// APK dosyasını release'de ara
 					const apkAsset = releaseData.assets.find(
 						(asset) =>
