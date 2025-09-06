@@ -8,7 +8,6 @@ import {
 	Platform,
 	Text,
 	View,
-	__DEV__,
 } from "react-native";
 import RNFS from "react-native-fs";
 import RNRestart from "react-native-restart";
@@ -26,6 +25,112 @@ export default function Index() {
 	const [updateStatus, setUpdateStatus] = useState(
 		"Güncellemeler kontrol ediliyor..."
 	);
+
+	// Icon cache temizleme fonksiyonu
+	const clearIconCache = async () => {
+		try {
+			// React Native Vector Icons ve diğer icon cache'lerini temizle
+			const iconCachePaths = [
+				RNFS.CachesDirectoryPath + "/RNVectorIcons",
+				RNFS.DocumentDirectoryPath + "/RNVectorIcons",
+				RNFS.TemporaryDirectoryPath + "/RNVectorIcons",
+				RNFS.CachesDirectoryPath + "/icons",
+				RNFS.DocumentDirectoryPath + "/icons",
+			];
+
+			for (const path of iconCachePaths) {
+				if (await RNFS.exists(path)) {
+					await RNFS.unlink(path);
+					console.log("Icon cache temizlendi:", path);
+				}
+			}
+
+			// Font cache temizliği
+			const fontCachePaths = [
+				RNFS.CachesDirectoryPath + "/fonts",
+				RNFS.DocumentDirectoryPath + "/fonts",
+			];
+
+			for (const path of fontCachePaths) {
+				if (await RNFS.exists(path)) {
+					await RNFS.unlink(path);
+					console.log("Font cache temizlendi:", path);
+				}
+			}
+		} catch (error) {
+			console.log("Icon/Font cache temizleme hatası:", error);
+		}
+	};
+
+	// Tüm cache'leri temizleme fonksiyonu
+	const clearAllCaches = async () => {
+		try {
+			// Icon cache temizliği
+			await clearIconCache();
+
+			// Expo cache temizliği
+			const expoCacheDir = RNFS.DocumentDirectoryPath + "/.expo";
+			if (await RNFS.exists(expoCacheDir)) {
+				await RNFS.unlink(expoCacheDir);
+				console.log("Expo cache temizlendi");
+			}
+
+			// Metro cache temizliği
+			const metroCacheDir = RNFS.CachesDirectoryPath + "/metro";
+			if (await RNFS.exists(metroCacheDir)) {
+				await RNFS.unlink(metroCacheDir);
+				console.log("Metro cache temizlendi");
+			}
+
+			// Temp dosyaları temizle
+			const tempDir = RNFS.TemporaryDirectoryPath;
+			const tempFiles = await RNFS.readDir(tempDir);
+			for (const file of tempFiles) {
+				if (file.isFile() && file.name.includes("bundle")) {
+					await RNFS.unlink(file.path);
+					console.log("Temp dosya temizlendi:", file.name);
+				}
+			}
+		} catch (error) {
+			console.log("Cache temizleme hatası (normal):", error.message);
+		}
+	};
+
+	// Version bilgisini asset version ile birlikte kaydet
+	const saveVersionWithAssets = async (bundleVersion) => {
+		const versionInfo = {
+			bundle: bundleVersion,
+			assets: "1.0.0", // Asset version'ı - gerekirse güncelleyin
+			timestamp: Date.now(),
+			requiresHardRestart: true, // Icon sorunu için hard restart gerekli
+		};
+
+		await RNFS.writeFile(VERSION_FILE, JSON.stringify(versionInfo), "utf8");
+	};
+
+	// Version kontrolü
+	const getVersionInfo = async () => {
+		try {
+			if (await RNFS.exists(VERSION_FILE)) {
+				const content = await RNFS.readFile(VERSION_FILE, "utf8");
+				// Eski format kontrolü (sadece string)
+				if (content.startsWith("{")) {
+					return JSON.parse(content);
+				} else {
+					// Eski format, yeni formata çevir
+					return {
+						bundle: content,
+						assets: "1.0.0",
+						timestamp: Date.now(),
+						requiresHardRestart: false,
+					};
+				}
+			}
+		} catch (error) {
+			console.log("Version info okuma hatası:", error);
+		}
+		return null;
+	};
 
 	const checkOTA = async () => {
 		try {
@@ -54,7 +159,7 @@ export default function Index() {
 			const remoteLastModified = response.headers.get("last-modified");
 			const metaPath = LOCAL_BUNDLE + ".meta";
 			let localLastModified = null;
-			let currentBundleVersion = null;
+			let currentVersionInfo = null;
 
 			// Documents klasörünün var olduğundan emin ol
 			const documentsDir = RNFS.DocumentDirectoryPath;
@@ -62,13 +167,10 @@ export default function Index() {
 				await RNFS.mkdir(documentsDir);
 			}
 
-			// Mevcut bundle versiyonunu kontrol et
-			if (await RNFS.exists(VERSION_FILE)) {
-				currentBundleVersion = await RNFS.readFile(
-					VERSION_FILE,
-					"utf8"
-				);
-				console.log("Mevcut Bundle Version:", currentBundleVersion);
+			// Mevcut version bilgisini kontrol et
+			currentVersionInfo = await getVersionInfo();
+			if (currentVersionInfo) {
+				console.log("Mevcut Version Info:", currentVersionInfo);
 			}
 
 			// Yerel meta dosyasını kontrol et
@@ -135,19 +237,8 @@ export default function Index() {
 						}
 					}
 
-					// Cache temizliği
-					try {
-						const cacheDir = RNFS.DocumentDirectoryPath + "/.expo";
-						if (await RNFS.exists(cacheDir)) {
-							await RNFS.unlink(cacheDir);
-							console.log("Expo cache temizlendi");
-						}
-					} catch (e) {
-						console.log(
-							"Cache temizleme hatası (normal):",
-							e.message
-						);
-					}
+					// TÜM cache'leri temizle (icon cache dahil)
+					await clearAllCaches();
 
 					// Yeni bundle'ı kaydet
 					await RNFS.writeFile(LOCAL_BUNDLE, bundleCode, "utf8");
@@ -160,9 +251,9 @@ export default function Index() {
 						"utf8"
 					);
 
-					// Yeni versiyon kaydet
+					// Yeni version bilgisini asset info ile kaydet
 					const newVersion = Date.now().toString();
-					await RNFS.writeFile(VERSION_FILE, newVersion, "utf8");
+					await saveVersionWithAssets(newVersion);
 
 					// Dosyanın gerçekten yazıldığını kontrol et
 					const writtenFile = await RNFS.readFile(
@@ -182,29 +273,23 @@ export default function Index() {
 
 					setUpdateStatus("Güncelleme uygulanıyor...");
 
-					// Bundle reload yap
+					// Icon sorunu için her zaman HARD RESTART yap
 					setTimeout(() => {
 						Alert.alert(
 							"Uygulama Güncellendi!",
-							`Yeni sürüm yüklendi (${Math.round(bundleCode.length / 1024)}KB). Bundle yeniden yüklenecek...`,
+							`Yeni sürüm yüklendi (${Math.round(
+								bundleCode.length / 1024
+							)}KB).\n\nIcon ve fontların düzgün yüklenmesi için uygulama yeniden başlatılacak.`,
 							[
 								{
-									text: "Bundle Reload",
-									onPress: async () => {
-										try {
-											if (BundleReloadModule) {
-												await BundleReloadModule.reloadBundle();
-											} else {
-												RNRestart.Restart();
-											}
-										} catch (e) {
-											RNRestart.Restart();
-										}
+									text: "Yeniden Başlat",
+									onPress: () => {
+										// Her zaman hard restart yap - icon sorunu çözümü
+										console.log(
+											"Hard restart yapılıyor - icon sorunu önlemi"
+										);
+										RNRestart.Restart();
 									},
-								},
-								{
-									text: "Hard Restart",
-									onPress: () => RNRestart.Restart(),
 								},
 							],
 							{ cancelable: false }
@@ -219,12 +304,30 @@ export default function Index() {
 				}
 			} else {
 				console.log("Bundle güncel");
+
+				// Eğer önceki güncelleme hard restart gerektiriyorsa kontrol et
+				if (
+					currentVersionInfo &&
+					currentVersionInfo.requiresHardRestart
+				) {
+					// Bir kerelik hard restart flag'ini temizle
+					currentVersionInfo.requiresHardRestart = false;
+					await RNFS.writeFile(
+						VERSION_FILE,
+						JSON.stringify(currentVersionInfo),
+						"utf8"
+					);
+				}
 			}
 		} catch (error) {
 			console.log("OTA update failed:", error);
 			setUpdateStatus(
 				"Güncelleme hatası, yerel sürümle devam ediliyor..."
 			);
+
+			// Hata durumunda da cache temizliği yap
+			await clearIconCache();
+
 			setTimeout(() => setReady(true), 2000);
 			return;
 		}
@@ -306,6 +409,15 @@ export default function Index() {
 			}
 
 			try {
+				// İlk açılışta icon cache temizliği (önceki sorunlu güncellemeler için)
+				const versionInfo = await getVersionInfo();
+				if (versionInfo && versionInfo.requiresHardRestart) {
+					console.log(
+						"Önceki güncelleme icon sorunu yaratmış olabilir, cache temizleniyor"
+					);
+					await clearIconCache();
+				}
+
 				// Önce APK güncellemesi kontrol et
 				const apkUpdateStarted = await checkForAPKUpdate();
 
@@ -417,7 +529,9 @@ export default function Index() {
 						return new Promise((resolve) => {
 							Alert.alert(
 								"Yeni Sürüm Mevcut!",
-								`Sürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(apkAsset.size / (1024 * 1024))}MB`,
+								`Sürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
+									apkAsset.size / (1024 * 1024)
+								)}MB`,
 								[
 									{
 										text: "İndir ve Yükle",

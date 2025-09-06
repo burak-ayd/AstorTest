@@ -17,12 +17,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SheetHandle from "@/components/sheetHandle";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import FontDebugComponent from "./Debug";
 import DirencHesabi from "./DirencHesabi";
 import History from "./History";
 import I0hesap from "./I0hesap";
+import NewProject from "./newProject";
 import TrafoKayip from "./TrafoKayip";
 import UkHesap from "./Ukhesap";
-import NewProject from "./newProject";
 
 export default function TabLayout() {
 	const bottomSheetRef = useRef(null);
@@ -81,6 +82,7 @@ export default function TabLayout() {
 		{ id: "3", label: "I0", key: "I0hesap" },
 		{ id: "4", label: "Yeni Proje", key: "NewProject" },
 		{ id: "5", label: "Kabul Direnç Hesabı", key: "DirencHesabi" },
+		{ id: "6", label: "Font Debug", key: "FontDebugComponent" },
 		{ id: "99", label: "Geçmiş", key: "History" },
 	];
 
@@ -96,6 +98,8 @@ export default function TabLayout() {
 				return <NewProject />;
 			case "DirencHesabi":
 				return <DirencHesabi />;
+			case "FontDebugComponent":
+				return <FontDebugComponent />;
 			case "History":
 				return <History />;
 			default:
