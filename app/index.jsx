@@ -396,11 +396,11 @@ export default function Index() {
 
 		const checkUpdates = async () => {
 			// Development modda güncelleme kontrolü yapma
-			if (__DEV__) {
-				console.log("Development modda güncelleme kontrolü atlanıyor");
-				setReady(true);
-				return;
-			}
+			// if (__DEV__) {
+			// 	console.log("Development modda güncelleme kontrolü atlanıyor");
+			// 	setReady(true);
+			// 	return;
+			// }
 
 			// Android'de çalıştır
 			if (Platform.OS !== "android") {

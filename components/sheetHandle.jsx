@@ -1,20 +1,14 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useFonts } from "expo-font";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 // sheetIndex prop'unu alacak şekilde güncellendi
 const SheetHandle = ({ sheetIndex, onPress }) => {
-	const [fontsLoaded] = useFonts({
-		...AntDesign.font,
-	});
 	// sheetIndex değeri 0'dan büyükse, sheet açık demektir
 	const isSheetOpen = sheetIndex > 0;
 
 	// Duruma göre ikon adını belirle
 	const iconName = isSheetOpen ? "down" : "up";
-	if (!fontsLoaded) {
-		return null;
-	}
+
 	return (
 		<TouchableOpacity
 			onPress={onPress}
