@@ -2,6 +2,18 @@ import { AntDesign } from "@react-native-vector-icons/ant-design";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const SheetHandle = ({ sheetIndex, onPress }) => {
+<<<<<<< HEAD
+=======
+	// 1. yöntem: manuel kopyalanan TTF dosyasını kullanıyoruz
+	const [fontsLoaded] = useFonts({
+		AntDesign: require("../assets/fonts/AntDesign.ttf"),
+	});
+
+	if (!fontsLoaded) {
+		return null; // Font yüklenene kadar render etme
+	}
+
+>>>>>>> a4d85c089036a7f0f2387bdd049249470d26c793
 	// sheetIndex değeri 0'dan büyükse, sheet açık demektir
 	const isSheetOpen = sheetIndex > 0;
 	const iconName = isSheetOpen ? "down" : "up";
