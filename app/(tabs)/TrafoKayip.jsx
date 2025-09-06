@@ -353,10 +353,10 @@ export default function TrafoKayip() {
 				Trafo Yükte Kayıp Hesaplayıcı
 			</Text> 
                         <AntDesign
-                                name={iconName}
+                                name="down"
                                 size={24}
                                 color="#333"
-                                style={styles.icon}
+                               
                         />
 
 			<View className="flex-row justify-between gap-6 mb-2">
