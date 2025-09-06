@@ -97,6 +97,14 @@ android {
         // resConfigs "en", "hdpi", "xhdpi" // Include only English, hdpi, and xhdpi resources
         resConfigs "en"
     }
+
+    // 👇 Font assets için source sets eklendi
+    sourceSets {
+        main {
+            assets.srcDirs = ['src/main/assets']
+        }
+    }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -118,11 +126,11 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.,
-            shrinkResources true
-            minifyEnabled true
+            // shrinkResources true
+            // minifyEnabled true
             signingConfig signingConfigs.release
-            // shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
-            // minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
+            minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             crunchPngs (findProperty('android.enablePngCrunchInReleaseBuilds')?.toBoolean() ?: true)
         }
@@ -144,20 +152,20 @@ android {
         }
     }
     applicationVariants.all { variant ->
-    variant.outputs.all { output ->
-        def appName = "AstorTest"
-        def version = variant.versionName
-        def buildType = variant.buildType.name
+        variant.outputs.all { output ->
+            def appName = "AstorTest"
+            def version = variant.versionName
+            def buildType = variant.buildType.name
 
-        // ABI bilgisini dosya adına ekle
-        def abi = output.getFilter(com.android.build.OutputFile.ABI)
-        if (abi != null) {
-            outputFileName = "${appName}-${version}-${buildType}-${abi}.apk"
-        } else {
-            outputFileName = "${appName}-${version}-${buildType}.apk"
+            // ABI bilgisini dosya adına ekle
+            def abi = output.getFilter(com.android.build.OutputFile.ABI)
+            if (abi != null) {
+                outputFileName = "${appName}-${version}-${buildType}-${abi}.apk"
+            } else {
+                outputFileName = "${appName}-${version}-${buildType}.apk"
+            }
         }
     }
-}
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
@@ -206,5 +214,50 @@ dependencies {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
+    }
+}
+
+// 👇 Vector Icon Fonts için task'lar eklendi
+task copyVectorIconFonts(type: Copy) {
+    description 'Copy vector icon fonts to Android assets folder'
+    from '../../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts'
+    into 'src/main/assets/fonts'
+    include "*.ttf"
+    
+    doFirst {
+        println "🔤 Vector icon fontları kopyalanıyor..."
+        file('src/main/assets/fonts').mkdirs() // Klasörü oluştur
+    }
+    
+    doLast {
+        println "✅ Vector icon fontları başarıyla kopyalandı!"
+        
+        // Kopyalanan dosyaları listele
+        def fontsDir = file('src/main/assets/fonts')
+        if (fontsDir.exists()) {
+            def fontFiles = fontsDir.listFiles()?.findAll { it.name.endsWith('.ttf') }
+            println "📁 Kopyalanan font dosyaları (${fontFiles?.size() ?: 0}):"
+            fontFiles?.each { println "   - ${it.name}" }
+        }
+    }
+}
+
+// Tüm build variant'ları için font kopyalama task'ını çalıştır
+android.applicationVariants.all { variant ->
+    variant.preBuild.dependsOn copyVectorIconFonts
+    
+    // Her variant için özel log
+    variant.assembleProvider.get().doFirst {
+        println "🔧 ${variant.name} build'i için fontlar hazırlanıyor..."
+    }
+}
+
+// Bundle task için de (eğer bundle alıyorsanız)
+gradle.projectsEvaluated {
+    android.applicationVariants.all { variant ->
+        def bundleTask = tasks.findByName("bundle${variant.name.capitalize()}JsAndAssets")
+        if (bundleTask != null) {
+            bundleTask.dependsOn copyVectorIconFonts
+        }
     }
 }

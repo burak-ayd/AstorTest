@@ -2,7 +2,6 @@ import "@/global.css";
 import Button from "@components/button";
 import Input from "@components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { Picker } from "@react-native-picker/picker";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
@@ -329,7 +328,6 @@ export default function TrafoKayip() {
 		} catch (e) {
 			console.error("Geçmiş kaydedilirken hata:", e);
 		}
-		
 	}
 
 	useEffect(() => {
@@ -351,13 +349,7 @@ export default function TrafoKayip() {
 			className="h-full bg-card">
 			<Text className="text-xl font-bold text-center mb-2 text-text ">
 				Trafo Yükte Kayıp Hesaplayıcı
-			</Text> 
-                        <AntDesign
-                                name="down"
-                                size={24}
-                                color="#333"
-                               
-                        />
+			</Text>
 
 			<View className="flex-row justify-between gap-6 mb-2">
 				{/* Güç */}

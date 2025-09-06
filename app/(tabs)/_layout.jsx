@@ -2,7 +2,6 @@
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-	Dimensions,
 	Keyboard,
 	KeyboardAvoidingView,
 	Platform,
@@ -24,8 +23,6 @@ import I0hesap from "./I0hesap";
 import TrafoKayip from "./TrafoKayip";
 import UkHesap from "./Ukhesap";
 import NewProject from "./newProject";
-
-const { height: screenHeight } = Dimensions.get("window");
 
 export default function TabLayout() {
 	const bottomSheetRef = useRef(null);

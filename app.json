@@ -3,7 +3,6 @@
 		"name": "Astor Trafo Test",
 		"slug": "AstorTest",
 		"version": "1.1.4",
-		"jsVersion": "1.1.4",
 		"orientation": "default",
 		"icon": "./assets/images/icon.png",
 		"scheme": "astortest",
@@ -40,6 +39,5 @@
 		"experiments": {
 			"typedRoutes": true
 		}
-	},
-	"name": "AstorTest"
+	}
 }
