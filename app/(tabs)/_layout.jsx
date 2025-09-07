@@ -17,6 +17,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SheetHandle from "@/components/sheetHandle";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AntDesign from "@react-native-vector-icons/ant-design";
 import FontDebugComponent from "./Debug";
 import DirencHesabi from "./DirencHesabi";
 import History from "./History";
@@ -175,6 +176,11 @@ export default function TabLayout() {
 									]}>
 									{item.label}
 								</Text>
+								<AntDesign
+									name="home"
+									size={24}
+									color={"black"}
+								/>
 							</TouchableOpacity>
 						))}
 					</BottomSheetView>
