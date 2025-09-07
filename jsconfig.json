@@ -1,22 +1,25 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
+        "baseUrl": "./",
         "paths": {
             "@/*": [
                 "./*"
             ],
             "@components/*": [
-                "components/*"
+                "./components/*"
             ],
             "@screens/*": [
-                "screens/*"
+                "./screens/*"
             ],
             "@assets/*": [
-                "assets/*"
+                "./assets/*"
             ]
         }
     },
     "include": [
-        "./"
+        "./components/**/*",
+        "./screens/**/*",
+        "./assets/**/*",
+        "./app/**/*"
     ]
 }

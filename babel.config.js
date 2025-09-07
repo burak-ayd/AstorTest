@@ -11,11 +11,12 @@ module.exports = function (api) {
 				{
 					root: ["./"],
 					alias: {
-						"@": "./", // @ = proje kökü
-						"@components": "./components", // örnek
+						"@": "./", // @ artık proje kökünü gösteriyor
+						"@components": "./components", // root/components
 						"@screens": "./screens",
 						"@assets": "./assets",
 					},
+					extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
 				},
 			],
 		],

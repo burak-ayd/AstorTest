@@ -128,9 +128,11 @@ jobs:
             --dev false \
             --entry-file node_modules/expo-router/entry.js \
             --bundle-output ota/index.android.bundle \
-            --minify true \
             --assets-dest ota \
-            --reset-cache
+            --sourcemap-output android/sourcemap.js
+          cd android
+          find output -type f | zip index.android.bundle.zip -@ && zip sourcemap.zip sourcemap.js && cd .. && rm -rf android/output && rm -rf android/sourcemap.js
+
 
       - name: Upload OTA to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

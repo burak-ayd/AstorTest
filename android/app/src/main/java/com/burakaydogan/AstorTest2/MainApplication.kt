@@ -1,4 +1,3 @@
-import com.facebook.react.common.assets.ReactFontManager
 package com.burakaydogan.AstorTest2
 
 import android.app.Application
@@ -15,6 +14,7 @@ import com.facebook.soloader.SoLoader
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
 import java.io.File
+import com.otahotupdate.OtaHotUpdate
 
 class MainApplication : Application(), ReactApplication {
   override val reactNativeHost: ReactNativeHost = ReactNativeHostWrapper(
@@ -40,61 +40,13 @@ class MainApplication : Application(), ReactApplication {
 
           // OTA bundle desteği - Bundle yükleme önceliği
           override fun getJSBundleFile(): String? {
-            if (BuildConfig.DEBUG) {
-              return super.getJSBundleFile()
-            }
 
-            val context = applicationContext
-            val bundlePath = File(context.filesDir, "index.android.bundle")
+             return OtaHotUpdate.bundleJS(this@MainApplication)
             
-            // Log ekleyin debug için
-            println("OTA Bundle Check: ${bundlePath.absolutePath}")
-            println("OTA Bundle Exists: ${bundlePath.exists()}")
-            
-            if (bundlePath.exists()) {
-              println("OTA Bundle Size: ${bundlePath.length()} bytes")
-              
-              // Bundle'ın geçerli olduğunu kontrol et
-              try {
-                val bundleContent = bundlePath.readText()
-                if (bundleContent.length < 1000) {
-                  println("OTA Bundle çok küçük, assets kullanılıyor")
-                  return super.getJSBundleFile()
-                }
-                
-                // Bundle'ın JavaScript içerdiğini kontrol et - FİX: Parantez hatası düzeltildi
-                if (!bundleContent.contains("__d(function") && !bundleContent.contains("(function(")) {
-                  println("OTA Bundle geçersiz format, assets kullanılıyor")
-                  return super.getJSBundleFile()
-                }
-                
-                println("OTA Bundle geçerli, yükleniyor")
-                return bundlePath.absolutePath
-              } catch (e: Exception) {
-                println("OTA Bundle okuma hatası: ${e.message}")
-                return super.getJSBundleFile()
-              }
-            }
-            
-            return super.getJSBundleFile()
           }
 
-          // Asset bundle'ını tamamen devre dışı bırak OTA varsa
-          override fun getBundleAssetName(): String? {
-            if (BuildConfig.DEBUG) {
-              return super.getBundleAssetName()
-            }
 
-            val context = applicationContext
-            val bundlePath = File(context.filesDir, "index.android.bundle")
-            
-            // OTA bundle varsa asset bundle kullanma
-            return if (bundlePath.exists()) {
-              null
-            } else {
-              super.getBundleAssetName()
-            }
-          }
+          
       }
   )
 

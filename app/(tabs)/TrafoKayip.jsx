@@ -1,4 +1,3 @@
-import "@/global.css";
 import Button from "@components/button";
 import Input from "@components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -347,7 +346,7 @@ export default function TrafoKayip() {
 			}}
 			keyboardShouldPersistTaps="handled"
 			className="h-full bg-card">
-			<Text className="text-xl font-bold text-center mb-2 text-text ">
+			<Text className="text-xl font-bold text-center mb-2 text-red-800">
 				Trafo Yükte Kayıp Hesaplayıcı
 			</Text>
 

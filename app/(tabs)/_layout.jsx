@@ -12,19 +12,18 @@ import {
 	View,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
+import "../../global.css";
 // Sayfa importları
 import SheetHandle from "@/components/sheetHandle";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import AntDesign from "@react-native-vector-icons/ant-design";
-import FontDebugComponent from "./Debug";
 import DirencHesabi from "./DirencHesabi";
 import History from "./History";
 import I0hesap from "./I0hesap";
 import NewProject from "./newProject";
 import TrafoKayip from "./TrafoKayip";
 import UkHesap from "./Ukhesap";
+import OtaUpdate from "./OtaUpdate";
 
 export default function TabLayout() {
 	const bottomSheetRef = useRef(null);
@@ -83,7 +82,7 @@ export default function TabLayout() {
 		{ id: "3", label: "I0", key: "I0hesap" },
 		{ id: "4", label: "Yeni Proje", key: "NewProject" },
 		{ id: "5", label: "Kabul Direnç Hesabı", key: "DirencHesabi" },
-		{ id: "6", label: "Font Debug", key: "FontDebugComponent" },
+		{ id: "7", label: "Güncelleme", key: "OtaUpdate" },
 		{ id: "99", label: "Geçmiş", key: "History" },
 	];
 
@@ -99,8 +98,8 @@ export default function TabLayout() {
 				return <NewProject />;
 			case "DirencHesabi":
 				return <DirencHesabi />;
-			case "FontDebugComponent":
-				return <FontDebugComponent />;
+			case "OtaUpdate":
+				return <OtaUpdate />;
 			case "History":
 				return <History />;
 			default:
@@ -176,11 +175,6 @@ export default function TabLayout() {
 									]}>
 									{item.label}
 								</Text>
-								<AntDesign
-									name="home"
-									size={24}
-									color={"black"}
-								/>
 							</TouchableOpacity>
 						))}
 					</BottomSheetView>
