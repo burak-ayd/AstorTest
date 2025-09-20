@@ -13,7 +13,7 @@ module.exports = function (api) {
 					alias: {
 						"@": "./", // @ artık proje kökünü gösteriyor
 						"@components": "./components", // root/components
-						"@screens": "./screens",
+						"@scripts": "./scripts",
 						"@assets": "./assets",
 					},
 					extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],

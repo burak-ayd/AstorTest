@@ -3,7 +3,6 @@ import TkItem from "@/components/history/TkItem";
 import UkItem from "@/components/history/UkItem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
-import "moment/locale/tr"; // Bu satırın eklendiğinden emin olun
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 

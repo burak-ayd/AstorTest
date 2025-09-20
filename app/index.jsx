@@ -22,40 +22,6 @@ export default function Index() {
 		"Güncellemeler kontrol ediliyor..."
 	);
 
-	// // Tüm cache'leri temizleme fonksiyonu
-	// const clearAllCaches = async () => {
-	// 	try {
-	// 		// Icon cache temizliği
-	// 		await clearIconCache();
-
-	// 		// Expo cache temizliği
-	// 		const expoCacheDir = RNFS.DocumentDirectoryPath + "/.expo";
-	// 		if (await RNFS.exists(expoCacheDir)) {
-	// 			await RNFS.unlink(expoCacheDir);
-	// 			console.log("Expo cache temizlendi");
-	// 		}
-
-	// 		// Metro cache temizliği
-	// 		const metroCacheDir = RNFS.CachesDirectoryPath + "/metro";
-	// 		if (await RNFS.exists(metroCacheDir)) {
-	// 			await RNFS.unlink(metroCacheDir);
-	// 			console.log("Metro cache temizlendi");
-	// 		}
-
-	// 		// Temp dosyaları temizle
-	// 		const tempDir = RNFS.TemporaryDirectoryPath;
-	// 		const tempFiles = await RNFS.readDir(tempDir);
-	// 		for (const file of tempFiles) {
-	// 			if (file.isFile() && file.name.includes("bundle")) {
-	// 				await RNFS.unlink(file.path);
-	// 				console.log("Temp dosya temizlendi:", file.name);
-	// 			}
-	// 		}
-	// 	} catch (error) {
-	// 		console.log("Cache temizleme hatası (normal):", error.message);
-	// 	}
-	// };
-
 	const checkOTA = async () => {
 		try {
 			setUpdateStatus("Uzak sunucu kontrol ediliyor...");

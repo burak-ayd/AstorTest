@@ -346,7 +346,7 @@ export default function TrafoKayip() {
 			}}
 			keyboardShouldPersistTaps="handled"
 			className="h-full bg-card">
-			<Text className="text-xl font-bold text-center mb-2 text-red-800">
+			<Text className="text-xl font-bold text-center mb-2 text-text">
 				Trafo Yükte Kayıp Hesaplayıcı
 			</Text>
 
