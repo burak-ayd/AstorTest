@@ -1,4 +1,4 @@
-import Input from "@/components/input";
+import Input from "@components/input";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -27,7 +27,7 @@ export default function DirencHesabi() {
 			: x.toLocaleString("tr-TR", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2,
-				}) + " Ω";
+			  }) + " Ω";
 
 	function hesapla() {
 		const olculenKayipValue = parseNum(olculenKayip);

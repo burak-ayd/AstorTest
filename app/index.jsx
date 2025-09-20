@@ -1,4 +1,3 @@
-import "@/global.css";
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -10,6 +9,7 @@ import {
 	Text,
 	View,
 } from "react-native";
+import "../global.css";
 const { APKUpdateModule } = NativeModules;
 
 const OTA_URL = "https://burak-ayd.github.io/AstorTest/index.android.bundle";

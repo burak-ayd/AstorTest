@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Sayfa importları
-import SheetHandle from "@/components/sheetHandle";
+import SheetHandle from "@components/sheetHandle";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import DirencHesabi from "./DirencHesabi";

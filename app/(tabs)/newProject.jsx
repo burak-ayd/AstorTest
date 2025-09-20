@@ -1,5 +1,5 @@
-import Button from "@/components/button";
-import Input from "@/components/input";
+import Button from "@components/button";
+import Input from "@components/input";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -33,14 +33,17 @@ export default function NewProject() {
 	const formatPct = (x) =>
 		!isFinite(x)
 			? "—"
-			: `${x.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`;
+			: `${x.toLocaleString("tr-TR", {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+			  })} %`;
 	const formatVoltAmp = (x, digit = 2) =>
 		!isFinite(x)
 			? "—"
 			: x.toLocaleString("tr-TR", {
 					minimumFractionDigits: digit,
 					maximumFractionDigits: digit,
-				});
+			  });
 	function hesapla() {
 		const gucValue = parseNum(guc);
 		const ilkKademeValue = parseNum(ilkKademe);

@@ -1,6 +1,6 @@
-import I0Item from "@/components/history/I0Item";
-import TkItem from "@/components/history/TkItem";
-import UkItem from "@/components/history/UkItem";
+import I0Item from "@components/history/I0Item";
+import TkItem from "@components/history/TkItem";
+import UkItem from "@components/history/UkItem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";

@@ -1,4 +1,4 @@
-import { useCheckVersion } from "@/scripts/useCheckVersion";
+import { useCheckVersion } from "@scripts/useCheckVersion";
 import { Button, StyleSheet, Text, View } from "react-native";
 export default function OtaUpdate() {
 	const { version } = useCheckVersion();
