@@ -1,6 +1,6 @@
 ﻿{
-    "version":  8,
-    "timestamp":  1758496942,
-    "downloadAndroidUrl":  "https://api.burakaydogan.tk/output/index.android.bundle.zip",
-    "downloadIosUrl":  "https://api.burakaydogan.tk/output/main.jsbundle.zip"
+	"version": 7,
+	"timestamp": 1758486900,
+	"downloadAndroidUrl": "https://api.burakaydogan.tk/output/index.android.bundle.zip",
+	"downloadIosUrl": "https://api.burakaydogan.tk/output/main.jsbundle.zip"
 }
