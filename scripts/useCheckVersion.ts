@@ -1,12 +1,12 @@
 import React from 'react';
-import { Alert, LayoutAnimation, Platform } from 'react-native';
+import { Alert, LayoutAnimation, Platform, UIManager } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import hotUpdate from 'react-native-ota-hot-update';
-// if (Platform.OS === 'android') {
-//   if (UIManager.setLayoutAnimationEnabledExperimental) {
-//     UIManager.setLayoutAnimationEnabledExperimental(true);
-//   }
-// }
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 const apiVersion =
   'https://api.burakaydogan.tk/output/version.json';
 export const useCheckVersion = () => {

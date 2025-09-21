@@ -1,5 +1,6 @@
 ﻿{
-	"version": 6,
-	"downloadAndroidUrl": "https://burak-ayd.github.io/AstorTest/output/index.android.bundle.zip",
-	"downloadIosUrl": "https://burak-ayd.github.io/AstorTest/output/main.jsbundle.zip"
+	"version": 7,
+	"timestamp": 1758495931,
+	"downloadAndroidUrl": "https://api.burakaydogan.tk/output/index.android.bundle.zip",
+	"downloadIosUrl": "https://api.burakaydogan.tk/output/main.jsbundle.zip"
 }
