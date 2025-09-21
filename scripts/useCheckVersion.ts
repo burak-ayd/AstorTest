@@ -8,7 +8,7 @@ import hotUpdate from 'react-native-ota-hot-update';
 //   }
 // }
 const apiVersion =
-  'https://burak-ayd.github.io/AstorTest/version.json';
+  'https://burak-ayd.github.io/AstorTest/output/version.json';
 export const useCheckVersion = () => {
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -37,7 +37,10 @@ export const useCheckVersion = () => {
   };
   const onCheckVersion = () => {
     fetch(`${apiVersion}?v=${Date.now()}`, { cache: "no-store" }).then(async (data) => {
-      const result = await data.json();
+      let text = await data.text();
+      // BOM varsa temizle
+      text = text.replace(/^\uFEFF/, "");
+      const result = JSON.parse(text);
       const currentVersion = await hotUpdate.getCurrentVersion();
       console.log(result,currentVersion)
       if (result?.version > currentVersion) {

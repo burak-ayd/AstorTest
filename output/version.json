@@ -1,5 +1,5 @@
 ﻿{
-	"version": 4,
-	"downloadAndroidUrl": "https://burak-ayd.github.io/AstorTest/output/index.android.bundle.zip",
-	"downloadIosUrl": "https://burak-ayd.github.io/AstorTest/output/main.jsbundle.zip"
+    "version":  5,
+    "downloadAndroidUrl":  "https://burak-ayd.github.io/AstorTest/output/index.android.bundle.zip",
+    "downloadIosUrl":  "https://burak-ayd.github.io/AstorTest/output/main.jsbundle.zip"
 }
