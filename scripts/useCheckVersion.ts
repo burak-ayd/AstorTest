@@ -44,7 +44,7 @@ export const useCheckVersion = () => {
       const result = JSON.parse(text);
       const currentVersion = await hotUpdate.getCurrentVersion();
       console.log(result,currentVersion)
-      if (result?.version > currentVersion || result?.timespan < result?.last_update) {
+      if (result?.version > currentVersion || result?.timestamp > result?.last_update) {
         Alert.alert(
           'Yeni Versiyon!',
           'Yeni Versiyon yayınlandı, lütfen yükleyin.',
