@@ -8,7 +8,7 @@ import hotUpdate from 'react-native-ota-hot-update';
 //   }
 // }
 const apiVersion =
-  'http://burakaydogan.tk:8000/output/version.json';
+  'https://api.burakaydogan.tk/output/version.json';
 export const useCheckVersion = () => {
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -37,7 +37,7 @@ export const useCheckVersion = () => {
   };
   const onCheckVersion = () => {
     console.log('Checking version from', apiVersion);
-    fetch(`${apiVersion}?v=${Date.now()}`, { cache: "no-store" }).then(async (data) => {
+    fetch(`${apiVersion}?v=${Date.now()}`, { cache: "no-store",headers: { "Accept": "application/json" }, }).then(async (data) => {
       let text = await data.text();
       // BOM varsa temizle
       text = text.replace(/^\uFEFF/, "");
