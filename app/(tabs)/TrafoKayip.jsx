@@ -453,7 +453,7 @@ export default function TrafoKayip() {
 						id="dirençAB"
 						value={direncAB}
 						onChangeText={setDirencAB}
-						placeholder="1,5 Ω"
+						placeholder="2,5 Ω"
 					/>
 
 					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
@@ -464,7 +464,7 @@ export default function TrafoKayip() {
 						id="dirençBC"
 						value={direncBC}
 						onChangeText={setDirencBC}
-						placeholder="1,5 Ω"
+						placeholder="2,5 Ω"
 					/>
 					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
 				</View>
@@ -474,7 +474,7 @@ export default function TrafoKayip() {
 						id="dirençBC"
 						value={direncCA}
 						onChangeText={setDirencCA}
-						placeholder="1,5 Ω"
+						placeholder="2,5 Ω"
 					/>
 					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
 				</View>
