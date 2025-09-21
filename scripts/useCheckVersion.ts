@@ -8,7 +8,7 @@ import hotUpdate from 'react-native-ota-hot-update';
 //   }
 // }
 const apiVersion =
-  'https://burak-ayd.github.io/AstorTest/output/version.json';
+  'http://burakaydogan.tk:8000/output/version.json';
 export const useCheckVersion = () => {
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
@@ -36,6 +36,7 @@ export const useCheckVersion = () => {
     });
   };
   const onCheckVersion = () => {
+    console.log('Checking version from', apiVersion);
     fetch(`${apiVersion}?v=${Date.now()}`, { cache: "no-store" }).then(async (data) => {
       let text = await data.text();
       // BOM varsa temizle
@@ -71,6 +72,14 @@ export const useCheckVersion = () => {
       
       {text: 'Tamam', onPress: () => console.log('OK Pressed')},
     ]);}
+    }).catch((error) => {
+      Alert.alert('Hata', 'Güncelleme kontrolü başarısız: ' + error.message, [  
+        {
+          text: 'Tamam',
+          onPress: () => console.log('OK Pressed'),
+        },
+      ]); 
+      console.error('Güncelleme kontrolü başarısız:', error);
     });
   };
 

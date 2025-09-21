@@ -2,7 +2,7 @@
   "expo": {
     "name": "Astor Trafo Test",
     "slug": "AstorTest",
-    "version": "1.2.1",
+    "version": "1.2.5",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "astortest",
