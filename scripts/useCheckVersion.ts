@@ -8,11 +8,11 @@ if (Platform.OS === 'android') {
   }
 }
 const apiVersion =
-  'https://api.burakaydogan.tk/output/version.json';
+  'https://api.burakaydogan.tk/version';
 export const useCheckVersion = () => {
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const [version, setVersion] = React.useState("0");
+  const [version, setVersion] = React.useState(0);
   const startUpdate = async (url: string, version: number) => {
     hotUpdate.downloadBundleUri(ReactNativeBlobUtil, url, version, {
       updateSuccess: () => {
@@ -179,7 +179,7 @@ export const useCheckVersion = () => {
   };
   React.useEffect(() => {
     hotUpdate.getCurrentVersion().then((data) => {
-      setVersion(`${data}`);
+      setVersion(data);
     });
   }, []);
   return {
