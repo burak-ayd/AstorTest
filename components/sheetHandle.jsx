@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@react-native-vector-icons/ant-design";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const SheetHandle = ({ sheetIndex, onPress }) => {

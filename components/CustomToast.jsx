@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons"; // Eğer ikon kullanmak istersen
 import React, { useEffect } from "react";
-import { Animated, Dimensions, StyleSheet, Text } from "react-native";
+import { Animated, Dimensions, StyleSheet, Text, View } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 const ICONS = {
@@ -89,10 +89,26 @@ export default function CustomToast({
 
 	if (!visible) return null;
 
+	const getBackgroundColor = (type) => {
+		switch (type) {
+			case "success":
+				return "rgba(34,197,94,0.10)"; // yeşil (bg-green-500/10)
+			case "error":
+				return "rgba(239,68,68,0.15)"; // kırmızı (bg-red-500/15)
+			case "info":
+				return "rgba(59,130,246,0.10)"; // mavi (bg-blue-500/10)
+			default:
+				return "rgba(255,255,255,0.95)";
+		}
+	};
+
 	return (
 		<Animated.View
 			style={[
 				styles.toast,
+				{
+					backgroundColor: getBackgroundColor(type),
+				},
 				type === "success"
 					? styles.success
 					: type === "info"
@@ -101,13 +117,26 @@ export default function CustomToast({
 				getPositionStyle(position),
 				{ transform: [{ translateY }] },
 			]}>
-			<MaterialIcons
-				name={ICONS[type].name}
-				size={24}
-				color={ICONS[type].color}
-				style={styles.icon}
-			/>
-			<Text style={styles.text}>{message}</Text>
+			<View style={styles.iconContainer}>
+				<MaterialIcons name={ICONS[type].name} size={28} color="#fff" />
+			</View>
+			<View style={styles.textContainer}>
+				<Text style={styles.title}>
+					{type === "success"
+						? "Başarılı!"
+						: type === "error"
+						? "Hata!"
+						: "Bilgi"}
+				</Text>
+				<Text style={styles.description}>
+					{message ||
+						(type === "success"
+							? "İşleminiz başarıyla tamamlandı."
+							: type === "error"
+							? "Bir hata oluştu."
+							: "Bilgilendirme mesajı.")}
+				</Text>
+			</View>
 		</Animated.View>
 	);
 }
@@ -159,16 +188,16 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		zIndex: 9999,
-		backgroundColor: "rgba(255,255,255,0.95)", // Hafif transparan
+		// backgroundColor: "rgba(255,255,255,0.95)", // Hafif transparan
 		shadowColor: "#000",
 		shadowOpacity: 0.15,
 		shadowRadius: 12,
 		elevation: 12,
 	},
-	success: {
-		borderLeftWidth: 6,
-		borderLeftColor: "#4CAF50",
-	},
+	// success: {
+	// 	borderLeftWidth: 6,
+	// 	borderLeftColor: "#4CAF50",
+	// },
 	error: {
 		borderLeftWidth: 6,
 		borderLeftColor: "#FF6B6B",
@@ -177,13 +206,42 @@ const styles = StyleSheet.create({
 		borderLeftWidth: 6,
 		borderLeftColor: "#2196F3",
 	},
-	icon: {
-		marginRight: 12,
-	},
+	// icon: {
+	// 	marginRight: 12,
+	// },
 	text: {
 		color: "#222",
 		fontWeight: "500",
 		fontSize: 16,
 		flex: 1,
+	},
+
+	success: {
+		// Sol tarafta yuvarlak ikon alanı
+	},
+	iconContainer: {
+		width: 48,
+		height: 48,
+		borderRadius: 24,
+		backgroundColor: "#22c55e", // bg-green-500
+		alignItems: "center",
+		justifyContent: "center",
+		marginRight: 16,
+	},
+	icon: {
+		// Icon için ekstra stil gerekirse ekle
+	},
+	textContainer: {
+		flex: 1,
+	},
+	title: {
+		fontWeight: "bold",
+		fontSize: 18,
+		color: "#166534", // text-green-800
+		marginBottom: 2,
+	},
+	description: {
+		fontSize: 14,
+		color: "#15803d", // text-green-700
 	},
 });
