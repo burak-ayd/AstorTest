@@ -1,5 +1,4 @@
 // Alternatif çözüm - Bottom sheet'i gizlemeden
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
 	Keyboard,
@@ -13,9 +12,11 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Sayfa importları
-import SheetHandle from "@components/sheetHandle";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import CustomToast from "@/components/CustomToast";
+import SheetHandle from "@/components/sheetHandle";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import DirencHesabi from "./DirencHesabi";
 import History from "./History";
 import I0hesap from "./I0hesap";
@@ -29,6 +30,16 @@ export default function TabLayout() {
 	const [sheetIndex, setSheetIndex] = useState(0);
 	const [selectedScreen, setSelectedScreen] = useState("TrafoKayip");
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+	const [toastVisible, setToastVisible] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
+	const [toastPosition, setToastPosition] = useState("bottom");
+
+	const showToast = (msg, position = "bottom") => {
+		setToastMessage(msg);
+		setToastPosition(position);
+		setToastVisible(true);
+	};
 
 	// Klavye yüksekliğine göre dinamik snap points
 	const snapPoints = useMemo(() => {
@@ -90,7 +101,7 @@ export default function TabLayout() {
 			case "TrafoKayip":
 				return <TrafoKayip />;
 			case "Ukhesap":
-				return <UkHesap />;
+				return <UkHesap showToast={showToast} />;
 			case "I0hesap":
 				return <I0hesap />;
 			case "NewProject":
@@ -128,6 +139,7 @@ export default function TabLayout() {
 				backgroundColor="#fff"
 				translucent={false}
 			/>
+
 			<GestureHandlerRootView style={styles.container}>
 				{/* Ekran - KeyboardAvoidingView içinde */}
 				<KeyboardAvoidingView
@@ -140,6 +152,7 @@ export default function TabLayout() {
 				</KeyboardAvoidingView>
 
 				{/* Menü - Sabit konumda */}
+
 				<BottomSheet
 					ref={bottomSheetRef}
 					index={0}
@@ -178,6 +191,13 @@ export default function TabLayout() {
 						))}
 					</BottomSheetView>
 				</BottomSheet>
+				<CustomToast
+					visible={toastVisible}
+					message={toastMessage}
+					type="success"
+					position={toastPosition}
+					onHide={() => setToastVisible(false)}
+				/>
 			</GestureHandlerRootView>
 		</SafeAreaView>
 	);

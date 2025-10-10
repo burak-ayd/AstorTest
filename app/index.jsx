@@ -192,7 +192,14 @@ export default function Index() {
 	const checkForAPKUpdate = async () => {
 		try {
 			setUpdateStatus("GitHub releases kontrol ediliyor...");
-
+			// Check if APKUpdateModule is available
+			if (
+				!APKUpdateModule ||
+				typeof APKUpdateModule.getCurrentVersion !== "function"
+			) {
+				console.log("APKUpdateModule is not available.");
+				return false;
+			}
 			// Timeout ile GitHub API çağrısı
 			const controller = new AbortController();
 			const timeoutId = setTimeout(() => controller.abort(), 15000);

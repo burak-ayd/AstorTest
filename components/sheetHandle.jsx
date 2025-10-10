@@ -1,17 +1,17 @@
-import { AntDesign } from "@react-native-vector-icons/ant-design";
+import { MaterialIcons } from "@react-native-vector-icons/ant-design";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const SheetHandle = ({ sheetIndex, onPress }) => {
 	// sheetIndex değeri 0'dan büyükse, sheet açık demektir
 	const isSheetOpen = sheetIndex > 0;
-	const iconName = isSheetOpen ? "down" : "up";
+	const iconName = isSheetOpen ? "keyboard-arrow-down" : "keyboard-arrow-up";
 
 	return (
 		<TouchableOpacity
 			onPress={onPress}
 			className="flex flex-row justify-center items-center mt-4 md:mt-2">
 			<Text style={styles.handleText}>Menü </Text>
-			<AntDesign
+			<MaterialIcons
 				name={iconName}
 				size={24}
 				color="#333"

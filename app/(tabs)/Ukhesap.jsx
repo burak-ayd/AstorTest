@@ -7,11 +7,10 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-
 // Kök 3 sabitini önceden hesaplayalım
 const SQRT3 = Math.sqrt(3);
 
-export default function UkHesap() {
+export default function UkHesap({ showToast }) {
 	// State'ler ve mantık kodları neredeyse hiç değişmeden kalır
 	const [cikilanGerilim, setCikilanGerilim] = useState("");
 	const [kademeAkimi, setKademeAkimi] = useState("");
@@ -47,14 +46,17 @@ export default function UkHesap() {
 	const formatPct = (x) =>
 		!isFinite(x)
 			? "—"
-			: `${x.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`;
+			: `${x.toLocaleString("tr-TR", {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+			  })} %`;
 	const formatVoltAmp = (x) =>
 		!isFinite(x)
 			? "—"
 			: x.toLocaleString("tr-TR", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2,
-				});
+			  });
 
 	// --- ANA FONKSİYONLAR ---
 	async function gecmisKaydet() {
@@ -86,6 +88,9 @@ export default function UkHesap() {
 
 		try {
 			await AsyncStorage.setItem("UkHistory", JSON.stringify(newHistory));
+			console.log("Geçmiş kaydedildi.");
+			// showToast("Başarıyla kaydedildi!");
+			showToast && showToast("Başarıyla kaydedildi!", "bottom");
 		} catch (e) {
 			console.error("Geçmiş kaydedilirken hata:", e);
 		}
@@ -93,6 +98,18 @@ export default function UkHesap() {
 		// Keyboard.dismiss(); // Kaydettikten sonra klavyeyi kapat
 		console.log("Yeni Eklenen: ", newHistory.length);
 	}
+
+	// const showToast = () => {
+	// 	console.log("Toast gösteriliyor...");
+	// 	Toast.show({
+	// 		position: "bottom",
+	// 		type: "success",
+	// 		text1: "Başarıyla kaydedildi!",
+	// 		hideOnPress: true,
+	// 		bottomOffset: 70,
+	// 		keyboardOffset: 70,
+	// 	});
+	// };
 
 	useEffect(() => {
 		async function get() {
