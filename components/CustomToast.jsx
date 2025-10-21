@@ -92,13 +92,52 @@ export default function CustomToast({
 	const getBackgroundColor = (type) => {
 		switch (type) {
 			case "success":
-				return "rgba(34,197,94,0.10)"; // yeşil (bg-green-500/10)
+				return "rgba(34,197,94,0.7)"; // yeşil (bg-green-500/10)
 			case "error":
-				return "rgba(239,68,68,0.15)"; // kırmızı (bg-red-500/15)
+				return "rgba(239,68,68,0.7)"; // kırmızı (bg-red-500/15)
 			case "info":
-				return "rgba(59,130,246,0.10)"; // mavi (bg-blue-500/10)
+				return "rgba(59,130,246,0.7)"; // mavi (bg-blue-500/10)
 			default:
 				return "rgba(255,255,255,0.95)";
+		}
+	};
+
+	const getTextColor = (type) => {
+		switch (type) {
+			case "success":
+				return "#166534"; // text-green-800
+			case "error":
+				return "#991B1B"; // text-red-800
+			case "info":
+				return "#1E3A8A"; // text-blue-800
+			default:
+				return "#222";
+		}
+	};
+
+	const getTitleColor = (type) => {
+		switch (type) {
+			case "success":
+				return "#166534"; // bold green
+			case "error":
+				return "#991B1B"; // bold red
+			case "info":
+				return "#1E3A8A"; // bold blue
+			default:
+				return "#222";
+		}
+	};
+
+	const getDescriptionColor = (type) => {
+		switch (type) {
+			case "success":
+				return "#15803d"; // text-green-700
+			case "error":
+				return "#991B1B"; // text-red-700
+			case "info":
+				return "#1E3A8A"; // text-blue-700
+			default:
+				return "#555";
 		}
 	};
 
@@ -117,18 +156,36 @@ export default function CustomToast({
 				getPositionStyle(position),
 				{ transform: [{ translateY }] },
 			]}>
-			<View style={styles.iconContainer}>
+			<View
+				style={[
+					styles.iconContainer,
+					{
+						backgroundColor: getBackgroundColor(type),
+					},
+				]}>
 				<MaterialIcons name={ICONS[type].name} size={28} color="#fff" />
 			</View>
 			<View style={styles.textContainer}>
-				<Text style={styles.title}>
+				<Text
+					style={[
+						styles.text,
+						{
+							color: getTitleColor(type),
+							fontSize: 18,
+							fontWeight: "bold",
+						},
+					]}>
 					{type === "success"
 						? "Başarılı!"
 						: type === "error"
 						? "Hata!"
 						: "Bilgi"}
 				</Text>
-				<Text style={styles.description}>
+				<Text
+					style={[
+						styles.text,
+						{ color: getTextColor(type), fontSize: 16 },
+					]}>
 					{message ||
 						(type === "success"
 							? "İşleminiz başarıyla tamamlandı."
@@ -141,42 +198,6 @@ export default function CustomToast({
 	);
 }
 
-// const styles = StyleSheet.create({
-// 	toast: {
-// 		position: "absolute",
-// 		width: width * 0.8,
-// 		padding: 16,
-// 		paddingLeft: 24,
-// 		borderRadius: 12,
-// 		alignItems: "center",
-// 		justifyContent: "center",
-// 		zIndex: 9999,
-// 		shadowColor: "#000",
-// 		shadowOpacity: 0.2,
-// 		shadowRadius: 6,
-// 		elevation: 10,
-// 		backgroundColor: "#FFF", // Uygulama arka planı
-// 		flexDirection: "row",
-// 	},
-// 	success: {
-// 		borderLeftWidth: 8,
-// 		borderLeftColor: "#4CAF50",
-// 	},
-// 	error: {
-// 		borderLeftWidth: 8,
-// 		borderLeftColor: "#FF6B6B",
-// 	},
-// 	info: {
-// 		borderLeftWidth: 8,
-// 		borderLeftColor: "#2196F3",
-// 	},
-// 	text: {
-// 		color: "#222",
-// 		fontWeight: "bold",
-// 		fontSize: 16,
-// 	},
-// });
-
 const styles = StyleSheet.create({
 	toast: {
 		position: "absolute",
@@ -188,16 +209,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		zIndex: 9999,
-		// backgroundColor: "rgba(255,255,255,0.95)", // Hafif transparan
 		shadowColor: "#000",
-		shadowOpacity: 0.15,
-		shadowRadius: 12,
-		elevation: 12,
+		shadowOpacity: 0.08,
+		shadowRadius: 8,
+		elevation: 0,
 	},
-	// success: {
-	// 	borderLeftWidth: 6,
-	// 	borderLeftColor: "#4CAF50",
-	// },
 	error: {
 		borderLeftWidth: 6,
 		borderLeftColor: "#FF6B6B",
@@ -206,9 +222,6 @@ const styles = StyleSheet.create({
 		borderLeftWidth: 6,
 		borderLeftColor: "#2196F3",
 	},
-	// icon: {
-	// 	marginRight: 12,
-	// },
 	text: {
 		color: "#222",
 		fontWeight: "500",
@@ -223,7 +236,6 @@ const styles = StyleSheet.create({
 		width: 48,
 		height: 48,
 		borderRadius: 24,
-		backgroundColor: "#22c55e", // bg-green-500
 		alignItems: "center",
 		justifyContent: "center",
 		marginRight: 16,
@@ -233,15 +245,5 @@ const styles = StyleSheet.create({
 	},
 	textContainer: {
 		flex: 1,
-	},
-	title: {
-		fontWeight: "bold",
-		fontSize: 18,
-		color: "#166534", // text-green-800
-		marginBottom: 2,
-	},
-	description: {
-		fontSize: 14,
-		color: "#15803d", // text-green-700
 	},
 });

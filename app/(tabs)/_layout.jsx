@@ -24,6 +24,7 @@ import NewProject from "./newProject";
 import OtaUpdate from "./OtaUpdate";
 import TrafoKayip from "./TrafoKayip";
 import UkHesap from "./Ukhesap";
+import SıfırBileşenHesabı from "./Zo";
 
 export default function TabLayout() {
 	const bottomSheetRef = useRef(null);
@@ -34,11 +35,13 @@ export default function TabLayout() {
 	const [toastVisible, setToastVisible] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
 	const [toastPosition, setToastPosition] = useState("bottom");
+	const [toastType, setToastType] = useState("success");
 
-	const showToast = (msg, position = "bottom") => {
+	const showToast = (msg, position = "bottom", type = "success") => {
 		setToastMessage(msg);
 		setToastPosition(position);
 		setToastVisible(true);
+		setToastType(type);
 	};
 
 	// Klavye yüksekliğine göre dinamik snap points
@@ -92,22 +95,25 @@ export default function TabLayout() {
 		{ id: "3", label: "I0", key: "I0hesap" },
 		{ id: "4", label: "Yeni Proje", key: "NewProject" },
 		{ id: "5", label: "Kabul Direnç Hesabı", key: "DirencHesabi" },
-		{ id: "7", label: "Güncelleme", key: "OtaUpdate" },
+		{ id: "6", label: "Sıfır Bileşen Hesabı", key: "SıfırBileşen" },
+		{ id: "98", label: "Güncelleme", key: "OtaUpdate" },
 		{ id: "99", label: "Geçmiş", key: "History" },
 	];
 
 	const renderScreen = () => {
 		switch (selectedScreen) {
 			case "TrafoKayip":
-				return <TrafoKayip />;
+				return <TrafoKayip showToast={showToast} />;
 			case "Ukhesap":
 				return <UkHesap showToast={showToast} />;
 			case "I0hesap":
-				return <I0hesap />;
+				return <I0hesap showToast={showToast} />;
 			case "NewProject":
-				return <NewProject />;
+				return <NewProject showToast={showToast} />;
 			case "DirencHesabi":
-				return <DirencHesabi />;
+				return <DirencHesabi showToast={showToast} />;
+			case "SıfırBileşen":
+				return <SıfırBileşenHesabı showToast={showToast} />;
 			case "OtaUpdate":
 				return <OtaUpdate />;
 			case "History":
@@ -194,7 +200,7 @@ export default function TabLayout() {
 				<CustomToast
 					visible={toastVisible}
 					message={toastMessage}
-					type="success"
+					type={toastType}
 					position={toastPosition}
 					onHide={() => setToastVisible(false)}
 				/>

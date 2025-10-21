@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-export default function TrafoKayip() {
+export default function TrafoKayip({ showToast }) {
 	const [error, setError] = useState(false);
 	const [errorPac, setErrorPAC] = useState(false);
 	const [guc, setGuc] = useState("");
@@ -20,6 +20,10 @@ export default function TrafoKayip() {
 	const [direncab, setDirencab] = useState("");
 	const [direncbc, setDirencbc] = useState("");
 	const [direncca, setDirencca] = useState("");
+	const [ygDirençUyarısı, setYGDirençUyarısı] = useState("");
+	const [agDirençUyarısı, setAGDirençUyarısı] = useState("");
+	const [ygDirençOran, setYGDirençOran] = useState(0);
+	const [agDirençOran, setAGDirençOran] = useState(0);
 	const [cikilanAkim, setCikilanAkim] = useState("");
 	const [kayip, setKayip] = useState("");
 	const [cikilanGerilim, setCikilanGerilim] = useState("");
@@ -83,6 +87,7 @@ export default function TrafoKayip() {
 		setUr75(null);
 		setUx75(null);
 		setUk75(null);
+		showToast && showToast("Temizlendi!", "bottom", "info");
 	}
 
 	const Pdc = useCallback(() => {
@@ -105,6 +110,69 @@ export default function TrafoKayip() {
 
 		const YGDirençOrt = (direncABValue + direncBCValue + direncCAValue) / 3;
 		const AGDirençOrt = (direncabValue + direncbcValue + direnccaValue) / 3;
+
+		// Sadece sayısal değerler varsa devam et
+		if (
+			isNaN(direncABValue) ||
+			isNaN(direncBCValue) ||
+			isNaN(direncCAValue)
+		) {
+			console.warn("YG direnç değerlerinden bazıları geçersiz.");
+			return;
+		}
+
+		// En büyük ve en küçük değerleri bul
+		const values = [direncABValue, direncBCValue, direncCAValue];
+		const max = Math.max(...values);
+		const min = Math.min(...values);
+
+		// Oranı hesapla: (max / min) * 100
+		const ratioPercent = max / min;
+		console.warn("ratioPercent", ratioPercent);
+		setYGDirençOran(ratioPercent);
+
+		// %5 sınırı kontrolü
+		const isWithin5Percent = ratioPercent <= 5; // 105% = %5 fazla
+
+		// Kontrol sonrası:
+		if (!isWithin5Percent) {
+			setYGDirençUyarısı(
+				`YG direnç değeri: %${ratioPercent}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
+			);
+		} else {
+			setYGDirençUyarısı("");
+		}
+
+		// Sadece sayısal değerler varsa devam et
+		if (
+			isNaN(direncABValue) ||
+			isNaN(direncBCValue) ||
+			isNaN(direncCAValue)
+		) {
+			console.warn("YG direnç değerlerinden bazıları geçersiz.");
+			return;
+		}
+
+		// En büyük ve en küçük değerleri bul
+		const values1 = [direncabValue, direncbcValue, direnccaValue];
+		const max1 = Math.max(...values1);
+		const min1 = Math.min(...values1);
+
+		// Oranı hesapla: (max / min) * 100
+		const ratioPercent1 = max1 / min1;
+		console.warn("ratioPercent1", ratioPercent1);
+		setAGDirençOran(ratioPercent1);
+		// %5 sınırı kontrolü
+		const isWithin5Percent1 = ratioPercent1 <= 5; // 105% = %5 fazla
+
+		// Kontrol sonrası:
+		if (!isWithin5Percent1) {
+			setAGDirençUyarısı(
+				`AG direnç değeri: %${ratioPercent1}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
+			);
+		} else {
+			setAGDirençUyarısı("");
+		}
 
 		const Rhv =
 			YGDirençOrt *
@@ -273,6 +341,9 @@ export default function TrafoKayip() {
 	]);
 
 	async function gecmisKaydet() {
+		if (error) {
+			return;
+		}
 		const gucValue = parseNum(guc);
 		const kademeGerilimiValue = parseNum(kademeGerilimi);
 		const agGerilimiValue = parseNum(agGerilimi);
@@ -324,8 +395,11 @@ export default function TrafoKayip() {
 
 		try {
 			await AsyncStorage.setItem("TkHistory", JSON.stringify(newHistory));
+			showToast && showToast("Başarıyla kaydedildi!", "bottom");
 		} catch (e) {
 			console.error("Geçmiş kaydedilirken hata:", e);
+			showToast &&
+				showToast("Geçmiş Kaydedilirken Hata!", "bottom", "error");
 		}
 	}
 
@@ -337,6 +411,14 @@ export default function TrafoKayip() {
 		}
 		get();
 	}, [history]);
+
+	const formatPct = (x) =>
+		!isFinite(x)
+			? "—"
+			: `${x.toLocaleString("tr-TR", {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+			  })} %`;
 
 	return (
 		<ScrollView
@@ -443,7 +525,9 @@ export default function TrafoKayip() {
 
 			<View className="flex justify-center mb-2 mx-auto">
 				<View className="title">
-					<Text className="text-text text-xl">YG Direnç</Text>
+					<Text className="text-text text-xl">
+						YG Direnç - ({formatPct(ygDirençOran)})
+					</Text>
 				</View>
 			</View>
 			<View className="flex-row justify-between gap-4 mb-2">
@@ -482,7 +566,9 @@ export default function TrafoKayip() {
 
 			<View className="flex justify-center mb-2 mx-auto">
 				<View className="title">
-					<Text className="text-text text-xl">AG Direnç</Text>
+					<Text className="text-text text-xl">
+						AG Direnç - ({formatPct(agDirençOran)})
+					</Text>
 				</View>
 			</View>
 			<View className="flex-row justify-between gap-4 mb-2">
@@ -562,6 +648,22 @@ export default function TrafoKayip() {
 				<Button func={Temizle} text={"Temizle"} secondary={true} />
 				<Button func={gecmisKaydet} text={"Kaydet"} secondary={true} />
 			</View>
+
+			{ygDirençUyarısı && (
+				<Text
+					className="block mt-5  p-3 border border-solid border-[#ff6b6b73] 
+						bg-[#ff6b6b1f] rounded-xl color-[#ffd5d5] font-semibold">
+					{ygDirençUyarısı}
+				</Text>
+			)}
+
+			{agDirençUyarısı && (
+				<Text
+					className="block mt-5  p-3 border border-solid border-[#ff6b6b73] 
+						bg-[#ff6b6b1f] rounded-xl color-[#ffd5d5] font-semibold">
+					{agDirençUyarısı}
+				</Text>
+			)}
 
 			{/* Hata */}
 			{error && (

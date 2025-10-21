@@ -93,8 +93,9 @@ export default function UkHesap({ showToast }) {
 			showToast && showToast("Başarıyla kaydedildi!", "bottom");
 		} catch (e) {
 			console.error("Geçmiş kaydedilirken hata:", e);
+			showToast &&
+				showToast("Geçmiş Kaydedilirken Hata!", "bottom", "error");
 		}
-		temizle();
 		// Keyboard.dismiss(); // Kaydettikten sonra klavyeyi kapat
 		console.log("Yeni Eklenen: ", newHistory.length);
 	}
@@ -166,6 +167,7 @@ export default function UkHesap({ showToast }) {
 		setResult(null);
 		setParams({ cg: "", na: "", kg: "", ca: "", uk: "" });
 		setHistory([]);
+		showToast && showToast("Temizlendi!", "bottom", "info");
 	}
 
 	async function clearHistory() {

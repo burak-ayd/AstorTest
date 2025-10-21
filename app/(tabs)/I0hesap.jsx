@@ -1,8 +1,8 @@
 import Input from "@components/input";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function I0Hesap() {
+export default function I0Hesap({ showToast }) {
 	const [guc, setGuc] = useState("");
 	const [agGerilimi, setAgGerilimi] = useState("");
 	const [kademeAkimi, setKademeAkimi] = useState("");
@@ -39,6 +39,15 @@ export default function I0Hesap() {
 
 		const formattedResult = formatPct(i0);
 		setResult(formattedResult);
+	}
+
+	function temizle() {
+		setGuc("");
+		setAgGerilimi("");
+		setKademeAkimi("");
+		setError(false);
+		setResult(null);
+		showToast && showToast("Temizlendi!", "bottom", "info");
 	}
 
 	const expression = `I_0(\\%) = \\frac{\\text{AG Akımı}}{\\frac{\\text{Güç}}{\\text{AG Gerilimi} \\times \\surd{3}}}\\times100`;
@@ -84,6 +93,21 @@ export default function I0Hesap() {
 						/>
 					</View>
 				</View>
+
+				<View style={styles.actions}>
+					<TouchableOpacity
+						style={[styles.button, styles.secondaryButton]}
+						onPress={temizle}>
+						<Text
+							style={[
+								styles.buttonText,
+								styles.secondaryButtonText,
+							]}>
+							Temizle
+						</Text>
+					</TouchableOpacity>
+				</View>
+
 				{error && (
 					<Text style={styles.errorText}>
 						Lütfen tüm alanlara geçerli sayılar girin.
@@ -131,4 +155,20 @@ const styles = StyleSheet.create({
 	resultLabel: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
 	resultHint: { color: "#AAA", fontSize: 12 },
 	resultValue: { color: "#4CAF50", fontSize: 28, fontWeight: "bold" },
+	actions: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		marginTop: 10,
+	},
+	button: {
+		flex: 1,
+		backgroundColor: "#4CAF50",
+		paddingVertical: 12,
+		borderRadius: 8,
+		alignItems: "center",
+		marginHorizontal: 5,
+	},
+	buttonText: { color: "#FFF", fontWeight: "bold", fontSize: 16 },
+	secondaryButton: { backgroundColor: "#555" },
+	secondaryButtonText: { color: "#FFF" },
 });

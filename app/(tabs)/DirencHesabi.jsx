@@ -1,8 +1,8 @@
 import Input from "@components/input";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function DirencHesabi() {
+export default function DirencHesabi({ showToast }) {
 	const [olculenKayip, setOlculenKayip] = useState("");
 	const [istenenKayip, setIstenenKayip] = useState("");
 	const [kademeAkimi, setKademeAkimi] = useState("");
@@ -40,6 +40,15 @@ export default function DirencHesabi() {
 
 		const formattedResult = formatPct(direncValue);
 		setResult(formattedResult);
+	}
+
+	function temizle() {
+		setOlculenKayip("");
+		setIstenenKayip("");
+		setKademeAkimi("");
+		setError(false);
+		setResult(null);
+		showToast && showToast("Temizlendi!", "bottom", "info");
 	}
 
 	return (
@@ -80,6 +89,20 @@ export default function DirencHesabi() {
 							placeholder="10 A"
 						/>
 					</View>
+				</View>
+
+				<View style={styles.actions}>
+					<TouchableOpacity
+						style={[styles.button, styles.secondaryButton]}
+						onPress={temizle}>
+						<Text
+							style={[
+								styles.buttonText,
+								styles.secondaryButtonText,
+							]}>
+							Temizle
+						</Text>
+					</TouchableOpacity>
 				</View>
 				{error && (
 					<Text style={styles.errorText}>
@@ -130,4 +153,20 @@ const styles = StyleSheet.create({
 	resultLabel: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
 	resultHint: { color: "#AAA", fontSize: 12 },
 	resultValue: { color: "#4CAF50", fontSize: 28, fontWeight: "bold" },
+	actions: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		marginTop: 10,
+	},
+	button: {
+		flex: 1,
+		backgroundColor: "#4CAF50",
+		paddingVertical: 12,
+		borderRadius: 8,
+		alignItems: "center",
+		marginHorizontal: 5,
+	},
+	buttonText: { color: "#FFF", fontWeight: "bold", fontSize: 16 },
+	secondaryButton: { backgroundColor: "#555" },
+	secondaryButtonText: { color: "#FFF" },
 });

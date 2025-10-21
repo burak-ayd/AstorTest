@@ -7,7 +7,7 @@ import { FlatList } from "react-native-gesture-handler";
 // Kök 3 sabitini önceden hesaplayalım
 const SQRT3 = Math.sqrt(3);
 
-export default function NewProject() {
+export default function NewProject({ showToast }) {
 	const [guc, setGuc] = useState("");
 	const [ilkKademe, setIlkKademe] = useState("");
 	const [nominalKademe, setNominalKademe] = useState("");
@@ -148,6 +148,7 @@ export default function NewProject() {
 		setError(false);
 		setResult(null);
 		// setHistory([]);
+		showToast && showToast("Temizlendi!", "bottom", "info");
 	}
 
 	return (
