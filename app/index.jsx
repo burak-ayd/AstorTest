@@ -16,6 +16,22 @@ const OTA_URL = "https://burak-ayd.github.io/AstorTest/index.android.bundle";
 const GITHUB_API_URL =
 	"https://api.github.com/repos/burak-ayd/AstorTest/releases/latest";
 
+function formatReleaseNotes(body) {
+    if (typeof body !== "string" || body.trim().length === 0) {
+        return "Bilgi yok.";
+    }
+    let text = body.replace(/\r\n/g, "\n");
+    text = text.replace(/#+\s*/g, "");
+    text = text.replace(/\*\*/g, "");
+    text = text.replace(/^\s*[-*]\s+/gm, "• ");
+    text = text.replace(/[\t ]+/g, " ");
+    const lines = text
+        .split("\n")
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
+    return lines.slice(0, 12).join("\n");
+}
+
 export default function Index() {
 	const [ready, setReady] = useState(false);
 	const [updateStatus, setUpdateStatus] = useState(
@@ -271,12 +287,9 @@ export default function Index() {
 						return new Promise((resolve) => {
 							Alert.alert(
 								"Yeni Sürüm Mevcut!",
-								// Githubdan Releasenın açıklamasını al ve Yeni özellikler diye yaz, latestVersion indirilsinmi diye sor ve boyutu yaz
-								`Yeni Özellikler:\n${
-									releaseData.body
-								}\n\nSürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
+								`Yeni Özellikler:\n${formatReleaseNotes(releaseData.body)}\n\nSürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
 									apkAsset.size / (1024 * 1024)
-								)}MB `,
+								)}MB`,
 								[
 									{
 										text: "İndir ve Yükle",
