@@ -97,7 +97,7 @@ export default function TrafoKayip({ showToast }) {
 		const kademeGerilimiValue = parseNum(kademeGerilimi);
 		const agGerilimiValue = parseNum(agGerilimi);
 		const direncTempValue = parseNum(direncTemp);
-		const yukteTempValue = parseNum(yukteTemp);
+		const rawYukteTempValue = parseNum(yukteTemp);
 		const cikilanAkimValue = parseNum(cikilanAkim);
 		const direncABValue = parseNum(direncAB);
 		const direncBCValue = parseNum(direncBC);
@@ -108,81 +108,83 @@ export default function TrafoKayip({ showToast }) {
 		const sargiTipiValue = sargiTipi === "al" ? 225 : 235;
 		const kayipValue = parseNum(kayip);
 
-		const YGDirençOrt = (direncABValue + direncBCValue + direncCAValue) / 3;
-		const AGDirençOrt = (direncabValue + direncbcValue + direnccaValue) / 3;
+		const yukteTempValue = Number.isNaN(rawYukteTempValue)
+			? direncTempValue
+			: rawYukteTempValue;
 
-		// Sadece sayısal değerler varsa devam et
-		if (
-			isNaN(direncABValue) ||
-			isNaN(direncBCValue) ||
-			isNaN(direncCAValue)
-		) {
-			console.warn("YG direnç değerlerinden bazıları geçersiz.");
-			return;
-		}
+		const ygValues = [
+			{ raw: direncAB, value: direncABValue },
+			{ raw: direncBC, value: direncBCValue },
+			{ raw: direncCA, value: direncCAValue },
+		]
+			.filter(({ raw }) =>
+				typeof raw === "string" ? raw.trim().length > 0 : Boolean(raw)
+			)
+			.map(({ value }) => value)
+			.filter((value) => Number.isFinite(value));
+		const agValues = [
+			{ raw: direncab, value: direncabValue },
+			{ raw: direncbc, value: direncbcValue },
+			{ raw: direncca, value: direnccaValue },
+		]
+			.filter(({ raw }) =>
+				typeof raw === "string" ? raw.trim().length > 0 : Boolean(raw)
+			)
+			.map(({ value }) => value)
+			.filter((value) => Number.isFinite(value));
 
-		// En büyük ve en küçük değerleri bul
-		const values = [direncABValue, direncBCValue, direncCAValue];
-		const max = Math.max(...values);
-		const min = Math.min(...values);
+		const YGDirençOrt = ygValues.length
+			? ygValues.reduce((sum, value) => sum + value, 0) / ygValues.length
+			: NaN;
+		const AGDirençOrt = agValues.length
+			? agValues.reduce((sum, value) => sum + value, 0) / agValues.length
+			: NaN;
 
-		// Oranı hesapla: (max / min) * 100
-		const ratioPercent = (max / min - 1) * 100;
-		console.warn("ratioPercent", ratioPercent);
-		setYGDirençOran(ratioPercent);
-
-		// %5 sınırı kontrolü
-		const isWithin5Percent = ratioPercent <= 5; // 105% = %5 fazla
-
-		// Kontrol sonrası:
-		if (!isWithin5Percent) {
-			setYGDirençUyarısı(
-				`YG direnç değeri: %${ratioPercent}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
-			);
+		if (ygValues.length >= 2) {
+			const max = Math.max(...ygValues);
+			const min = Math.min(...ygValues);
+			const ratioPercent = min > 0 ? (max / min - 1) * 100 : 0;
+			setYGDirençOran(ratioPercent);
+			if (ratioPercent > 5) {
+				setYGDirençUyarısı(
+					`YG direnç değeri: %${ratioPercent}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
+				);
+			} else {
+				setYGDirençUyarısı("");
+			}
 		} else {
+			setYGDirençOran(0);
 			setYGDirençUyarısı("");
 		}
 
-		// Sadece sayısal değerler varsa devam et
-		if (
-			isNaN(direncABValue) ||
-			isNaN(direncBCValue) ||
-			isNaN(direncCAValue)
-		) {
-			console.warn("YG direnç değerlerinden bazıları geçersiz.");
-			return;
-		}
-
-		// En büyük ve en küçük değerleri bul
-		const values1 = [direncabValue, direncbcValue, direnccaValue];
-		const max1 = Math.max(...values1);
-		const min1 = Math.min(...values1);
-
-		// Oranı hesapla: (max / min) * 100
-		const ratioPercent1 = (max1 / min1 - 1) * 100;
-		console.warn("ratioPercent1", ratioPercent1);
-		setAGDirençOran(ratioPercent1);
-		// %5 sınırı kontrolü
-		const isWithin5Percent1 = ratioPercent1 <= 5; // 105% = %5 fazla
-
-		// Kontrol sonrası:
-		if (!isWithin5Percent1) {
-			setAGDirençUyarısı(
-				`AG direnç değeri: %${ratioPercent1}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
-			);
+		if (agValues.length >= 2) {
+			const max1 = Math.max(...agValues);
+			const min1 = Math.min(...agValues);
+			const ratioPercent1 = min1 > 0 ? (max1 / min1 - 1) * 100 : 0;
+			setAGDirençOran(ratioPercent1);
+			if (ratioPercent1 > 5) {
+				setAGDirençUyarısı(
+					`AG direnç değeri: %${ratioPercent1}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
+				);
+			} else {
+				setAGDirençUyarısı("");
+			}
 		} else {
+			setAGDirençOran(0);
 			setAGDirençUyarısı("");
 		}
 
-		const Rhv =
-			YGDirençOrt *
-			((yukteTempValue + sargiTipiValue) /
-				(direncTempValue + sargiTipiValue));
+		const Rhv = Number.isNaN(YGDirençOrt)
+			? 0
+			: YGDirençOrt *
+				((yukteTempValue + sargiTipiValue) /
+					(direncTempValue + sargiTipiValue));
 
-		const Rlv =
-			AGDirençOrt *
-			((yukteTempValue + sargiTipiValue) /
-				(direncTempValue + sargiTipiValue));
+		const Rlv = Number.isNaN(AGDirençOrt)
+			? 0
+			: AGDirençOrt *
+				((yukteTempValue + sargiTipiValue) /
+					(direncTempValue + sargiTipiValue));
 
 		const Iygnominal = gucValue / kademeGerilimiValue / Math.sqrt(3);
 		const Iagnominal = gucValue / agGerilimiValue / Math.sqrt(3);
@@ -297,24 +299,32 @@ export default function TrafoKayip({ showToast }) {
 	}, [Pdc, CorrectionToNominalCurrent, CorrectionToRefTemp, Uk]);
 
 	useEffect(() => {
-		if (
-			!guc ||
-			!kademeGerilimi ||
-			!agGerilimi ||
-			!refTemp ||
-			!direncTemp ||
-			!yukteTemp ||
-			!sargiTipi ||
-			!direncAB ||
-			!direncBC ||
-			!direncCA ||
-			!direncab ||
-			!direncbc ||
-			!direncca ||
-			!cikilanAkim ||
-			!kayip ||
-			!cikilanGerilim
-		) {
+		const isProvided = (value) => {
+			if (typeof value === "string") {
+				return value.trim().length > 0;
+			}
+			return value !== null && value !== undefined;
+		};
+
+		const ygInputs = [direncAB, direncBC, direncCA];
+		const agInputs = [direncab, direncbc, direncca];
+		const hasAnyYG = ygInputs.some(isProvided);
+		const hasAnyAG = agInputs.some(isProvided);
+
+		const requiredFieldsFilled = [
+			guc,
+			kademeGerilimi,
+			agGerilimi,
+			refTemp,
+			direncTemp,
+			yukteTemp,
+			sargiTipi,
+			cikilanAkim,
+			kayip,
+			cikilanGerilim,
+		].every(isProvided);
+
+		if (!requiredFieldsFilled || (!hasAnyYG && !hasAnyAG)) {
 			setError(true);
 			return;
 		}

@@ -206,7 +206,7 @@ export default function Index() {
 
 			const releaseResponse = await fetch(GITHUB_API_URL, {
 				headers: {
-					"Accept": "application/vnd.github.v3+json",
+					Accept: "application/vnd.github.v3+json",
 					"User-Agent": "AstorTest2-App",
 				},
 				signal: controller.signal,
@@ -271,9 +271,12 @@ export default function Index() {
 						return new Promise((resolve) => {
 							Alert.alert(
 								"Yeni Sürüm Mevcut!",
-								`Sürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
+								// Githubdan Releasenın açıklamasını al ve Yeni özellikler diye yaz, latestVersion indirilsinmi diye sor ve boyutu yaz
+								`Yeni Özellikler:\n${
+									releaseData.body
+								}\n\nSürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
 									apkAsset.size / (1024 * 1024)
-								)}MB`,
+								)}MB `,
 								[
 									{
 										text: "İndir ve Yükle",
