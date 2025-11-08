@@ -127,7 +127,7 @@ export default function TrafoKayip({ showToast }) {
 		const min = Math.min(...values);
 
 		// Oranı hesapla: (max / min) * 100
-		const ratioPercent = max / min;
+		const ratioPercent = (max / min - 1) * 100;
 		console.warn("ratioPercent", ratioPercent);
 		setYGDirençOran(ratioPercent);
 
@@ -159,7 +159,7 @@ export default function TrafoKayip({ showToast }) {
 		const min1 = Math.min(...values1);
 
 		// Oranı hesapla: (max / min) * 100
-		const ratioPercent1 = max1 / min1;
+		const ratioPercent1 = (max1 / min1 - 1) * 100;
 		console.warn("ratioPercent1", ratioPercent1);
 		setAGDirençOran(ratioPercent1);
 		// %5 sınırı kontrolü
