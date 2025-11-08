@@ -12,7 +12,10 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Sayfa importları
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+	SafeAreaView,
+	useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 import CustomToast from "@/components/CustomToast";
 import SheetHandle from "@/components/sheetHandle";
@@ -27,6 +30,7 @@ import UkHesap from "./Ukhesap";
 import SıfırBileşenHesabı from "./Zo";
 
 export default function TabLayout() {
+	const insets = useSafeAreaInsets();
 	const bottomSheetRef = useRef(null);
 	const [sheetIndex, setSheetIndex] = useState(0);
 	const [selectedScreen, setSelectedScreen] = useState("TrafoKayip");
@@ -46,7 +50,7 @@ export default function TabLayout() {
 
 	// Klavye yüksekliğine göre dinamik snap points
 	const snapPoints = useMemo(() => {
-		const baseSnapPoint = keyboardHeight > 0 ? "3%" : "5%";
+		const baseSnapPoint = keyboardHeight > 0 ? "0%" : "5%";
 		const expandedSnapPoint = keyboardHeight > 0 ? "30%" : "50%";
 		return [baseSnapPoint, expandedSnapPoint];
 	}, [keyboardHeight]);
@@ -164,6 +168,7 @@ export default function TabLayout() {
 					index={0}
 					snapPoints={snapPoints}
 					handleIndicatorStyle={{ height: 0 }}
+					bottomInset={insets.bottom}
 					onChange={(index) => setSheetIndex(index)}
 					handleComponent={() => (
 						<SheetHandle
@@ -175,7 +180,11 @@ export default function TabLayout() {
 					android_keyboardInputMode="adjustResize"
 					keyboardBehavior="interactive"
 					keyboardBlurBehavior="restore">
-					<BottomSheetView style={styles.menuContainer}>
+					<BottomSheetView
+						style={[
+							styles.menuContainer,
+							{ paddingBottom: Math.max(16, insets.bottom + 8) },
+						]}>
 						{menuItems.map((item) => (
 							<TouchableOpacity
 								key={item.id}

@@ -97,7 +97,7 @@ export default function TrafoKayip({ showToast }) {
 		const kademeGerilimiValue = parseNum(kademeGerilimi);
 		const agGerilimiValue = parseNum(agGerilimi);
 		const direncTempValue = parseNum(direncTemp);
-		const rawYukteTempValue = parseNum(yukteTemp);
+		const yukteTempValue = parseNum(yukteTemp);
 		const cikilanAkimValue = parseNum(cikilanAkim);
 		const direncABValue = parseNum(direncAB);
 		const direncBCValue = parseNum(direncBC);
@@ -108,9 +108,10 @@ export default function TrafoKayip({ showToast }) {
 		const sargiTipiValue = sargiTipi === "al" ? 225 : 235;
 		const kayipValue = parseNum(kayip);
 
-		const yukteTempValue = Number.isNaN(rawYukteTempValue)
-			? direncTempValue
-			: rawYukteTempValue;
+		// En az bir sıcaklık değeri yeterli: direncTemp yoksa yukteTemp'i kullan
+		const effDirencTempValue = Number.isNaN(direncTempValue)
+			? yukteTempValue
+			: direncTempValue;
 
 		const ygValues = [
 			{ raw: direncAB, value: direncABValue },
@@ -177,14 +178,14 @@ export default function TrafoKayip({ showToast }) {
 		const Rhv = Number.isNaN(YGDirençOrt)
 			? 0
 			: YGDirençOrt *
-				((yukteTempValue + sargiTipiValue) /
-					(direncTempValue + sargiTipiValue));
+			  ((yukteTempValue + sargiTipiValue) /
+					(effDirencTempValue + sargiTipiValue));
 
 		const Rlv = Number.isNaN(AGDirençOrt)
 			? 0
 			: AGDirençOrt *
-				((yukteTempValue + sargiTipiValue) /
-					(direncTempValue + sargiTipiValue));
+			  ((yukteTempValue + sargiTipiValue) /
+					(effDirencTempValue + sargiTipiValue));
 
 		const Iygnominal = gucValue / kademeGerilimiValue / Math.sqrt(3);
 		const Iagnominal = gucValue / agGerilimiValue / Math.sqrt(3);
@@ -238,25 +239,29 @@ export default function TrafoKayip({ showToast }) {
 	// 🔹 CorrectionToRefTemp
 	const CorrectionToRefTemp = useCallback(() => {
 		const refTempValue = parseNum(refTemp);
-		const yukteTempValue = parseNum(yukteTemp);
+		const direncTempValueRaw = parseNum(direncTemp);
+		const yukteTempValueRaw = parseNum(yukteTemp);
 		const sargiTipiValue = sargiTipi === "al" ? 225 : 235;
+
+		// Ölçüm sıcaklığı: öncelik yukteTemp -> direncTemp
+		const measuredTemp = Number.isNaN(yukteTempValueRaw)
+			? direncTempValueRaw
+			: yukteTempValueRaw;
 
 		const Pdc75 =
 			pdcCorrected *
-			((refTempValue + sargiTipiValue) /
-				(yukteTempValue + sargiTipiValue));
+			((refTempValue + sargiTipiValue) / (measuredTemp + sargiTipiValue));
 
 		const Pac75 =
 			pacCorrected *
-			((yukteTempValue + sargiTipiValue) /
-				(refTempValue + sargiTipiValue));
+			((measuredTemp + sargiTipiValue) / (refTempValue + sargiTipiValue));
 
 		const Pk75 = Pdc75 + Pac75;
 
 		setPdc75(Pdc75);
 		setPac75(Pac75);
 		setPk75(Pk75);
-	}, [refTemp, yukteTemp, sargiTipi, pdcCorrected, pacCorrected]);
+	}, [refTemp, direncTemp, yukteTemp, sargiTipi, pdcCorrected, pacCorrected]);
 
 	// 🔹 Uk
 	const Uk = useCallback(() => {
@@ -316,15 +321,20 @@ export default function TrafoKayip({ showToast }) {
 			kademeGerilimi,
 			agGerilimi,
 			refTemp,
-			direncTemp,
-			yukteTemp,
 			sargiTipi,
 			cikilanAkim,
 			kayip,
 			cikilanGerilim,
 		].every(isProvided);
 
-		if (!requiredFieldsFilled || (!hasAnyYG && !hasAnyAG)) {
+		// Sıcaklıklar için en az biri yeterli
+		const hasTempEither = isProvided(direncTemp) || isProvided(yukteTemp);
+
+		if (
+			!requiredFieldsFilled ||
+			(!hasAnyYG && !hasAnyAG) ||
+			!hasTempEither
+		) {
 			setError(true);
 			return;
 		}
