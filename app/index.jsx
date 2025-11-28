@@ -9,6 +9,7 @@ import {
 	Text,
 	View,
 } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../global.css";
 const { APKUpdateModule } = NativeModules;
 
@@ -17,19 +18,19 @@ const GITHUB_API_URL =
 	"https://api.github.com/repos/burak-ayd/AstorTest/releases/latest";
 
 function formatReleaseNotes(body) {
-    if (typeof body !== "string" || body.trim().length === 0) {
-        return "Bilgi yok.";
-    }
-    let text = body.replace(/\r\n/g, "\n");
-    text = text.replace(/#+\s*/g, "");
-    text = text.replace(/\*\*/g, "");
-    text = text.replace(/^\s*[-*]\s+/gm, "• ");
-    text = text.replace(/[\t ]+/g, " ");
-    const lines = text
-        .split("\n")
-        .map((l) => l.trim())
-        .filter((l) => l.length > 0);
-    return lines.slice(0, 12).join("\n");
+	if (typeof body !== "string" || body.trim().length === 0) {
+		return "Bilgi yok.";
+	}
+	let text = body.replace(/\r\n/g, "\n");
+	text = text.replace(/#+\s*/g, "");
+	text = text.replace(/\*\*/g, "");
+	text = text.replace(/^\s*[-*]\s+/gm, "• ");
+	text = text.replace(/[\t ]+/g, " ");
+	const lines = text
+		.split("\n")
+		.map((l) => l.trim())
+		.filter((l) => l.length > 0);
+	return lines.slice(0, 12).join("\n");
 }
 
 export default function Index() {
@@ -222,7 +223,7 @@ export default function Index() {
 
 			const releaseResponse = await fetch(GITHUB_API_URL, {
 				headers: {
-					Accept: "application/vnd.github.v3+json",
+					"Accept": "application/vnd.github.v3+json",
 					"User-Agent": "AstorTest2-App",
 				},
 				signal: controller.signal,
@@ -287,7 +288,9 @@ export default function Index() {
 						return new Promise((resolve) => {
 							Alert.alert(
 								"Yeni Sürüm Mevcut!",
-								`Yeni Özellikler:\n${formatReleaseNotes(releaseData.body)}\n\nSürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
+								`Yeni Özellikler:\n${formatReleaseNotes(
+									releaseData.body
+								)}\n\nSürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
 									apkAsset.size / (1024 * 1024)
 								)}MB`,
 								[
@@ -398,5 +401,9 @@ export default function Index() {
 		);
 	}
 
-	return <Redirect href="TrafoKayip" />;
+	return (
+		<SafeAreaProvider>
+			<Redirect href="TrafoKayip" />
+		</SafeAreaProvider>
+	);
 }

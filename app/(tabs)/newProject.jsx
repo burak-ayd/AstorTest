@@ -184,7 +184,11 @@ export default function NewProject({ showToast }) {
 				<View className="flex-row justify-between gap-6 mb-2">
 					{/* İlk Kademe Gerilimi */}
 					<View className="flex-1">
-						<Text className="text-text">
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text">
 							İlk Kademe Gerilimi (kV)
 						</Text>
 						<Input
@@ -196,8 +200,12 @@ export default function NewProject({ showToast }) {
 
 					<View className="flex-1">
 						{/* Nominal Kademe Gerilimi */}
-						<Text className="text-text">
-							Nominal Kademe Gerilimi (kV)
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text">
+							Nom. Kademe Gerilimi (kV)
 						</Text>
 						<Input
 							value={nominalKademe}
@@ -208,7 +216,11 @@ export default function NewProject({ showToast }) {
 
 					{/* Son Kademe Gerilimi */}
 					<View className="flex-1">
-						<Text className="text-text">
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text">
 							Son Kademe Gerilimi (kV)
 						</Text>
 						<Input

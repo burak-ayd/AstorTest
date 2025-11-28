@@ -169,18 +169,18 @@ export default function History() {
 			<View
 				style={{
 					flexDirection: "row",
-					display: "flex",
 					alignItems: "center",
 					justifyContent: "space-between",
-					// gap: 16,
-					marginHorizontal: 12,
+					// gap: 1,
+					marginHorizontal: 8,
 					marginBottom: 8,
-					paddingHorizontal: 16,
+					paddingHorizontal: 12,
 					paddingVertical: 8,
 					backgroundColor: "#081230",
 					borderWidth: 1,
 					borderColor: "rgba(255, 255, 255, 0.1)",
 					borderRadius: 24,
+					flexWrap: "wrap",
 				}}>
 				<Text style={styles.title}>
 					{selectedHistory ? selectedHistory : "Uk"} Hesaplama Geçmişi
@@ -193,29 +193,27 @@ export default function History() {
 					]}
 					onPress={clearHistory}
 					disabled={history.length <= 0}>
-					<Text style={styles.deleteButtonText}>Tüm Geçmişi Sil</Text>
+					<Text style={styles.ButtonText}>Tüm Geçmişi Sil</Text>
 				</TouchableOpacity>
 			</View>
 
 			{content}
 
-			<View className="flex flex-row bottom-16 justify-between px-4">
+			<View className="flex flex-row gap-1 bottom-1 justify-between px-4 flex-wrap">
 				<TouchableOpacity
 					style={styles.Button}
 					onPress={() => SelectedHistory("Tk")}>
-					<Text style={styles.deleteButtonText}>
-						Trafo Kayıp Geçmişi
-					</Text>
+					<Text style={styles.ButtonText}>Trafo Kayıp Geçmişi</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={styles.Button}
 					onPress={() => SelectedHistory("Uk")}>
-					<Text style={styles.deleteButtonText}>Uk Geçmişi</Text>
+					<Text style={styles.ButtonText}>Uk Geçmişi</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={styles.Button}
 					onPress={() => SelectedHistory("I0")}>
-					<Text style={styles.deleteButtonText}>I0 Geçmişi</Text>
+					<Text style={styles.ButtonText}>I0 Geçmişi</Text>
 				</TouchableOpacity>
 			</View>
 
@@ -315,34 +313,39 @@ const styles = StyleSheet.create({
 	allDeleteButton: {
 		// marginTop: 5,
 		backgroundColor: "rgba(255, 107, 107, 0.25)",
-		paddingHorizontal: 16,
-		paddingVertical: 12,
-		borderRadius: 12,
+		paddingHorizontal: 4,
+		paddingVertical: 10,
+		borderRadius: 8,
 		borderWidth: 1,
 		fontWeight: 700,
 		borderColor: "rgba(255, 107, 107, 0.4)",
 		color: "#ffbaba",
+		flexGrow: 1,
+		maxWidth: 120,
 	},
 	allDeleteButtonDisabled: {
 		backgroundColor: "rgba(200, 200, 200, 0.25)", // disabled arkaplan rengi
 		borderColor: "rgba(200, 200, 200, 0.4)",
 		fontWeight: 200,
+		flexGrow: 1,
 	},
 	Button: {
 		// marginTop: 5,
 		backgroundColor: "rgba(255, 107, 107, 0.25)",
-		paddingHorizontal: 16,
-		paddingVertical: 12,
-		borderRadius: 12,
+		paddingHorizontal: 12,
+		paddingVertical: 10,
+		borderRadius: 8,
 		borderWidth: 1,
 		fontWeight: 700,
 		borderColor: "rgba(255, 107, 107, 0.4)",
 		color: "#ffbaba",
+		flexGrow: 1,
 	},
-	deleteButtonText: {
+	ButtonText: {
 		color: "#fff",
 		fontWeight: "bold",
-		padding: 4,
+		padding: 2,
+		textAlign: "center",
 	},
 	emptyListText: {
 		color: "#fff",

@@ -444,7 +444,7 @@ export default function TrafoKayip({ showToast }) {
 		<ScrollView
 			contentContainerStyle={{
 				paddingHorizontal: 16,
-				paddingTop: 8,
+				paddingTop: 0,
 			}}
 			keyboardShouldPersistTaps="handled"
 			className="h-full bg-card">
@@ -452,10 +452,16 @@ export default function TrafoKayip({ showToast }) {
 				Trafo Yükte Kayıp Hesaplayıcı
 			</Text>
 
-			<View className="flex-row justify-between gap-6 mb-2">
+			<View className="flex-row justify-between gap-4 mb-2">
 				{/* Güç */}
 				<View className="flex-1">
-					<Text className="text-text">Güç (kVA)</Text>
+					<Text
+						numberOfLines={2}
+						adjustsFontSizeToFit
+						minimumFontScale={0.9}
+						className="text-text">
+						Güç (kVA)
+					</Text>
 					<Input
 						value={guc}
 						onChangeText={setGuc}
@@ -465,7 +471,14 @@ export default function TrafoKayip({ showToast }) {
 
 				<View className="flex-1">
 					{/* Kademe Gerilimi */}
-					<Text className="text-text">Kdm. Gerilimi (kV)</Text>
+					<Text
+						numberOfLines={2}
+						adjustsFontSizeToFit
+						minimumFontScale={0.9}
+						allowFontScaling={false}
+						className="text-text">
+						Kdm. Gerilimi
+					</Text>
 					<Input
 						value={kademeGerilimi}
 						onChangeText={setKademeGerilimi}
@@ -475,7 +488,14 @@ export default function TrafoKayip({ showToast }) {
 
 				{/* AG Gerilimi */}
 				<View className="flex-1">
-					<Text className="text-text">AG Gerilimi (kV)</Text>
+					<Text
+						numberOfLines={2}
+						adjustsFontSizeToFit
+						minimumFontScale={0.9}
+						allowFontScaling={false}
+						className="text-text">
+						AG Gerilimi (kV)
+					</Text>
 					<Input
 						value={agGerilimi}
 						onChangeText={setAgGerilimi}
@@ -484,11 +504,12 @@ export default function TrafoKayip({ showToast }) {
 				</View>
 			</View>
 
-			<View className="flex-row justify-between gap-6 mb-2">
+			<View className="flex-row justify-between gap-2 mb-2">
+				<Text className="text-text">Sargı Tipi: </Text>
 				<View className="flex-1">
 					{/* Sargı Tipi */}
-					<Text className="text-text">Sargı Tipi</Text>
-					<View className="border border-border rounded-xl p-[1px]">
+
+					<View className="border border-border rounded-l justify-center h-7 text-[12px] ">
 						<Picker
 							selectedValue={sargiTipi}
 							onValueChange={setSargiTipi}
@@ -501,14 +522,18 @@ export default function TrafoKayip({ showToast }) {
 						</Picker>
 					</View>
 				</View>
-				<View className="flex-1"></View>
 			</View>
 
 			<View className="flex-row justify-between gap-4 mb-2">
 				<View className="flex-1 flex-col">
 					<View className=" flex-col md:flex-row">
-						<Text className="text-text">Referans Sıcaklık </Text>
-						<Text className="text-text">(°C)</Text>
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text">
+							Referans Sıcaklık (°C)
+						</Text>
 					</View>
 					<Input
 						id="refTemp"
@@ -519,8 +544,13 @@ export default function TrafoKayip({ showToast }) {
 				</View>
 				<View className="flex-1 flex-col">
 					<View className=" flex-col md:flex-row">
-						<Text className="text-text">Direnç Ölçüm </Text>
-						<Text className="text-text">Sıcaklığı (°C)</Text>
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text">
+							Direnç Ölçüm Sıcaklığı (°C)
+						</Text>
 					</View>
 					<Input
 						id="dirençTemp"
@@ -531,8 +561,13 @@ export default function TrafoKayip({ showToast }) {
 				</View>
 				<View className="flex-1 flex-col">
 					<View className=" flex-col md:flex-row">
-						<Text className="text-text">Yükte Ölçüm </Text>
-						<Text className="text-text">Sıcaklığı (°C)</Text>
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text">
+							Yükte Ölçüm Sıcaklığı (°C)
+						</Text>
 					</View>
 					<Input
 						id="yükteTemp"
@@ -543,9 +578,13 @@ export default function TrafoKayip({ showToast }) {
 				</View>
 			</View>
 
-			<View className="flex justify-center mb-2 mx-auto">
+			<View className="flex justify-center mb-2 mx-auto border-b-[1px] border-border border-dashed w-full">
 				<View className="title">
-					<Text className="text-text text-xl">
+					<Text
+						numberOfLines={2}
+						adjustsFontSizeToFit
+						minimumFontScale={0.9}
+						className="text-text font-semibold text-[14px] text-center">
 						YG Direnç - ({formatPct(ygDirençOran)})
 					</Text>
 				</View>
@@ -584,9 +623,9 @@ export default function TrafoKayip({ showToast }) {
 				</View>
 			</View>
 
-			<View className="flex justify-center mb-2 mx-auto">
+			<View className="flex justify-center mb-2 mx-auto border-b-[1px] border-border border-dashed w-full">
 				<View className="title">
-					<Text className="text-text text-xl">
+					<Text className="text-text font-semibold text-[14px] text-center">
 						AG Direnç - ({formatPct(agDirençOran)})
 					</Text>
 				</View>
@@ -624,41 +663,77 @@ export default function TrafoKayip({ showToast }) {
 				</View>
 			</View>
 
-			<View className="flex justify-center mb-2 mx-auto">
+			<View className="flex justify-center mb-2 mx-auto border-b-[1px] border-border border-dashed w-full">
 				<View className="title">
-					<Text className="text-text text-xl">Ölçüm Değerleri</Text>
+					<Text className="text-text font-semibold text-[14px] text-center">
+						Ölçüm Değerleri
+					</Text>
 				</View>
 			</View>
-			<View className="flex-row justify-between gap-4 mb-2">
-				<View className="flex-1 flex-col">
-					<Text className="text-text">Çıkılan Akım (A)</Text>
-					<Input
-						id="cikilanAkim"
-						value={cikilanAkim}
-						onChangeText={setCikilanAkim}
-						placeholder="115 A"
-					/>
-					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+			<View>
+				<View className="flex-row justify-between gap-4 mb-2">
+					<View className="flex-1 flex-col">
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text text-center">
+							Çıkılan Akım (A)
+						</Text>
+
+						{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+					</View>
+					<View className="flex-1 flex-col">
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text text-center">
+							Ölçülen Kayıp (W)
+						</Text>
+
+						{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+					</View>
+					<View className="flex-1 flex-col">
+						<Text
+							numberOfLines={2}
+							adjustsFontSizeToFit
+							minimumFontScale={0.9}
+							className="text-text text-center">
+							Ölçülen Gerilim (V)
+						</Text>
+
+						{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+					</View>
 				</View>
-				<View className="flex-1 flex-col">
-					<Text className="text-text">Ölçülen Kayıp (W)</Text>
-					<Input
-						id="kayip"
-						value={kayip}
-						onChangeText={setKayip}
-						placeholder="2000 W"
-					/>
-					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
-				</View>
-				<View className="flex-1 flex-col">
-					<Text className="text-text">Ölçülen Gerilim (V)</Text>
-					<Input
-						id="cikilanGerilim"
-						value={cikilanGerilim}
-						onChangeText={setCikilanGerilim}
-						placeholder="850 V"
-					/>
-					{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+				<View className="flex-row justify-between gap-4 mb-2">
+					<View className="flex-1 flex-col">
+						<Input
+							id="cikilanAkim"
+							value={cikilanAkim}
+							onChangeText={setCikilanAkim}
+							placeholder="115 A"
+						/>
+						{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+					</View>
+					<View className="flex-1 flex-col">
+						<Input
+							id="kayip"
+							value={kayip}
+							onChangeText={setKayip}
+							placeholder="2000 W"
+						/>
+						{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+					</View>
+					<View className="flex-1 flex-col">
+						<Input
+							id="cikilanGerilim"
+							value={cikilanGerilim}
+							onChangeText={setCikilanGerilim}
+							placeholder="850 V"
+						/>
+						{/* <View className="hint">Yükte Ölçüm Sıcaklığı.</View> */}
+					</View>
 				</View>
 			</View>
 
@@ -716,7 +791,7 @@ export default function TrafoKayip({ showToast }) {
 							bg-[#7bd3891f] rounded-xl">
 						<View className="flex-1">
 							<Text className="text-text text-3xl font-extrabold">
-								Uk (%):{" "}
+								Uk (%):
 							</Text>
 							<Text className="text-sm mt-1 color-[#9fb1d1]">
 								Kısa devre gerilimi (%)
@@ -732,7 +807,7 @@ export default function TrafoKayip({ showToast }) {
 							bg-[#7bd3891f] rounded-xl">
 						<View className="flex-1">
 							<Text className="text-text text-3xl font-extrabold">
-								Hesaplanan Pk (W):{" "}
+								Hesaplanan Pk (W):
 							</Text>
 							<Text className="text-sm mt-1 color-[#9fb1d1]">
 								Toplam İcralı Kayıp (W)

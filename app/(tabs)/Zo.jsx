@@ -92,10 +92,10 @@ export default function SıfırBileşenHesabı({ showToast }) {
 			<View style={styles.header}>
 				<Text style={styles.title}>Trafo Z0 (%) Hesaplayıcı</Text>
 			</View>
-			<View className="flex p-4 w-[400px] mx-auto elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
+			<View className="flex p-4 mx-2 elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
 				<View className="flex-col justify-between gap-6">
 					{/* Güç */}
-					<View className="">
+					<View>
 						<Text className="text-text">Güç (kVA)</Text>
 						<Input
 							value={guc}
@@ -104,7 +104,7 @@ export default function SıfırBileşenHesabı({ showToast }) {
 						/>
 					</View>
 
-					<View className="">
+					<View>
 						{/* AG Gerilimi */}
 						<Text className="text-text">
 							Yıldız Noktası Gerilimi (kV)
@@ -117,7 +117,7 @@ export default function SıfırBileşenHesabı({ showToast }) {
 					</View>
 
 					{/* Çıkılan Gerilim */}
-					<View className="">
+					<View>
 						<Text className="text-text">Çıkılan Gerilim (V)</Text>
 						<Input
 							value={çıkılanGerilim}
@@ -127,7 +127,7 @@ export default function SıfırBileşenHesabı({ showToast }) {
 					</View>
 
 					{/* Çıkılan Akım */}
-					<View className="">
+					<View>
 						<Text className="text-text">Çıkılan Akım (A)</Text>
 						<Input
 							value={çıkılanAkım}

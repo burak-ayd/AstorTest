@@ -58,10 +58,10 @@ export default function DirencHesabi({ showToast }) {
 			<View style={styles.header}>
 				<Text style={styles.title}>Kabul Direnç Hesaplayıcı</Text>
 			</View>
-			<View className="flex p-4 w-[400px] mx-auto elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
+			<View className="flex p-4 mx-2 elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
 				<View className="flex-col justify-between gap-6">
 					{/* Güç */}
-					<View className="">
+					<View>
 						<Text className="text-text">Ölçülen Kayıp (W)</Text>
 						<Input
 							value={olculenKayip}
@@ -70,7 +70,7 @@ export default function DirencHesabi({ showToast }) {
 						/>
 					</View>
 
-					<View className="">
+					<View>
 						{/* AG Gerilimi */}
 						<Text className="text-text">İstenen Kayıp (W)</Text>
 						<Input
@@ -81,7 +81,7 @@ export default function DirencHesabi({ showToast }) {
 					</View>
 
 					{/* Boşta Çıkılan Akım */}
-					<View className="">
+					<View>
 						<Text className="text-text">Çıkılacak Akım (A)</Text>
 						<Input
 							value={kademeAkimi}
