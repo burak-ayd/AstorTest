@@ -27,7 +27,7 @@ export default function DirencHesabi({ showToast }) {
 			: x.toLocaleString("tr-TR", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2,
-			  }) + " Ω";
+				}) + " Ω";
 
 	function hesapla() {
 		const olculenKayipValue = parseNum(olculenKayip);
@@ -55,9 +55,9 @@ export default function DirencHesabi({ showToast }) {
 		<View>
 			{/* Başlık ve Formül */}
 
-			<View style={styles.header}>
+			{/* <View style={styles.header}>
 				<Text style={styles.title}>Kabul Direnç Hesaplayıcı</Text>
-			</View>
+			</View> */}
 			<View className="flex p-4 mx-2 elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
 				<View className="flex-col justify-between gap-6">
 					{/* Güç */}

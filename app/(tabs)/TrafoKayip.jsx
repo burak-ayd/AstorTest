@@ -119,7 +119,7 @@ export default function TrafoKayip({ showToast }) {
 			{ raw: direncCA, value: direncCAValue },
 		]
 			.filter(({ raw }) =>
-				typeof raw === "string" ? raw.trim().length > 0 : Boolean(raw)
+				typeof raw === "string" ? raw.trim().length > 0 : Boolean(raw),
 			)
 			.map(({ value }) => value)
 			.filter((value) => Number.isFinite(value));
@@ -129,7 +129,7 @@ export default function TrafoKayip({ showToast }) {
 			{ raw: direncca, value: direnccaValue },
 		]
 			.filter(({ raw }) =>
-				typeof raw === "string" ? raw.trim().length > 0 : Boolean(raw)
+				typeof raw === "string" ? raw.trim().length > 0 : Boolean(raw),
 			)
 			.map(({ value }) => value)
 			.filter((value) => Number.isFinite(value));
@@ -148,7 +148,7 @@ export default function TrafoKayip({ showToast }) {
 			setYGDirençOran(ratioPercent);
 			if (ratioPercent > 5) {
 				setYGDirençUyarısı(
-					`YG direnç değeri: %${ratioPercent}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
+					`YG direnç değeri: %${ratioPercent}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`,
 				);
 			} else {
 				setYGDirençUyarısı("");
@@ -165,7 +165,7 @@ export default function TrafoKayip({ showToast }) {
 			setAGDirençOran(ratioPercent1);
 			if (ratioPercent1 > 5) {
 				setAGDirençUyarısı(
-					`AG direnç değeri: %${ratioPercent1}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`
+					`AG direnç değeri: %${ratioPercent1}.   %5 farkı aşmaktadır. Ölçüm dengesiz olabilir.`,
 				);
 			} else {
 				setAGDirençUyarısı("");
@@ -178,13 +178,13 @@ export default function TrafoKayip({ showToast }) {
 		const Rhv = Number.isNaN(YGDirençOrt)
 			? 0
 			: YGDirençOrt *
-			  ((yukteTempValue + sargiTipiValue) /
+				((yukteTempValue + sargiTipiValue) /
 					(effDirencTempValue + sargiTipiValue));
 
 		const Rlv = Number.isNaN(AGDirençOrt)
 			? 0
 			: AGDirençOrt *
-			  ((yukteTempValue + sargiTipiValue) /
+				((yukteTempValue + sargiTipiValue) /
 					(effDirencTempValue + sargiTipiValue));
 
 		const Iygnominal = gucValue / kademeGerilimiValue / Math.sqrt(3);
@@ -438,19 +438,19 @@ export default function TrafoKayip({ showToast }) {
 			: `${x.toLocaleString("tr-TR", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2,
-			  })} %`;
+				})} %`;
 
 	return (
 		<ScrollView
 			contentContainerStyle={{
 				paddingHorizontal: 16,
-				paddingTop: 0,
+				paddingTop: 2,
 			}}
 			keyboardShouldPersistTaps="handled"
 			className="h-full bg-card">
-			<Text className="text-xl font-bold text-center mb-2 text-text">
+			{/* <Text className="text-xl font-bold text-center mb-2 text-text">
 				Trafo Yükte Kayıp Hesaplayıcı
-			</Text>
+			</Text> */}
 
 			<View className="flex-row justify-between gap-4 mb-2">
 				{/* Güç */}

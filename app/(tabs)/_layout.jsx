@@ -1,4 +1,5 @@
-import { MaterialIcons } from "@react-native-vector-icons/material-icons";
+import AppHeader from "@components/AppHeader";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
 	Modal,
@@ -22,20 +23,62 @@ import UkHesap from "./Ukhesap";
 import SıfırBileşenHesabı from "./Zo";
 
 export default function TabLayout() {
+	const router = useRouter();
 	const insets = useSafeAreaInsets();
 
 	const [selectedScreen, setSelectedScreen] = useState("TrafoKayip");
 	const [menuVisible, setMenuVisible] = useState(false);
 
 	const menuItems = [
-		{ id: "1", label: "Trafo Kayıp", key: "TrafoKayip" },
-		{ id: "2", label: "UK", key: "Ukhesap" },
-		{ id: "3", label: "I0", key: "I0hesap" },
-		{ id: "4", label: "Yeni Proje", key: "NewProject" },
-		{ id: "5", label: "Kabul Direnci", key: "DirencHesabi" },
-		{ id: "6", label: "Sıfır Bileşeni", key: "SıfırBileşen" },
-		{ id: "98", label: "Güncelleme", key: "OtaUpdate" },
-		{ id: "99", label: "Geçmiş", key: "History" },
+		{
+			id: "1",
+			label: "Trafo Kayıp",
+			key: "TrafoKayip",
+			title: "Trafo Yükte Kayıp Hesaplayıcı",
+		},
+		{
+			id: "2",
+			label: "UK Hesap",
+			key: "Ukhesap",
+			title: "Trafo Uk (%) Hesaplayıcı",
+		},
+		{
+			id: "3",
+			label: "I0 Hesap",
+			key: "I0hesap",
+			title: "I0 (%) Hesaplayıcı",
+		},
+		{
+			id: "4",
+			label: "Yeni Proje Hesaplama",
+			key: "NewProject",
+			title: "Yeni Proje Hesaplama",
+		},
+		{
+			id: "5",
+			label: "Kabul Direnc Hesabı",
+			key: "DirencHesabi",
+			title: "Kabul Direnci Hesabı",
+		},
+		{
+			id: "6",
+			label: "Sıfır Bileşen Hesabı",
+			key: "SıfırBileşen",
+			title: "Sıfır Bileşen Hesabı",
+		},
+		{
+			id: "7",
+			label: "Kısmi Deşarj Hesabı",
+			key: "Desarj",
+			title: "Kısmi Deşarj Hesabı",
+		},
+		{
+			id: "98",
+			label: "Güncelleme",
+			key: "OtaUpdate",
+			title: "Güncelleme",
+		},
+		{ id: "99", label: "Geçmiş", key: "History", title: "Geçmiş" },
 	];
 
 	const renderScreen = () => {
@@ -52,6 +95,7 @@ export default function TabLayout() {
 				return <DirencHesabi />;
 			case "SıfırBileşen":
 				return <SıfırBileşenHesabı />;
+
 			case "OtaUpdate":
 				return <OtaUpdate />;
 			case "History":
@@ -65,14 +109,14 @@ export default function TabLayout() {
 		<SafeAreaView style={styles.container}>
 			<StatusBar barStyle="light-content" backgroundColor="#000" />
 
-			{/* HEADER */}
-			<View style={[styles.header, { paddingTop: insets.top }]}>
-				<TouchableOpacity
-					onPress={() => setMenuVisible(true)}
-					style={styles.menuButton}>
-					<MaterialIcons name="menu" size={32} color="#fff" />
-				</TouchableOpacity>
-			</View>
+			{/* HEADER - Component kullan */}
+			<AppHeader
+				title={
+					menuItems.find((item) => item.key === selectedScreen)
+						?.title || ""
+				}
+				onMenuPress={() => setMenuVisible(true)}
+			/>
 
 			{/* ACTIVE SCREEN */}
 			<View style={styles.screenContent}>{renderScreen()}</View>
@@ -94,8 +138,13 @@ export default function TabLayout() {
 								key={item.id}
 								style={styles.menuItem}
 								onPress={() => {
-									setSelectedScreen(item.key);
-									setMenuVisible(false);
+									if (item.key === "Desarj") {
+										setMenuVisible(false);
+										router.push("/(desarj)/Kuru");
+									} else {
+										setSelectedScreen(item.key);
+										setMenuVisible(false);
+									}
 								}}>
 								<Text style={styles.menuText}>
 									{item.label}
@@ -121,16 +170,19 @@ const styles = StyleSheet.create({
 		backgroundColor: "#222831",
 	},
 	header: {
-		height: 30,
+		height: 50,
 		paddingHorizontal: 2,
 		flexDirection: "row",
 		alignItems: "center",
 		backgroundColor: "#111",
 	},
 	headerTitle: {
-		fontSize: 20,
+		fontSize: 18,
 		fontWeight: "600",
 		color: "#fff",
+		flex: 1,
+		textAlign: "center",
+		marginRight: 42, // Offset for menu button to center the title
 	},
 	menuButton: {
 		paddingHorizontal: 10,

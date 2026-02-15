@@ -36,14 +36,14 @@ export default function NewProject({ showToast }) {
 			: `${x.toLocaleString("tr-TR", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2,
-			  })} %`;
+				})} %`;
 	const formatVoltAmp = (x, digit = 2) =>
 		!isFinite(x)
 			? "—"
 			: x.toLocaleString("tr-TR", {
 					minimumFractionDigits: digit,
 					maximumFractionDigits: digit,
-			  });
+				});
 	function hesapla() {
 		const gucValue = parseNum(guc);
 		const ilkKademeValue = parseNum(ilkKademe);
@@ -154,9 +154,9 @@ export default function NewProject({ showToast }) {
 	return (
 		<View className="mx-4">
 			{/* Başlık ve Formül */}
-			<View style={styles.header}>
+			{/* <View style={styles.header}>
 				<Text style={styles.title}>Yeni Proje Hesaplama</Text>
-			</View>
+			</View> */}
 
 			{/* Hesaplama Kartı */}
 			<View className="p-4 mx-auto w-full flex elevation rounded-xl bg-card border focus:border-borderFocus border-border">

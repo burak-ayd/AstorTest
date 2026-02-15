@@ -27,7 +27,7 @@ export default function I0Hesap({ showToast }) {
 			: x.toLocaleString("tr-TR", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2,
-			  }) + " %";
+				}) + " %";
 
 	function hesapla() {
 		const gucValue = parseNum(guc);
@@ -56,9 +56,9 @@ export default function I0Hesap({ showToast }) {
 		<View>
 			{/* Başlık ve Formül */}
 
-			<View style={styles.header}>
+			{/* <View style={styles.header}>
 				<Text style={styles.title}>Trafo I0 (%) Hesaplayıcı</Text>
-			</View>
+			</View> */}
 			<View className="flex p-4 mx-2 elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
 				<View className="flex-col justify-between gap-6">
 					{/* Güç */}

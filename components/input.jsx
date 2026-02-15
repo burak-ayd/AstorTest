@@ -8,7 +8,7 @@ export default function Input({ value, onChangeText, placeholder }) {
 			onChangeText={onChangeText}
 			placeholder={placeholder || "ör. 2500"}
 			placeholderTextColor="#ffffff80"
-			keyboardType="numeric"
+			keyboardType="decimal-pad"
 		/>
 	);
 }
