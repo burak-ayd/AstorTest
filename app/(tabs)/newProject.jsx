@@ -121,17 +121,31 @@ export default function NewProject({ showToast }) {
 
 		return (
 			<View className="bg-card mb-1 p-2 rounded-lg elevation">
-				<View className="flex-row flex-wrap">
+				<View className="flex-row flex-wrap ">
 					{fields.map((f, index) => (
 						<View
 							key={index}
 							// style={styles.cell}
 							className="w-[33.333%] p-1 border border-border items-center justify-center">
-							<Text className="font-bold text-text/85 text-sm">
+							<Text
+								className="font-bold text-text/85 text-sm"
+								numberOfLines={1}
+								adjustsFontSizeToFit
+								maxFontSizeMultiplier={1}
+								minimumFontScale={0.9}
+								allowFontScaling={true}>
 								{f.label}
 							</Text>
 
-							<Text className="text-text text-sm">{f.value}</Text>
+							<Text
+								className="text-text text-sm"
+								numberOfLines={1}
+								adjustsFontSizeToFit
+								maxFontSizeMultiplier={1}
+								minimumFontScale={0.9}
+								allowFontScaling={true}>
+								{f.value}
+							</Text>
 						</View>
 					))}
 				</View>

@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
 	SafeAreaView,
 	useSafeAreaInsets,
@@ -106,61 +107,63 @@ export default function TabLayout() {
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<StatusBar barStyle="light-content" backgroundColor="#000" />
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<SafeAreaView style={styles.container}>
+				<StatusBar barStyle="light-content" backgroundColor="#000" />
 
-			{/* HEADER - Component kullan */}
-			<AppHeader
-				title={
-					menuItems.find((item) => item.key === selectedScreen)
-						?.title || ""
-				}
-				onMenuPress={() => setMenuVisible(true)}
-			/>
+				{/* HEADER - Component kullan */}
+				<AppHeader
+					title={
+						menuItems.find((item) => item.key === selectedScreen)
+							?.title || ""
+					}
+					onMenuPress={() => setMenuVisible(true)}
+				/>
 
-			{/* ACTIVE SCREEN */}
-			<View style={styles.screenContent}>{renderScreen()}</View>
+				{/* ACTIVE SCREEN */}
+				<View style={styles.screenContent}>{renderScreen()}</View>
 
-			{/* MODAL MENU */}
-			<Modal
-				animationType="fade"
-				transparent={true}
-				visible={menuVisible}
-				onRequestClose={() => setMenuVisible(false)}>
-				<View style={styles.menuOverlay}>
-					<View
-						style={[
-							styles.menuContainer,
-							{ paddingBottom: insets.bottom },
-						]}>
-						{menuItems.map((item) => (
-							<TouchableOpacity
-								key={item.id}
-								style={styles.menuItem}
-								onPress={() => {
-									if (item.key === "Desarj") {
-										setMenuVisible(false);
-										router.push("/(desarj)/Kuru");
-									} else {
-										setSelectedScreen(item.key);
-										setMenuVisible(false);
-									}
-								}}>
-								<Text style={styles.menuText}>
-									{item.label}
-								</Text>
-							</TouchableOpacity>
-						))}
+				{/* MODAL MENU */}
+				<Modal
+					animationType="fade"
+					transparent={true}
+					visible={menuVisible}
+					onRequestClose={() => setMenuVisible(false)}>
+					<View style={styles.menuOverlay}>
+						<View
+							style={[
+								styles.menuContainer,
+								{ paddingBottom: insets.bottom },
+							]}>
+							{menuItems.map((item) => (
+								<TouchableOpacity
+									key={item.id}
+									style={styles.menuItem}
+									onPress={() => {
+										if (item.key === "Desarj") {
+											setMenuVisible(false);
+											router.push("/(desarj)/Kuru");
+										} else {
+											setSelectedScreen(item.key);
+											setMenuVisible(false);
+										}
+									}}>
+									<Text style={styles.menuText}>
+										{item.label}
+									</Text>
+								</TouchableOpacity>
+							))}
+						</View>
+
+						{/* Menü dışına tıklayınca kapansın */}
+						<TouchableOpacity
+							style={styles.transparentArea}
+							onPress={() => setMenuVisible(false)}
+						/>
 					</View>
-
-					{/* Menü dışına tıklayınca kapansın */}
-					<TouchableOpacity
-						style={styles.transparentArea}
-						onPress={() => setMenuVisible(false)}
-					/>
-				</View>
-			</Modal>
-		</SafeAreaView>
+				</Modal>
+			</SafeAreaView>
+		</GestureHandlerRootView>
 	);
 }
 
