@@ -92,8 +92,8 @@ android {
         applicationId 'com.burakaydogan.AstorTest'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.2.94"
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
