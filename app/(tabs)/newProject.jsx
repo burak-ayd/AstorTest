@@ -73,6 +73,7 @@ export default function NewProject({ showToast }) {
 		const ilkKademeAkımı = gucValue / ilkKademeValue / SQRT3;
 		const nominalKademeAkımı = gucValue / nominalKademeValue / SQRT3;
 		const sonKademeAkımı = gucValue / sonKademeValue / SQRT3;
+		const agAgAkımı = gucValue / (AgValue / 1000) / SQRT3;
 
 		// Boşta Gerilimleri
 
@@ -86,6 +87,10 @@ export default function NewProject({ showToast }) {
 				ilk: formatVoltAmp(ilkKademeAkımı),
 				nom: formatVoltAmp(nominalKademeAkımı),
 				son: formatVoltAmp(sonKademeAkımı),
+				ilk_çift: formatVoltAmp(ilkKademeAkımı * 2),
+				nom_çift: formatVoltAmp(nominalKademeAkımı * 2),
+				son_çift: formatVoltAmp(sonKademeAkımı * 2),
+				ag_ag: formatVoltAmp(agAgAkımı, 0),
 				U90: formatVoltAmp(Umean_90),
 				U100: formatVoltAmp(Umean_100),
 				U110: formatVoltAmp(Umean_110),
@@ -113,6 +118,13 @@ export default function NewProject({ showToast }) {
 			{ label: "İlk Kademe", value: item.ilk + " A" },
 			{ label: "Nominal Kademe", value: item.nom + " A" },
 			{ label: "Son Kademe", value: item.son + " A" },
+			{ label: "Çift AG İlk Kademe", value: item.ilk_çift + " A" },
+			{ label: "Çift AG Nom. Kademe", value: item.nom_çift + " A" },
+			{ label: "Çift AG Son Kademe", value: item.son_çift + " A" },
+			{ label: "", value: "" },
+			{ label: "AG-AG", value: item.ag_ag + " A" },
+
+			{ label: "", value: "" },
 			{ label: "%90", value: item.U90 + " V" },
 			{ label: "%100", value: item.U100 + " V" },
 			{ label: "%110", value: item.U110 + " V" },

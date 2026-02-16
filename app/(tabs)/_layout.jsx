@@ -1,3 +1,4 @@
+import CustomToast from "@/components/CustomToast";
 import AppHeader from "@components/AppHeader";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -29,6 +30,17 @@ export default function TabLayout() {
 
 	const [selectedScreen, setSelectedScreen] = useState("TrafoKayip");
 	const [menuVisible, setMenuVisible] = useState(false);
+	const [toastVisible, setToastVisible] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
+	const [toastPosition, setToastPosition] = useState("bottom");
+	const [toastType, setToastType] = useState("success");
+
+	const showToast = (msg, position = "bottom", type = "success") => {
+		setToastMessage(msg);
+		setToastPosition(position);
+		setToastVisible(true);
+		setToastType(type);
+	};
 
 	const menuItems = [
 		{
@@ -85,30 +97,30 @@ export default function TabLayout() {
 	const renderScreen = () => {
 		switch (selectedScreen) {
 			case "TrafoKayip":
-				return <TrafoKayip />;
+				return <TrafoKayip showToast={showToast} />;
 			case "Ukhesap":
-				return <UkHesap />;
+				return <UkHesap showToast={showToast} />;
 			case "I0hesap":
-				return <I0hesap />;
+				return <I0hesap showToast={showToast} />;
 			case "NewProject":
-				return <NewProject />;
+				return <NewProject showToast={showToast} />;
 			case "DirencHesabi":
-				return <DirencHesabi />;
+				return <DirencHesabi showToast={showToast} />;
 			case "SıfırBileşen":
-				return <SıfırBileşenHesabı />;
+				return <SıfırBileşenHesabı showToast={showToast} />;
 
 			case "OtaUpdate":
-				return <OtaUpdate />;
+				return <OtaUpdate showToast={showToast} />;
 			case "History":
-				return <History />;
+				return <History showToast={showToast} />;
 			default:
-				return <TrafoKayip />;
+				return <TrafoKayip showToast={showToast} />;
 		}
 	};
 
 	return (
-		<GestureHandlerRootView style={{ flex: 1 }}>
-			<SafeAreaView style={styles.container}>
+		<SafeAreaView style={styles.container}>
+			<GestureHandlerRootView style={{ flex: 1 }}>
 				<StatusBar barStyle="light-content" backgroundColor="#000" />
 
 				{/* HEADER - Component kullan */}
@@ -162,8 +174,16 @@ export default function TabLayout() {
 						/>
 					</View>
 				</Modal>
-			</SafeAreaView>
-		</GestureHandlerRootView>
+
+				<CustomToast
+					visible={toastVisible}
+					message={toastMessage}
+					type={toastType}
+					position={toastPosition}
+					onHide={() => setToastVisible(false)}
+				/>
+			</GestureHandlerRootView>
+		</SafeAreaView>
 	);
 }
 

@@ -1,12 +1,14 @@
+import { useToast } from "@/context/ToastContext";
 import Button from "@components/button";
 import Input from "@components/input";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StatusBar, StyleSheet, Text, View } from "react-native";
 
 // Kök 3 sabitini önceden hesaplayalım
 const SQRT3 = Math.sqrt(3);
 
-export default function Yagli({ showToast }) {
+export default function Yagli() {
+	const { showToast } = useToast();
 	const [gerilim, setGerilim] = useState("");
 
 	const [error, setError] = useState(false);
@@ -98,6 +100,7 @@ export default function Yagli({ showToast }) {
 
 	return (
 		<View className="flex-1 bg-[#222831]">
+			<StatusBar barStyle="light-content" backgroundColor="#000" />
 			<View className="m-4">
 				{/* Başlık ve Formül */}
 				{/* <View style={styles.header}>
@@ -109,11 +112,57 @@ export default function Yagli({ showToast }) {
 					<View className="flex-row justify-between gap-6 mb-2">
 						{/* Güç */}
 						<View className="flex-1">
+							<View className="flex-row flex gap-2 my-2 justify-center items-center mx-auto flex-wrap">
+								<Button
+									className="w-28 justify-center items-center"
+									func={() => {
+										setGerilim("33");
+									}}
+									text={"33 kV"}
+								/>
+								<Button
+									className="w-28 justify-center items-center"
+									func={() => {
+										setGerilim("20");
+									}}
+									text={"20 kV"}
+								/>
+								<Button
+									className="w-28 justify-center items-center"
+									func={() => {
+										setGerilim("15");
+									}}
+									text={"15 kV"}
+								/>
+							</View>
+							<View className="flex-row flex gap-2 my-2 justify-center items-center mx-auto flex-wrap">
+								<Button
+									className="w-28 justify-center items-center"
+									func={() => {
+										setGerilim("400");
+									}}
+									text={"400 V"}
+								/>
+								<Button
+									className="w-28 justify-center items-center"
+									func={() => {
+										setGerilim("420");
+									}}
+									text={"420 V"}
+								/>
+								<Button
+									className="w-28 justify-center items-center"
+									func={() => {
+										setGerilim("416");
+									}}
+									text={"416 V"}
+								/>
+							</View>
 							<Text className="text-text">Gerilim (kV)</Text>
 							<Input
 								value={gerilim}
 								onChangeText={setGerilim}
-								placeholder="2500 kVA"
+								placeholder="2500 kV"
 							/>
 						</View>
 					</View>

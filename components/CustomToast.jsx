@@ -13,7 +13,7 @@ function getPositionStyle(position) {
 		case "top":
 			return { top: 40, left: width * 0.1 };
 		case "bottom":
-			return { bottom: 50, left: width * 0.1 };
+			return { bottom: 100, left: width * 0.1 };
 		case "center":
 			return {
 				top: height / 2 - 40,
@@ -61,7 +61,7 @@ export default function CustomToast({
 }) {
 	const initialTranslate = getInitialTranslate(position);
 	const translateY = React.useRef(
-		new Animated.Value(initialTranslate)
+		new Animated.Value(initialTranslate),
 	).current;
 
 	useEffect(() => {
@@ -151,8 +151,8 @@ export default function CustomToast({
 				type === "success"
 					? styles.success
 					: type === "info"
-					? styles.info
-					: styles.error,
+						? styles.info
+						: styles.error,
 				getPositionStyle(position),
 				{ transform: [{ translateY }] },
 			]}>
@@ -178,8 +178,8 @@ export default function CustomToast({
 					{type === "success"
 						? "Başarılı!"
 						: type === "error"
-						? "Hata!"
-						: "Bilgi"}
+							? "Hata!"
+							: "Bilgi"}
 				</Text>
 				<Text
 					style={[
@@ -190,8 +190,8 @@ export default function CustomToast({
 						(type === "success"
 							? "İşleminiz başarıyla tamamlandı."
 							: type === "error"
-							? "Bir hata oluştu."
-							: "Bilgilendirme mesajı.")}
+								? "Bir hata oluştu."
+								: "Bilgilendirme mesajı.")}
 				</Text>
 			</View>
 		</Animated.View>

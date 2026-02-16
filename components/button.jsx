@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Pressable, Text } from "react-native";
 
-export default function Button({ func, text, secondary }) {
+export default function Button({ func, text, secondary, className }) {
 	const style = useMemo(() => {
 		if (secondary) {
 			return "appearance-none border-0 cursor-pointer px-4 py-3 rounded-[14px] font-bold bg-secondary text-gray-100 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]";
@@ -10,7 +10,7 @@ export default function Button({ func, text, secondary }) {
 	}, [secondary]);
 
 	return (
-		<Pressable className={style} onPress={func}>
+		<Pressable className={className + " " + style} onPress={func}>
 			<Text className="text-text font-bold">{text}</Text>
 		</Pressable>
 	);

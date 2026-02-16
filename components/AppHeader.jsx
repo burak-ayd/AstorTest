@@ -2,7 +2,6 @@
 import { MaterialIcons } from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function AppHeader({
 	title,
@@ -10,10 +9,9 @@ export default function AppHeader({
 	showBackButton = false,
 }) {
 	const router = useRouter();
-	const insets = useSafeAreaInsets();
 
 	return (
-		<View style={[styles.header, { paddingTop: insets.top }]}>
+		<View style={[styles.header]}>
 			<TouchableOpacity
 				onPress={showBackButton ? () => router.back() : onMenuPress}
 				style={styles.menuButton}>
