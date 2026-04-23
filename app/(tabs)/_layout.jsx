@@ -17,6 +17,7 @@ import {
 } from "react-native-safe-area-context";
 import DirencHesabi from "./DirencHesabi";
 import History from "./History";
+import HomeScreen from "./HomeScreen";
 import I0hesap from "./I0hesap";
 import NewProject from "./newProject";
 import OtaUpdate from "./OtaUpdate";
@@ -28,7 +29,7 @@ export default function TabLayout() {
 	const router = useRouter();
 	const insets = useSafeAreaInsets();
 
-	const [selectedScreen, setSelectedScreen] = useState("TrafoKayip");
+	const [selectedScreen, setSelectedScreen] = useState("Home");
 	const [menuVisible, setMenuVisible] = useState(false);
 	const [toastVisible, setToastVisible] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
@@ -96,6 +97,10 @@ export default function TabLayout() {
 
 	const renderScreen = () => {
 		switch (selectedScreen) {
+			case "Home":
+				return (
+					<HomeScreen onNavigate={(key) => setSelectedScreen(key)} />
+				);
 			case "TrafoKayip":
 				return <TrafoKayip showToast={showToast} />;
 			case "Ukhesap":
@@ -108,13 +113,14 @@ export default function TabLayout() {
 				return <DirencHesabi showToast={showToast} />;
 			case "SıfırBileşen":
 				return <SıfırBileşenHesabı showToast={showToast} />;
-
 			case "OtaUpdate":
 				return <OtaUpdate showToast={showToast} />;
 			case "History":
 				return <History showToast={showToast} />;
 			default:
-				return <TrafoKayip showToast={showToast} />;
+				return (
+					<HomeScreen onNavigate={(key) => setSelectedScreen(key)} />
+				);
 		}
 	};
 
@@ -126,10 +132,15 @@ export default function TabLayout() {
 				{/* HEADER - Component kullan */}
 				<AppHeader
 					title={
-						menuItems.find((item) => item.key === selectedScreen)
-							?.title || ""
+						selectedScreen === "Home"
+							? "Ana Sayfa"
+							: menuItems.find(
+									(item) => item.key === selectedScreen,
+								)?.title || ""
 					}
 					onMenuPress={() => setMenuVisible(true)}
+					showHomeButton={selectedScreen !== "Home"}
+					onHomePress={() => setSelectedScreen("Home")}
 				/>
 
 				{/* ACTIVE SCREEN */}

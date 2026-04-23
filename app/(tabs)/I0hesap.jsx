@@ -25,8 +25,8 @@ export default function I0Hesap({ showToast }) {
 		!isFinite(x)
 			? "—"
 			: x.toLocaleString("tr-TR", {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2,
+					minimumFractionDigits: 4,
+					maximumFractionDigits: 4,
 				}) + " %";
 
 	function hesapla() {
