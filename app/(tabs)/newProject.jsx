@@ -1,7 +1,7 @@
 import Button from "@components/button";
 import Input from "@components/input";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
 // Kök 3 sabitini önceden hesaplayalım
@@ -13,6 +13,7 @@ export default function NewProject({ showToast }) {
 	const [nominalKademe, setNominalKademe] = useState("");
 	const [sonKademe, setSonKademe] = useState("");
 	const [agGerilimi, setAgGerilimi] = useState("");
+	const [ciftAG, setCiftAG] = useState(false);
 
 	const [error, setError] = useState(false);
 	const [result, setResult] = useState(null);
@@ -118,13 +119,19 @@ export default function NewProject({ showToast }) {
 			{ label: "İlk Kademe", value: item.ilk + " A" },
 			{ label: "Nominal Kademe", value: item.nom + " A" },
 			{ label: "Son Kademe", value: item.son + " A" },
-			{ label: "Çift AG İlk Kademe", value: item.ilk_çift + " A" },
-			{ label: "Çift AG Nom. Kademe", value: item.nom_çift + " A" },
-			{ label: "Çift AG Son Kademe", value: item.son_çift + " A" },
-			{ label: "", value: "" },
-			{ label: "AG-AG", value: item.ag_ag + " A" },
+			...(ciftAG
+				? [
+						{ label: "Çift AG İlk", value: item.ilk_çift + " A" },
+						{ label: "Çift AG Nom.", value: item.nom_çift + " A" },
+						{ label: "Çift AG Son", value: item.son_çift + " A" },
 
-			{ label: "", value: "" },
+						{ label: "", value: "" },
+						{ label: "AG-AG", value: item.ag_ag + " A" },
+
+						{ label: "", value: "" },
+					]
+				: []),
+
 			{ label: "%90", value: item.U90 + " V" },
 			{ label: "%100", value: item.U100 + " V" },
 			{ label: "%110", value: item.U110 + " V" },
@@ -258,15 +265,35 @@ export default function NewProject({ showToast }) {
 				</View>
 
 				{/* Butonlar */}
-				<View className="flex-row flex gap-2 mt-2 flex-wrap">
+				<View className="flex-row flex gap-2 mt-2 flex-wrap items-center">
 					{/* <Button func={Hesapla} text={"Hesapla"} /> */}
-					<Button func={Temizle} text={"Temizle"} secondary={true} />
-					{/* <Button
-                                                func={gecmisKaydet}
-                                                text={"Kaydet"}
-                                                secondary={true}
-                                            /> */}
+					<Button func={Temizle} text={"Temizle"} secondary={false} />
+
+					{/* Çift AG Checkbox */}
+					<TouchableOpacity
+						onPress={() => setCiftAG((prev) => !prev)}
+						className="flex-row items-center gap-2"
+						activeOpacity={0.7}
+						style={styles.checkboxRow}>
+						<View
+							style={[
+								styles.checkbox,
+								ciftAG && styles.checkboxChecked,
+							]}>
+							{ciftAG && <Text style={styles.checkmark}>✓</Text>}
+						</View>
+						<Text style={styles.checkboxLabel}>Çift AG</Text>
+					</TouchableOpacity>
 				</View>
+
+				{ciftAG && (
+					<View className="w-full rounded-2xl mt-2 bg-[#10B98118] border border-[#10B98140]">
+						<Text style={styles.infoText}>
+							Güç 2 katı ile çarpılacaktır. Tek AG gücü
+							girdiğinizden emin olunuz!
+						</Text>
+					</View>
+				)}
 
 				{error && (
 					<Text style={styles.errorText}>
@@ -292,6 +319,42 @@ export default function NewProject({ showToast }) {
 // --- STİLLER (CSS yerine StyleSheet) ---
 const styles = StyleSheet.create({
 	header: { alignItems: "center", marginBottom: 20 },
+	checkboxRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 8,
+		paddingHorizontal: 12,
+		paddingVertical: 10,
+		borderRadius: 14,
+		borderWidth: 1,
+		borderColor: "rgba(77,163,255,0.3)",
+		backgroundColor: "rgba(77,163,255,0.08)",
+	},
+	checkbox: {
+		width: 20,
+		height: 20,
+		borderRadius: 6,
+		borderWidth: 2,
+		borderColor: "rgba(77,163,255,0.5)",
+		backgroundColor: "transparent",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	checkboxChecked: {
+		backgroundColor: "#4da3ff",
+		borderColor: "#4da3ff",
+	},
+	checkmark: {
+		color: "#fff",
+		fontSize: 13,
+		fontWeight: "bold",
+		lineHeight: 18,
+	},
+	checkboxLabel: {
+		color: "#4da3ff",
+		fontWeight: "600",
+		fontSize: 14,
+	},
 	title: {
 		fontSize: 24,
 		fontWeight: "bold",
@@ -301,6 +364,13 @@ const styles = StyleSheet.create({
 	errorText: {
 		color: "#FF6B6B",
 		marginTop: 15,
+		textAlign: "center",
+		fontWeight: "bold",
+	},
+	infoText: {
+		color: "#10B981",
+		marginVertical: 10,
+		paddingHorizontal: 6,
 		textAlign: "center",
 		fontWeight: "bold",
 	},

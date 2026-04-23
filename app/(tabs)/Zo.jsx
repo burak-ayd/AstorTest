@@ -17,10 +17,10 @@ export default function SıfırBileşenHesabı({ showToast }) {
 			hesaplaI0();
 		}
 		if (çıkılanAkım && çıkılanGerilim) {
-			hesaplaz0();
-		}
-		if (çıkılanAkım && çıkılanGerilim && guc && yildizGerilimi) {
-			hesaplaZ0();
+			const z0Ham = hesaplaz0();
+			if (guc && yildizGerilimi && z0Ham !== null) {
+				hesaplaZ0(z0Ham);
+			}
 		}
 	}, [guc, yildizGerilimi, çıkılanAkım, çıkılanGerilim]);
 
@@ -56,19 +56,24 @@ export default function SıfırBileşenHesabı({ showToast }) {
 
 		const formattedResult = formatPct(z0);
 		setResultz0(formattedResult);
+
+		// Ham değeri döndür - hesaplaZ0'ın state'e bağlı kalmaması için
+		return isFinite(z0) ? z0 : null;
 	}
 
-	function hesaplaZ0() {
+	// z0Ham: hesaplaz0'dan gelen ham sayısal değer (state değil)
+	function hesaplaZ0(z0Ham) {
 		const gucValue = parseNum(guc);
 		const yildizGerilimiValue = parseNum(yildizGerilimi);
 
 		const Inominal = gucValue / yildizGerilimiValue / Math.sqrt(3);
 
 		const Z0 =
-			(parseNum(resultz0) * Inominal * 100) /
+			(z0Ham * Inominal * 100) /
 			((yildizGerilimiValue * 1000) / Math.sqrt(3));
 
 		const formattedResult = formatPct(Z0);
+		console.log(formattedResult);
 
 		setResultZ0(formattedResult);
 	}

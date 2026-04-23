@@ -403,7 +403,7 @@ export default function Index() {
 
 	return (
 		<SafeAreaProvider>
-			<Redirect href="TrafoKayip" />
+			<Redirect href="/(tabs)" />
 		</SafeAreaProvider>
 	);
 }
