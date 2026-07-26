@@ -3,6 +3,29 @@
 # dependencies
 node_modules/
 
+# Android build & cache
+android/build/
+android/.gradle/
+android/*.iml
+android/.cxx/
+
+# iOS build & cache
+ios/Build/
+ios/Pods/
+ios/*.xcworkspace
+ios/DerivedData/
+
+# Node & JS outputs
+node_modules/
+build/
+dist/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
 # Expo
 .expo/
 dist/

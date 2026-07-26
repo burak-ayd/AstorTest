@@ -1,19 +1,19 @@
+import { requireNativeModule } from "expo-modules-core";
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	Alert,
 	DeviceEventEmitter,
-	NativeModules,
 	Platform,
 	Text,
 	View,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../global.css";
-const { APKUpdateModule } = NativeModules;
 
-const OTA_URL = "https://burak-ayd.github.io/AstorTest/index.android.bundle";
+const APKUpdateModule = requireNativeModule("ExpoApkUpdate");
+
 const GITHUB_API_URL =
 	"https://api.github.com/repos/burak-ayd/AstorTest/releases/latest";
 
@@ -36,42 +36,8 @@ function formatReleaseNotes(body) {
 export default function Index() {
 	const [ready, setReady] = useState(false);
 	const [updateStatus, setUpdateStatus] = useState(
-		"Güncellemeler kontrol ediliyor..."
+		"Güncellemeler kontrol ediliyor...",
 	);
-
-	// // Tüm cache'leri temizleme fonksiyonu
-	// const clearAllCaches = async () => {
-	// 	try {
-	// 		// Icon cache temizliği
-	// 		await clearIconCache();
-
-	// 		// Expo cache temizliği
-	// 		const expoCacheDir = RNFS.DocumentDirectoryPath + "/.expo";
-	// 		if (await RNFS.exists(expoCacheDir)) {
-	// 			await RNFS.unlink(expoCacheDir);
-	// 			console.log("Expo cache temizlendi");
-	// 		}
-
-	// 		// Metro cache temizliği
-	// 		const metroCacheDir = RNFS.CachesDirectoryPath + "/metro";
-	// 		if (await RNFS.exists(metroCacheDir)) {
-	// 			await RNFS.unlink(metroCacheDir);
-	// 			console.log("Metro cache temizlendi");
-	// 		}
-
-	// 		// Temp dosyaları temizle
-	// 		const tempDir = RNFS.TemporaryDirectoryPath;
-	// 		const tempFiles = await RNFS.readDir(tempDir);
-	// 		for (const file of tempFiles) {
-	// 			if (file.isFile() && file.name.includes("bundle")) {
-	// 				await RNFS.unlink(file.path);
-	// 				console.log("Temp dosya temizlendi:", file.name);
-	// 			}
-	// 		}
-	// 	} catch (error) {
-	// 		console.log("Cache temizleme hatası (normal):", error.message);
-	// 	}
-	// };
 
 	const checkOTA = async () => {
 		try {
@@ -105,7 +71,7 @@ export default function Index() {
 					) {
 						const errorMsg = result.replace(
 							/^(failed:|error:)\s*/,
-							""
+							"",
 						);
 						setUpdateStatus(`İndirme hatası: ${errorMsg}`);
 						Alert.alert("İndirme Hatası", errorMsg, [
@@ -113,7 +79,7 @@ export default function Index() {
 						]);
 					}
 				}
-			}
+			},
 		);
 
 		installResultListener = DeviceEventEmitter.addListener(
@@ -134,7 +100,7 @@ export default function Index() {
 						]);
 					}
 				}
-			}
+			},
 		);
 
 		// Güvenlik için timeout ekle - 60 saniye sonra otomatik devam et
@@ -170,7 +136,7 @@ export default function Index() {
 			} catch (error) {
 				console.log("Update check failed:", error);
 				setUpdateStatus(
-					"Güncelleme hatası, yerel sürümle devam ediliyor..."
+					"Güncelleme hatası, yerel sürümle devam ediliyor...",
 				);
 
 				setTimeout(() => {
@@ -249,7 +215,7 @@ export default function Index() {
 					const apkAsset = releaseData.assets.find(
 						(asset) =>
 							asset.name.includes(".apk") &&
-							asset.name.includes("release")
+							asset.name.includes("release"),
 					);
 
 					if (apkAsset) {
@@ -271,7 +237,7 @@ export default function Index() {
 											// İzin verildikten sonra kullanıcı geri dönerse devam et
 											setTimeout(
 												() => setReady(true),
-												3000
+												3000,
 											);
 										},
 									},
@@ -280,7 +246,7 @@ export default function Index() {
 										style: "cancel",
 										onPress: () => setReady(true),
 									},
-								]
+								],
 							);
 							return false;
 						}
@@ -289,32 +255,32 @@ export default function Index() {
 							Alert.alert(
 								"Yeni Sürüm Mevcut!",
 								`Yeni Özellikler:\n${formatReleaseNotes(
-									releaseData.body
+									releaseData.body,
 								)}\n\nSürüm ${latestVersion} indirilsin mi?\n\nBoyut: ${Math.round(
-									apkAsset.size / (1024 * 1024)
+									apkAsset.size / (1024 * 1024),
 								)}MB`,
 								[
 									{
 										text: "İndir ve Yükle",
 										onPress: async () => {
 											setUpdateStatus(
-												"APK indiriliyor..."
+												"APK indiriliyor...",
 											);
 											try {
 												const result =
 													await APKUpdateModule.downloadAndInstallAPK(
-														apkAsset.browser_download_url
+														apkAsset.browser_download_url,
 													);
 												console.log(
 													"Download başlatıldı:",
 													result,
-													apkAsset.browser_download_url
+													apkAsset.browser_download_url,
 												);
 												resolve(true);
 											} catch (e) {
 												console.error(
 													"APK indirme hatası:",
-													e
+													e,
 												);
 												Alert.alert(
 													"Hata",
@@ -326,7 +292,7 @@ export default function Index() {
 															onPress: () =>
 																setReady(true),
 														},
-													]
+													],
 												);
 												resolve(false);
 											}
@@ -340,7 +306,7 @@ export default function Index() {
 											resolve(false);
 										},
 									},
-								]
+								],
 							);
 						});
 					} else {
@@ -354,7 +320,7 @@ export default function Index() {
 			} else {
 				console.log(
 					"GitHub API'ye erişilemiyor:",
-					releaseResponse.status
+					releaseResponse.status,
 				);
 				return false;
 			}

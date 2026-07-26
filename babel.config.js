@@ -1,24 +1,22 @@
 module.exports = function (api) {
 	api.cache(true);
+
 	return {
-		presets: [
-			["babel-preset-expo", { jsxImportSource: "nativewind" }],
-			"nativewind/babel",
-		],
+		presets: [["babel-preset-expo", { jsxImportSource: "nativewind" }]],
 		plugins: [
 			[
 				"module-resolver",
 				{
-					root: ["./"], // proje kökü
+					root: ["./"],
 					alias: {
-						"@components": "./components", // components klasörü kök dizinde
+						"@components": "./components",
 						"@scripts": "./scripts",
 						"@assets": "./assets",
 						"@app": "./app",
 					},
-					extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
 				},
 			],
+			"react-native-worklets/plugin",
 		],
 	};
 };

@@ -11,7 +11,7 @@ def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 react {
     entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", projectRoot, "android", "absolute"].execute(null, rootDir).text.trim())
     reactNativeDir = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
-    hermesCommand = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/sdks/hermesc/%OS-BIN%/hermesc"
+    hermesCommand = new File(["node", "--print", "require.resolve('hermes-compiler/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/hermesc/%OS-BIN%/hermesc"
     codegenDir = new File(["node", "--print", "require.resolve('@react-native/codegen/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
 
     enableBundleCompression = (findProperty('android.enableBundleCompression') ?: false).toBoolean()
@@ -66,8 +66,8 @@ react {
 /**
  * Set this to true in release builds to optimize the app using [R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization).
  */
-def enableMinifyInReleaseBuilds = true //(findProperty('android.enableMinifyInReleaseBuilds') ?: false).toBoolean()
-def enableSeparateBuildPerCPUArchitecture = true
+def enableMinifyInReleaseBuilds = (findProperty('android.enableMinifyInReleaseBuilds') ?: false).toBoolean()
+
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
  *
@@ -80,8 +80,7 @@ def enableSeparateBuildPerCPUArchitecture = true
  * this variant is about 6MiB larger per architecture than default.
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
-def versionCodeProp = project.findProperty("VERSION_CODE") ?: "1"
-def versionNameProp = project.findProperty("VERSION_NAME") ?: "1.0.0"
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -89,13 +88,12 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace 'com.burakaydogan.AstorTest'
-    
     defaultConfig {
         applicationId 'com.burakaydogan.AstorTest'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode versionCodeProp.toInteger()
-        versionName versionNameProp
+        versionCode 1
+        versionName "1.2.96"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
@@ -106,12 +104,6 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release {
-            storeFile file(MYAPP_UPLOAD_STORE_FILE)
-            storePassword MYAPP_UPLOAD_STORE_PASSWORD
-            keyAlias MYAPP_UPLOAD_KEY_ALIAS
-            keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-        }
     }
     buildTypes {
         debug {
@@ -120,12 +112,10 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            shrinkResources false
-            minifyEnabled false
-            signingConfig signingConfigs.release
-            // def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
-            // shrinkResources enableShrinkResources.toBoolean()
-            // minifyEnabled enableMinifyInReleaseBuilds
+            signingConfig signingConfigs.debug
+            def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
+            shrinkResources enableShrinkResources.toBoolean()
+            minifyEnabled enableMinifyInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             def enablePngCrunchInRelease = findProperty('android.enablePngCrunchInReleaseBuilds') ?: 'true'
             crunchPngs enablePngCrunchInRelease.toBoolean()
@@ -139,29 +129,6 @@ android {
     }
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
-    }
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'armeabi-v7a', 'arm64-v8a', 'x86','x86_64'
-            universalApk false
-        }
-    }
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def appName = "AstorTest"
-            def version = variant.versionName
-            def buildType = variant.buildType.name
-
-            // ABI bilgisini dosya adına ekle
-            def abi = output.getFilter(com.android.build.OutputFile.ABI)
-            if (abi != null) {
-                outputFileName = "${appName}-${version}-${buildType}-${abi}.apk"
-            } else {
-                outputFileName = "${appName}-${version}-${buildType}.apk"
-            }
-        }
     }
 }
 
