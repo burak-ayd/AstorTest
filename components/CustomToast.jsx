@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons"; // Eğer ikon kullanmak istersen
+import MaterialIcons from "@react-native-vector-icons/material-icons"; // Eğer ikon kullanmak istersen
 import React, { useEffect } from "react";
 import { Animated, Dimensions, StyleSheet, Text, View } from "react-native";
 
