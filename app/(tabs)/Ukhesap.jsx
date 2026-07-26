@@ -452,162 +452,217 @@ export default function UkHesap({ showToast }) {
 	return (
 		<ScrollView
 			contentContainerStyle={{
-				paddingHorizontal: 4,
-				marginTop: 2,
+				paddingHorizontal: 12,
+				paddingVertical: 12,
 			}}
 			keyboardShouldPersistTaps="handled"
-			className="h-full bg-card">
-			<View>
-				{/* Hesaplama Kartı */}
-				<View style={styles.card}>
-					<View style={styles.grid}>
-						<InputGroup
-							label="Güç"
-							unit="kW"
-							value={guc}
-							onChangeText={setGuc}
-							placeholder="ör. 100"
-						/>
-						<InputGroup
-							label="İlk Kademe Gerilim"
-							unit="kV"
-							value={ilkKademeGerilim}
-							onChangeText={setIlkKademeGerilim}
-							placeholder="ör. 0,4"
-						/>
-						<InputGroup
-							label="Nom.Kademe Gerilim"
-							unit="kV"
-							value={nomKademeGerilim}
-							onChangeText={setNomKademeGerilim}
-							placeholder="ör. 0,4"
-						/>
-						<InputGroup
-							label="Son Kademe Gerilim"
-							unit="kV"
-							value={sonKademeGerilim}
-							onChangeText={setSonKademeGerilim}
-							placeholder="ör. 0,4"
-						/>
-					</View>
+			className="bg-background">
+			{/* Modern Card Container */}
+			<View className="bg-card rounded-xl border border-border shadow-lg overflow-hidden">
+				{/* Compact Header Section */}
+				{/* <View className="px-4 py-3 border-b border-border/50">
+					<Text className="text-text text-lg font-bold">
+						Uk Hesaplayıcı
+					</Text>
+					<Text className="text-textSecondary text-xs">
+						Kısa devre gerilimi hesaplama
+					</Text>
+				</View> */}
 
-					<View style={styles.grid}>
-						<InputGroup
-							label="İlk Kademe Çıkılan Gerilim"
-							unit="kV"
-							value={ilkKademeCikilanGerilim}
-							onChangeText={setIlkKademeCikilanGerilim}
-							placeholder="ör. 0,4"
-						/>
-						<InputGroup
-							label="İlk Kademe Çıkılan Akım"
-							unit="A"
-							value={ilkKademeCikilanAkim}
-							onChangeText={setIlkKademeCikilanAkim}
-							placeholder="ör. 24"
-						/>
-					</View>
-
-					<View style={styles.grid}>
-						<InputGroup
-							label="Nom.Kademe Çıkılan Gerilim"
-							unit="kV"
-							value={nomCikilanGerilim}
-							onChangeText={setNomCikilanGerilim}
-							placeholder="ör. 0,4"
-						/>
-						<InputGroup
-							label="Nom.Kademe Çıkılan Akım"
-							unit="A"
-							value={nomCikilanAkim}
-							onChangeText={setNomCikilanAkim}
-							placeholder="ör. 24"
-						/>
-					</View>
-
-					<View style={styles.grid}>
-						<InputGroup
-							label="Son Kademe Çıkılan Gerilim"
-							unit="kV"
-							value={sonKademeCikilanGerilim}
-							onChangeText={setSonKademeCikilanGerilim}
-							placeholder="ör. 0,4"
-						/>
-						<InputGroup
-							label="Son Kademe Çıkılan Akım"
-							unit="A"
-							value={sonKademeCikilanAkim}
-							onChangeText={setSonKademeCikilanAkim}
-							placeholder="ör. 24"
-						/>
-					</View>
-
-					<View style={styles.actions}>
-						<TouchableOpacity
-							style={styles.button}
-							onPress={gecmisKaydet}>
-							<Text style={styles.buttonText}>Kaydet</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={[styles.button, styles.secondaryButton]}
-							onPress={temizle}>
-							<Text
-								style={[
-									styles.buttonText,
-									styles.secondaryButtonText,
-								]}>
-								Temizle
+				{/* Input Section */}
+				<View className="p-4 gap-3">
+					{/* Güç ve Kademe Gerilimleri - Horizontal */}
+					<View className="gap-2">
+						<View className="flex-row items-center gap-1.5">
+							<View className="w-0.5 h-4 bg-primary rounded-full" />
+							<Text className="text-text font-semibold text-sm">
+								Güç ve Kademe Gerilimleri
 							</Text>
-						</TouchableOpacity>
+						</View>
+						<View style={styles.grid}>
+							<InputGroup
+								label="Güç"
+								unit="kW"
+								value={guc}
+								onChangeText={setGuc}
+								placeholder="100"
+							/>
+							<InputGroup
+								label="İlk"
+								unit="kV"
+								value={ilkKademeGerilim}
+								onChangeText={setIlkKademeGerilim}
+								placeholder="0,4"
+							/>
+							<InputGroup
+								label="Nom"
+								unit="kV"
+								value={nomKademeGerilim}
+								onChangeText={setNomKademeGerilim}
+								placeholder="0,4"
+							/>
+							<InputGroup
+								label="Son"
+								unit="kV"
+								value={sonKademeGerilim}
+								onChangeText={setSonKademeGerilim}
+								placeholder="0,4"
+							/>
+						</View>
 					</View>
 
-					{error && <Text style={styles.errorText}>{error}</Text>}
+					{/* İlk Kademe Çıkılan - Compact */}
+					<View className="gap-2">
+						<View className="flex-row items-center gap-1.5">
+							<View className="w-0.5 h-4 bg-blue-500 rounded-full" />
+							<Text className="text-text font-medium text-xs">
+								İlk Kademe Çıkılan
+							</Text>
+						</View>
+						<View style={styles.grid}>
+							<InputGroup
+								label="Gerilim"
+								unit="kV"
+								value={ilkKademeCikilanGerilim}
+								onChangeText={setIlkKademeCikilanGerilim}
+								placeholder="0,4"
+							/>
+							<InputGroup
+								label="Akım"
+								unit="A"
+								value={ilkKademeCikilanAkim}
+								onChangeText={setIlkKademeCikilanAkim}
+								placeholder="24"
+							/>
+						</View>
+					</View>
 
+					{/* Nom Kademe Çıkılan - Compact */}
+					<View className="gap-2">
+						<View className="flex-row items-center gap-1.5">
+							<View className="w-0.5 h-4 bg-purple-500 rounded-full" />
+							<Text className="text-text font-medium text-xs">
+								Nom.Kademe Çıkılan
+							</Text>
+						</View>
+						<View style={styles.grid}>
+							<InputGroup
+								label="Gerilim"
+								unit="kV"
+								value={nomCikilanGerilim}
+								onChangeText={setNomCikilanGerilim}
+								placeholder="0,4"
+							/>
+							<InputGroup
+								label="Akım"
+								unit="A"
+								value={nomCikilanAkim}
+								onChangeText={setNomCikilanAkim}
+								placeholder="24"
+							/>
+						</View>
+					</View>
+
+					{/* Son Kademe Çıkılan - Compact */}
+					<View className="gap-2">
+						<View className="flex-row items-center gap-1.5">
+							<View className="w-0.5 h-4 bg-orange-500 rounded-full" />
+							<Text className="text-text font-medium text-xs">
+								Son Kademe Çıkılan
+							</Text>
+						</View>
+						<View style={styles.grid}>
+							<InputGroup
+								label="Gerilim"
+								unit="kV"
+								value={sonKademeCikilanGerilim}
+								onChangeText={setSonKademeCikilanGerilim}
+								placeholder="0,4"
+							/>
+							<InputGroup
+								label="Akım"
+								unit="A"
+								value={sonKademeCikilanAkim}
+								onChangeText={setSonKademeCikilanAkim}
+								placeholder="24"
+							/>
+						</View>
+					</View>
+
+					{/* Error Message - Compact */}
+					{error && (
+						<View className="bg-red-500/10 border border-red-500/30 rounded-lg p-2.5">
+							<Text className="text-red-400 text-center text-xs font-medium">
+								⚠️ {error}
+							</Text>
+						</View>
+					)}
+
+					{/* Result Cards - Compact */}
 					{resultIlkKademeUk && (
-						<View style={styles.resultContainer}>
-							<View>
-								<Text style={styles.resultLabel}>
-									İlk Kademe Uk Değeri
-								</Text>
-								<Text style={styles.resultHint}>
-									Kısa devre gerilimi (%)
+						<View className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3">
+							<View className="flex-row justify-between items-center">
+								<View className="flex-1">
+									<Text className="text-blue-400 text-sm font-bold">
+										İlk Kademe Uk
+									</Text>
+								</View>
+								<Text className="text-blue-400 text-2xl font-bold">
+									{resultIlkKademeUk}
 								</Text>
 							</View>
-							<Text style={styles.resultValue}>
-								{resultIlkKademeUk}
-							</Text>
 						</View>
 					)}
+
 					{resultNomKademeUk && (
-						<View style={styles.resultContainer}>
-							<View>
-								<Text style={styles.resultLabel}>
-									Nom.Kademe Uk Değeri
-								</Text>
-								<Text style={styles.resultHint}>
-									Kısa devre gerilimi (%)
+						<View className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-3">
+							<View className="flex-row justify-between items-center">
+								<View className="flex-1">
+									<Text className="text-purple-400 text-sm font-bold">
+										Nom.Kademe Uk
+									</Text>
+								</View>
+								<Text className="text-purple-400 text-2xl font-bold">
+									{resultNomKademeUk}
 								</Text>
 							</View>
-							<Text style={styles.resultValue}>
-								{resultNomKademeUk}
-							</Text>
 						</View>
 					)}
+
 					{resultSonKademeUk && (
-						<View style={styles.resultContainer}>
-							<View>
-								<Text style={styles.resultLabel}>
-									Son Kademe Uk Değeri
-								</Text>
-								<Text style={styles.resultHint}>
-									Kısa devre gerilimi (%)
+						<View className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3">
+							<View className="flex-row justify-between items-center">
+								<View className="flex-1">
+									<Text className="text-orange-400 text-sm font-bold">
+										Son Kademe Uk
+									</Text>
+								</View>
+								<Text className="text-orange-400 text-2xl font-bold">
+									{resultSonKademeUk}
 								</Text>
 							</View>
-							<Text style={styles.resultValue}>
-								{resultSonKademeUk}
-							</Text>
 						</View>
 					)}
+
+					{/* Action Buttons - Compact */}
+					<View className="flex-row gap-2 mt-1">
+						<TouchableOpacity
+							onPress={gecmisKaydet}
+							className="flex-1 bg-primary active:bg-primary/80 rounded-lg p-3 border border-primary/30"
+							activeOpacity={0.7}>
+							<Text className="text-white text-center font-semibold text-sm">
+								💾 Kaydet
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							onPress={temizle}
+							className="flex-1 bg-textSecondary/20 active:bg-textSecondary/30 rounded-lg p-3 border border-border"
+							activeOpacity={0.7}>
+							<Text className="text-text text-center font-semibold text-sm">
+								🗑️ Temizle
+							</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</View>
 		</ScrollView>
@@ -617,7 +672,7 @@ export default function UkHesap({ showToast }) {
 // Tekrarlanan Input yapısını bir bileşene dönüştürmek kodu temizler
 const InputGroup = ({ label, unit, value, onChangeText, placeholder }) => (
 	<View style={styles.inputGroup}>
-		<Text numberOfLines={2} style={styles.label}>
+		<Text numberOfLines={1} style={styles.label}>
 			{label} <Text style={styles.unit}>({unit})</Text>
 		</Text>
 		<TextInput
@@ -626,110 +681,42 @@ const InputGroup = ({ label, unit, value, onChangeText, placeholder }) => (
 			onChangeText={onChangeText}
 			placeholder={placeholder}
 			keyboardType="decimal-pad"
-			placeholderTextColor="#999"
+			placeholderTextColor="#666"
 		/>
 	</View>
 );
 
 // --- STİLLER (CSS yerine StyleSheet) ---
 const styles = StyleSheet.create({
-	safeArea: { flex: 1, backgroundColor: "#121212" },
-	container: { padding: 4 },
-	card: {
-		backgroundColor: "#1E1E1E",
-		borderRadius: 12,
-		paddingVertical: 4,
-		paddingHorizontal: 8,
-		// marginBottom: 10,
-		// marginHorizontal: 8,
-		elevation: 3,
-		shadowColor: "#000",
-		shadowOpacity: 0.5,
-		shadowRadius: 5,
-	},
-	cardTitle: { fontSize: 18, fontWeight: "bold", color: "#FFF" },
 	grid: {
 		flexDirection: "row",
 		flexWrap: "wrap",
-		gap: 8,
+		gap: 6,
 	},
 	inputGroup: {
 		flex: 1,
 		minWidth: "22%",
-		marginBottom: 8,
+		marginBottom: 2,
 	},
 	label: {
 		color: "#DDD",
-		marginBottom: 6,
-		fontSize: 12,
-		height: 32,
-		lineHeight: 16,
+		marginBottom: 4,
+		fontSize: 11,
+		fontWeight: "500",
 	},
-	unit: { color: "#888", fontSize: 12 },
+	unit: { 
+		color: "#888", 
+		fontSize: 10,
+		fontWeight: "400",
+	},
 	input: {
-		backgroundColor: "#333",
+		backgroundColor: "#2A2A2A",
 		color: "#FFF",
 		borderRadius: 8,
 		paddingHorizontal: 10,
 		paddingVertical: 8,
-		fontSize: 14,
-		height: 40,
+		fontSize: 13,
+		borderWidth: 1,
+		borderColor: "#3A3A3A",
 	},
-	actions: {
-		flexDirection: "row",
-		justifyContent: "space-around",
-		marginTop: 10,
-	},
-	button: {
-		flex: 1,
-		backgroundColor: "#4CAF50",
-		paddingVertical: 12,
-		borderRadius: 8,
-		alignItems: "center",
-		marginHorizontal: 5,
-	},
-	buttonText: { color: "#FFF", fontWeight: "bold", fontSize: 16 },
-	secondaryButton: { backgroundColor: "#555" },
-	secondaryButtonText: { color: "#FFF" },
-	errorText: {
-		color: "#FF6B6B",
-		marginTop: 15,
-		textAlign: "center",
-		fontWeight: "bold",
-	},
-	resultContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		backgroundColor: "rgba(76, 175, 80, 0.2)",
-		padding: 16,
-		borderRadius: 8,
-		marginTop: 20,
-	},
-	resultLabel: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
-	resultHint: { color: "#AAA", fontSize: 12 },
-	resultValue: { color: "#4CAF50", fontSize: 28, fontWeight: "bold" },
-	historyHeader: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: 10,
-		borderBottomWidth: 1,
-		borderBottomColor: "#333",
-		paddingBottom: 10,
-	},
-	clearHistoryText: { color: "#FF6B6B", fontWeight: "bold" },
-	historyItem: {
-		borderBottomWidth: 1,
-		borderBottomColor: "#333",
-		paddingVertical: 10,
-	},
-	historyTimestamp: { color: "#AAA", fontSize: 12, fontWeight: "bold" },
-	historyUk: {
-		color: "#FFF",
-		fontSize: 16,
-		fontWeight: "bold",
-		marginVertical: 4,
-	},
-	historyDetails: { color: "#BBB", fontSize: 14 },
 });

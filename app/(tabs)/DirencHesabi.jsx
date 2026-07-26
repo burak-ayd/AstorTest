@@ -1,6 +1,6 @@
 import Input from "@components/input";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function DirencHesabi({ showToast }) {
 	const [olculenKayip, setOlculenKayip] = useState("");
@@ -52,121 +52,115 @@ export default function DirencHesabi({ showToast }) {
 	}
 
 	return (
-		<View>
-			{/* Başlık ve Formül */}
+		<View className="flex-1 p-4">
+			{/* Modern Card Container */}
+			<View className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
+				{/* Header with gradient accent */}
+				{/* <View className="px-6 pt-6 pb-4 border-b border-border/50">
+					<Text className="text-text text-2xl font-bold mb-1">
+						Direnç Hesaplayıcı
+					</Text>
+					<Text className="text-textSecondary text-sm">
+						Kabul direnci hesaplama aracı
+					</Text>
+				</View> */}
 
-			{/* <View style={styles.header}>
-				<Text style={styles.title}>Kabul Direnç Hesaplayıcı</Text>
-			</View> */}
-			<View className="flex p-4 mx-2 elevation rounded-xl gap-2 bg-card border focus:border-borderFocus border-border ">
-				<View className="flex-col justify-between gap-6">
-					{/* Güç */}
-					<View>
-						<Text className="text-text">Ölçülen Kayıp (W)</Text>
+				{/* Input Section */}
+				<View className="p-6 gap-5">
+					{/* Ölçülen Kayıp */}
+					<View className="gap-2">
+						<View className="flex-row items-center gap-2">
+							<View className="w-1 h-5 bg-primary rounded-full" />
+							<Text className="text-text font-semibold text-base">
+								Ölçülen Kayıp
+							</Text>
+						</View>
 						<Input
 							value={olculenKayip}
 							onChangeText={setOlculenKayip}
-							placeholder="2000 W"
+							placeholder="Örn: 2000 W"
+							className="bg-background"
 						/>
 					</View>
 
-					<View>
-						{/* AG Gerilimi */}
-						<Text className="text-text">İstenen Kayıp (W)</Text>
+					{/* İstenen Kayıp */}
+					<View className="gap-2">
+						<View className="flex-row items-center gap-2">
+							<View className="w-1 h-5 bg-primary rounded-full" />
+							<Text className="text-text font-semibold text-base">
+								İstenen Kayıp
+							</Text>
+						</View>
 						<Input
 							value={istenenKayip}
 							onChangeText={setIstenenKayip}
-							placeholder="2000 W"
+							placeholder="Örn: 1500 W"
+							className="bg-background"
 						/>
 					</View>
 
-					{/* Boşta Çıkılan Akım */}
-					<View>
-						<Text className="text-text">Çıkılacak Akım (A)</Text>
+					{/* Çıkılacak Akım */}
+					<View className="gap-2">
+						<View className="flex-row items-center gap-2">
+							<View className="w-1 h-5 bg-primary rounded-full" />
+							<Text className="text-text font-semibold text-base">
+								Çıkılacak Akım
+							</Text>
+						</View>
 						<Input
 							value={kademeAkimi}
 							onChangeText={setKademeAkimi}
-							placeholder="10 A"
+							placeholder="Örn: 10 A"
+							className="bg-background"
 						/>
 					</View>
-				</View>
 
-				<View style={styles.actions}>
+					{/* Error Message */}
+					{error && (
+						<View className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+							<Text className="text-red-400 text-center font-medium">
+								⚠️ Lütfen tüm alanlara geçerli sayılar girin
+							</Text>
+						</View>
+					)}
+
+					{/* Result Card */}
+					{result && (
+						<View className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-2xl p-5 mt-2">
+							<View className="flex-row justify-between items-center mb-3">
+								<View className="flex-1">
+									<Text className="text-green-400 text-lg font-bold mb-1">
+										Sonuç Hazır
+									</Text>
+									<Text className="text-textSecondary text-xs">
+										Girilmesi gereken direnç değeri
+									</Text>
+								</View>
+								<View className="bg-green-500/20 px-4 py-2 rounded-full">
+									<Text className="text-green-300 text-xs font-semibold">
+										✓ HESAPLANDI
+									</Text>
+								</View>
+							</View>
+							<View className="border-t border-green-500/20 pt-4">
+								<Text className="text-green-400 text-4xl font-bold text-center tracking-wider">
+									{result}
+								</Text>
+							</View>
+						</View>
+					)}
+
+					{/* Action Button */}
 					<TouchableOpacity
-						style={[styles.button, styles.secondaryButton]}
-						onPress={temizle}>
-						<Text
-							style={[
-								styles.buttonText,
-								styles.secondaryButtonText,
-							]}>
-							Temizle
+						onPress={temizle}
+						className="bg-textSecondary/20 active:bg-textSecondary/30 rounded-xl p-4 mt-2 border border-border"
+						activeOpacity={0.7}>
+						<Text className="text-text text-center font-semibold text-base">
+							🗑️ Temizle
 						</Text>
 					</TouchableOpacity>
 				</View>
-				{error && (
-					<Text style={styles.errorText}>
-						Lütfen tüm alanlara geçerli sayılar girin.
-					</Text>
-				)}
-
-				{result && (
-					<View style={styles.resultContainer}>
-						<View>
-							<Text style={styles.resultLabel}>
-								Girilmesi Gereken Direnç
-							</Text>
-							<Text style={styles.resultHint}>
-								Direnç Değeri (Ω)
-							</Text>
-						</View>
-						<Text style={styles.resultValue}>{result}</Text>
-					</View>
-				)}
 			</View>
 		</View>
 	);
 }
-const styles = StyleSheet.create({
-	header: { alignItems: "center", marginBottom: 20 },
-	title: {
-		fontSize: 24,
-		fontWeight: "bold",
-		color: "#FFF",
-		marginBottom: 10,
-	},
-	errorText: {
-		color: "#FF6B6B",
-		marginTop: 15,
-		textAlign: "center",
-		fontWeight: "bold",
-	},
-	resultContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		backgroundColor: "rgba(76, 175, 80, 0.2)",
-		padding: 16,
-		borderRadius: 8,
-		marginTop: 20,
-	},
-	resultLabel: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
-	resultHint: { color: "#AAA", fontSize: 12 },
-	resultValue: { color: "#4CAF50", fontSize: 28, fontWeight: "bold" },
-	actions: {
-		flexDirection: "row",
-		justifyContent: "space-around",
-		marginTop: 10,
-	},
-	button: {
-		flex: 1,
-		backgroundColor: "#4CAF50",
-		paddingVertical: 12,
-		borderRadius: 8,
-		alignItems: "center",
-		marginHorizontal: 5,
-	},
-	buttonText: { color: "#FFF", fontWeight: "bold", fontSize: 16 },
-	secondaryButton: { backgroundColor: "#555" },
-	secondaryButtonText: { color: "#FFF" },
-});
