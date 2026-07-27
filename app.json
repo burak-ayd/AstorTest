@@ -47,11 +47,21 @@
       "expo-font",
       "expo-image",
       "expo-status-bar",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./scripts/withSplitApk.js",
+      "./scripts/withGradleJvmArgs.js",
+      "./scripts/withCustomApkName.js"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9a24bef8-3401-4f38-a97b-71ea7f269ece"
+      }
+    },
+    "owner": "darkpuye"
   }
 }

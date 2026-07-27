@@ -60,3 +60,7 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# local-expo-build
+keystore.properties
+credentials.json
