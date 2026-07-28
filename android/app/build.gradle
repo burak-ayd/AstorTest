@@ -100,8 +100,8 @@ android {
         applicationId 'com.burakaydogan.AstorTest'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.2.102"
+        versionCode 1
+        versionName "1.2.96"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
@@ -112,12 +112,6 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release {
-            storeFile file('release.jks')
-            storePassword '123456'
-            keyAlias 'release'
-            keyPassword '123456'
-        }
     }
     buildTypes {
         debug {
@@ -126,7 +120,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds
@@ -200,7 +194,7 @@ dependencies {
 android.applicationVariants.all { variant ->
     variant.outputs.all { output ->
         def appSlug = "AstorTest"
-        def appVersion = "1.2.101"
+        def appVersion = "1.2.96"
         def buildTypeName = variant.buildType.name 
         
         // Doğru sabit ismi (OutputFile.ABI) kullanıldı

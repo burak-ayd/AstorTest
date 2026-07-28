@@ -7,9 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "astortest",
     "userInterfaceStyle": "automatic",
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "permissions": [
         "android.permission.INTERNET",
@@ -24,11 +21,6 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.burakaydogan.AstorTest"
-    },
-    "web": {
-      "output": "static",
-      "bundler": "metro",
-      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -53,8 +45,7 @@
       "./scripts/withCustomApkName.js"
     ],
     "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+      "typedRoutes": true
     },
     "extra": {
       "router": {},
