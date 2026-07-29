@@ -31,7 +31,7 @@ const menuItems = [
 	},
 	{
 		id: "3",
-		label: "I0 Hesap",
+		label: "I0 Hesap 2",
 		description: "Trafo boşta çalışma akımı (I0%) hesaplama",
 		key: "I0hesap",
 		icon: "power",
