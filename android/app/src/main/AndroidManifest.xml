@@ -13,10 +13,15 @@
     </intent>
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true" android:enableOnBackInvokedCallback="false">
-    <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
+    <meta-data android:name="expo.modules.updates.CODE_SIGNING_CERTIFICATE" android:value="-----BEGIN CERTIFICATE-----&#xA;MIIC1TCCAb2gAwIBAgIJAJkr3E7zOVBgMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV&#xA;BAMTCUFzdG9yVGVzdDAeFw0yNjA3MjkxOTI3MzBaFw0zNjA3MjkxOTI3MzBaMBQx&#xA;EjAQBgNVBAMTCUFzdG9yVGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC&#xA;ggEBANZLIO1GLrTPir7s0RWnl2Bi3hUXznY3VP4FRUgHDn+r3z0Mzv1uevIXsTFV&#xA;nW0xzjXdgMHThAs6jbVf2lhA9BG0GI7XJQqfXOSLbxHfJsvRbaSXgzQKM7/Kr0yb&#xA;jMxeTV/quz4FQ6AgBAv38q/4WJKOpZxS5euzxr4wjZaNlB3dlMPfyMeK1fpeKSPe&#xA;oAtgy0UdcYvffjwodvq7ezOekKqh/XnE9jlL5U2jhxsoWcdDeW1sui7Tlhn0aWmp&#xA;TGyD4ex+y9A6LIS1uxAmxi/pxUKoG9LCeato6n2aLIof9sdittvUc2s8IvxQgufA&#xA;UZSclxbbZaDJFf4cQsceyIOvHHMCAwEAAaMqMCgwDgYDVR0PAQH/BAQDAgeAMBYG&#xA;A1UdJQEB/wQMMAoGCCsGAQUFBwMDMA0GCSqGSIb3DQEBCwUAA4IBAQAZMdT17zrr&#xA;bbpI9xfDz6wzAERBk8s12ZjBoGCVb0Fuo9Vxktg7H/hEYfUY9NMcSp9gosZbl2IK&#xA;Xa6ATShVXssUFqwl7056EqBskaHtfFWW/k+4ooaQ6X0BtLz1v3zsXtLhpMzInEiv&#xA;wQAFWJ7rJUrkmMRXwzVhP+s7hYUhBBwdRm+Kx+B0Oel+NwzIC2iq0BX/LnWu9OKC&#xA;kwQDk1dNhaBg3EFBB33EM3cSLbEkasAhe3KrT31flEGgTq/1CE0F435gNpV8IDiQ&#xA;NzOKokqg/GlMNoMgXiT21n7GGmbCYz5QLb425TfWcaOKDYraSoMJzIH+23Jng3Ss&#xA;kzMJ/eFA4a5R&#xA;-----END CERTIFICATE-----&#xA;"/>
+    <meta-data android:name="expo.modules.updates.CODE_SIGNING_METADATA" android:value="{&quot;keyid&quot;:&quot;main&quot;,&quot;alg&quot;:&quot;rsa-v1_5-sha256&quot;}"/>
+    <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
     <meta-data android:name="expo.modules.updates.ENABLE_BSDIFF_PATCH_SUPPORT" android:value="true"/>
+    <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="@string/expo_runtime_version"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
+    <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://ota.burakaydogan.tk/manifest"/>
+    <meta-data android:name="expo.modules.updates.UPDATES_CONFIGURATION_REQUEST_HEADERS_KEY" android:value="{&quot;expo-channel-name&quot;:&quot;release&quot;,&quot;expo-app-id&quot;:&quot;16501b0d-8dfe-4f34-b017-73e8d5b356ef&quot;}"/>
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode|smallestScreenSize|assetsPaths" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="unspecified">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
