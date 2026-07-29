@@ -41,7 +41,7 @@ const menuItems = [
 	},
 	{
 		id: "4",
-		label: "Yeni Proje 2",
+		label: "Yeni Proje",
 		description: "Yeni proje hesaplama ve analiz",
 		key: "NewProject",
 		icon: "folder-open",

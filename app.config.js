@@ -11,7 +11,7 @@ export default ({ config }) => ({
 				? undefined
 				: "./certs/certificate.pem",
 			enabled: true,
-			checkAutomatically: "ON_LOAD",
+			checkAutomatically: "ON_ERROR_RECOVERY",
 			fallbackToCacheTimeout: 0,
 			requestHeaders: {
 				"expo-channel-name": process.env.RELEASE_CHANNEL,
