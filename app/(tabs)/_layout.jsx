@@ -20,7 +20,6 @@ import History from "./History";
 import HomeScreen from "./HomeScreen";
 import I0hesap from "./I0hesap";
 import NewProject from "./newProject";
-import OtaUpdate from "./OtaUpdate";
 import TrafoKayip from "./TrafoKayip";
 import UkHesap from "./Ukhesap";
 import SıfırBileşenHesabı from "./Zo";
@@ -86,12 +85,7 @@ export default function TabLayout() {
 			key: "Desarj",
 			title: "Kısmi Deşarj Hesabı",
 		},
-		{
-			id: "98",
-			label: "Güncelleme",
-			key: "OtaUpdate",
-			title: "Güncelleme",
-		},
+
 		{ id: "99", label: "Geçmiş", key: "History", title: "Geçmiş" },
 	];
 
@@ -113,8 +107,6 @@ export default function TabLayout() {
 				return <DirencHesabi showToast={showToast} />;
 			case "SıfırBileşen":
 				return <SıfırBileşenHesabı showToast={showToast} />;
-			case "OtaUpdate":
-				return <OtaUpdate showToast={showToast} />;
 			case "History":
 				return <History showToast={showToast} />;
 			default:
