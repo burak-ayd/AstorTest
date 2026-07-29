@@ -21,7 +21,7 @@ const menuItems = [
 	},
 	{
 		id: "2",
-		label: "UK Hesap 2",
+		label: "UK Hesap",
 		description: "Trafo kısa devre gerilimi (Uk%) hesaplama",
 		key: "Ukhesap",
 		icon: "calculate",
