@@ -11,7 +11,7 @@ import {
 const menuItems = [
 	{
 		id: "1",
-		label: "Trafo Kayıp 2",
+		label: "Trafo Kayıp",
 		description: "Trafo yükte kayıp hesaplayıcı",
 		key: "TrafoKayip",
 		icon: "electric-bolt",
