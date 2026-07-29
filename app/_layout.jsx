@@ -4,46 +4,43 @@ import * as Updates from "expo-updates";
 import { useEffect, useRef } from "react";
 import { Alert, AppState } from "react-native";
 import Toast from "react-native-toast-message";
+
 export default function RootLayout() {
-	// Aynı anda birden fazla kontrol yapılmasını engellemek için flag
 	const isChecking = useRef(false);
 
 	useEffect(() => {
 		async function checkAndApplyUpdate() {
-			// Eğer geliştirme modundaysak veya halihazırda kontrol yapılıyorsa dur
 			if (__DEV__ || isChecking.current) return;
 
 			try {
 				isChecking.current = true;
 
-				// 1. Güncelleme var mı kontrol et
+				// 1. Yeni güncelleme var mı kontrol et
 				const update = await Updates.checkForUpdateAsync();
 
 				if (update.isAvailable) {
-					// 2. Yeni güncelleme dosyasını indir
-					const fetched = await Updates.fetchUpdateAsync();
+					// 2. Yeni bundle'ı ve asset'leri indir
+					await Updates.fetchUpdateAsync();
 
-					if (fetched.isNew) {
-						// 3. İndirme başarıyla tamamlandıktan sonra kullanıcıya sor
-						Alert.alert(
-							"Yeni Güncelleme!",
-							"Uygulamanın yeni sürümü hazır. Yeniden başlatılsın mı?",
-							[
-								{
-									text: "Şimdi Yenile",
-									onPress: async () => {
-										try {
-											// Anında güvenli reload
-											await Updates.reloadAsync();
-										} catch (e) {
-											console.log("Reload hatası:", e);
-										}
-									},
+					// 3. İndirme bittiği an kullanıcıya sor ve reload yap
+					Alert.alert(
+						"Yeni Güncelleme!",
+						"Uygulamanın yeni sürümü indirildi. Şimdi yenilensin mi?",
+						[
+							{
+								text: "Şimdi Yenile",
+								onPress: async () => {
+									try {
+										// Anında yeni JS bundle ile baştan başlatır
+										await Updates.reloadAsync();
+									} catch (e) {
+										console.log("Reload hatası:", e);
+									}
 								},
-							],
-							{ cancelable: false },
-						);
-					}
+							},
+						],
+						{ cancelable: false },
+					);
 				}
 			} catch (error) {
 				console.log("OTA Hatası:", error);
@@ -52,10 +49,10 @@ export default function RootLayout() {
 			}
 		}
 
-		// İlk açılışta güvenli kontrol
+		// İlk açılışta kontrol et
 		checkAndApplyUpdate();
 
-		// Arka plandan ön plana geçişlerde kontrol
+		// Arka plandan ön plana geçişlerde kontrol et
 		const subscription = AppState.addEventListener(
 			"change",
 			(nextAppState) => {
@@ -67,6 +64,7 @@ export default function RootLayout() {
 
 		return () => subscription.remove();
 	}, []);
+
 	return (
 		<>
 			<Stack
@@ -74,7 +72,7 @@ export default function RootLayout() {
 					headerShown: false,
 				}}
 			/>
-			<Toast /> {/* Toast mesajları burada gösterilecek */}
+			<Toast />
 		</>
 	);
 }
