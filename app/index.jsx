@@ -377,10 +377,6 @@ export default function Index() {
 	// 1. Yeni güncelleme tespit edildiğinde indir
 	useEffect(() => {
 		if (isUpdateAvailable) {
-			Toast.show({
-				type: "info",
-				text1: "Yeni güncelleme indiriliyor...",
-			});
 			Updates.fetchUpdateAsync().catch((err) => {
 				console.log("Fetch error:", err);
 			});
