@@ -11,6 +11,8 @@ export default ({ config }) => ({
 				? undefined
 				: "./certs/certificate.pem",
 			enabled: true,
+			checkAutomatically: "ON_LOAD",
+			fallbackToCacheTimeout: 0,
 			requestHeaders: {
 				"expo-channel-name": process.env.RELEASE_CHANNEL,
 				"expo-app-id": "16501b0d-8dfe-4f34-b017-73e8d5b356ef",
