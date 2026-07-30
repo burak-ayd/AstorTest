@@ -1,6 +1,6 @@
 import { Alert, Platform } from 'react-native';
 import ExpoApkUpdateModule from './ExpoApkUpdateModule';
-import type { GitHubRelease, UpdateEventPayload } from './ExpoApkUpdate.types';
+import type { GitHubRelease, UpdateEventPayload, DownloadProgressPayload } from './ExpoApkUpdate.types';
 
 const GITHUB_API_URL = 'https://api.github.com/repos/burak-ayd/AstorTest/releases/latest';
 
@@ -46,6 +46,7 @@ function compareVersions(v1: string, v2: string): number {
 
 export class APKUpdateManager {
   private downloadCompleteListener: any = null;
+  private downloadProgressListener: any = null;
   private installResultListener: any = null;
   private callbacks: UpdateCallbacks = {};
 
@@ -55,6 +56,26 @@ export class APKUpdateManager {
 
   private setupEventListeners() {
     console.log('[APKUpdateManager] Setting up event listeners...');
+    
+    // APK indirme progress listener
+    this.downloadProgressListener = ExpoApkUpdateModule.addListener(
+      'APKDownloadProgress',
+      (event: DownloadProgressPayload) => {
+        console.log('[APKUpdateManager] İndirme progress:', event.progress + '%');
+        
+        // Progress callback'i çağır
+        if (event.progress >= 0 && event.progress <= 100) {
+          this.callbacks.onProgressChange?.(event.progress);
+        }
+        
+        // Bytes bilgisini de callback ile gönderebiliriz (opsiyonel)
+        if (event.bytesTotal > 0) {
+          const downloaded = (event.bytesDownloaded / (1024 * 1024)).toFixed(2);
+          const total = (event.bytesTotal / (1024 * 1024)).toFixed(2);
+          this.callbacks.onStatusChange?.(`İndiriliyor: ${downloaded}MB / ${total}MB`);
+        }
+      }
+    );
     
     // APK indirme event listener
     this.downloadCompleteListener = ExpoApkUpdateModule.addListener(
@@ -66,7 +87,7 @@ export class APKUpdateManager {
         if (status === 'success') {
           console.log('[APKUpdateManager] İndirme başarılı, yükleme başlıyor...');
           this.callbacks.onStatusChange?.('APK yükleniyor...');
-          this.callbacks.onProgressChange?.(80);
+          // Progress zaten 100'de olmalı (downloadProgressListener'dan)
         } else if (status.startsWith('failed:') || status.startsWith('error:')) {
           const errorMsg = status.replace(/^(failed:|error:)\s*/, '');
           console.error('[APKUpdateManager] İndirme hatası:', errorMsg);
@@ -79,10 +100,6 @@ export class APKUpdateManager {
               onPress: () => this.callbacks.onUpdateComplete?.() 
             },
           ]);
-        } else if (status === 'pending') {
-          this.callbacks.onProgressChange?.(35);
-        } else if (status === 'running') {
-          this.callbacks.onProgressChange?.(50);
         }
       }
     );
@@ -124,6 +141,10 @@ export class APKUpdateManager {
 
   private cleanupEventListeners() {
     console.log('[APKUpdateManager] Cleaning up event listeners...');
+    if (this.downloadProgressListener) {
+      this.downloadProgressListener.remove();
+      this.downloadProgressListener = null;
+    }
     if (this.downloadCompleteListener) {
       this.downloadCompleteListener.remove();
       this.downloadCompleteListener = null;

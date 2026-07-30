@@ -6,6 +6,13 @@ export type UpdateEventPayload = {
   status: string;
 };
 
+// İndirme progress event'i
+export type DownloadProgressPayload = {
+  progress: number;
+  bytesDownloaded: number;
+  bytesTotal: number;
+};
+
 // Kotlin'de yazdığımız fonksiyonların TypeScript tanımlamaları
 declare class ExpoApkUpdateModule extends NativeModule {
   getCurrentVersion(): Promise<{ versionName: string; versionCode: number }>;
@@ -17,6 +24,11 @@ declare class ExpoApkUpdateModule extends NativeModule {
   addListener(
     eventName: 'APKDownloadComplete' | 'APKInstallResult', 
     listener: (event: UpdateEventPayload) => void
+  ): EventSubscription;
+  
+  addListener(
+    eventName: 'APKDownloadProgress', 
+    listener: (event: DownloadProgressPayload) => void
   ): EventSubscription;
 }
 

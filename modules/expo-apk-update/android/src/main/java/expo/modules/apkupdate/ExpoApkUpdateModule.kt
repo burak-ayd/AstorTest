@@ -29,7 +29,7 @@ class ExpoApkUpdateModule : Module() {
         Name("ExpoApkUpdate")
 
         // Dinlenecek eventler
-        Events("APKDownloadComplete", "APKInstallResult")
+        Events("APKDownloadComplete", "APKInstallResult", "APKDownloadProgress")
 
         AsyncFunction("getCurrentVersion") { promise: Promise ->
             try {
@@ -243,7 +243,7 @@ class ExpoApkUpdateModule : Module() {
     }
 
     private fun startDownloadPolling(dm: DownloadManager, downloadId: Long, attempt: Int) {
-        if (attempt > 60) {
+        if (attempt > 120) { // 120 * 500ms = 60 saniye
             emitEvent("APKDownloadComplete", "error: Download timeout")
             return
         }
@@ -253,16 +253,46 @@ class ExpoApkUpdateModule : Module() {
                 val cursor = dm.query(DownloadManager.Query().setFilterById(downloadId))
                 if (cursor != null && cursor.moveToFirst()) {
                     val statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+                    val bytesDownloadedIndex = cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+                    val bytesTotalIndex = cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+                    
                     if (statusIndex != -1) {
                         val status = cursor.getInt(statusIndex)
+                        
+                        // İndirme progress'ini hesapla ve gönder
+                        if (bytesDownloadedIndex != -1 && bytesTotalIndex != -1) {
+                            val bytesDownloaded = cursor.getLong(bytesDownloadedIndex)
+                            val bytesTotal = cursor.getLong(bytesTotalIndex)
+                            
+                            if (bytesTotal > 0) {
+                                val progress = ((bytesDownloaded.toFloat() / bytesTotal.toFloat()) * 100).toInt()
+                                Log.d("APKUpdateModule", "İndirme progress: $progress% ($bytesDownloaded / $bytesTotal bytes)")
+                                
+                                // Progress event'i gönder
+                                this@ExpoApkUpdateModule.sendEvent("APKDownloadProgress", mapOf(
+                                    "progress" to progress,
+                                    "bytesDownloaded" to bytesDownloaded,
+                                    "bytesTotal" to bytesTotal
+                                ))
+                            }
+                        }
+                        
                         when (status) {
                             DownloadManager.STATUS_SUCCESSFUL -> {
                                 cursor.close()
+                                Log.d("APKUpdateModule", "İndirme tamamlandı!")
+                                // Son progress: 100%
+                                this@ExpoApkUpdateModule.sendEvent("APKDownloadProgress", mapOf(
+                                    "progress" to 100,
+                                    "bytesDownloaded" to 0L,
+                                    "bytesTotal" to 0L
+                                ))
                                 checkDownloadStatusAndInstall(dm, downloadId)
                                 return@postDelayed
                             }
                             DownloadManager.STATUS_FAILED -> {
                                 cursor.close()
+                                Log.e("APKUpdateModule", "İndirme başarısız!")
                                 emitEvent("APKDownloadComplete", "failed: Download failed")
                                 return@postDelayed
                             }
@@ -280,9 +310,10 @@ class ExpoApkUpdateModule : Module() {
                     startDownloadPolling(dm, downloadId, attempt + 1)
                 }
             } catch (e: Exception) {
+                Log.e("APKUpdateModule", "Polling hatası: ${e.message}", e)
                 startDownloadPolling(dm, downloadId, attempt + 1)
             }
-        }, 5000)
+        }, 500) // Her 500ms'de bir kontrol et (daha sık güncelleme)
     }
 
     private fun installAPK(apkFile: File) {

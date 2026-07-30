@@ -2,6 +2,12 @@ export type UpdateEventPayload = {
   status: string;
 };
 
+export type DownloadProgressPayload = {
+  progress: number;
+  bytesDownloaded: number;
+  bytesTotal: number;
+};
+
 export type VersionInfo = {
   versionName: string;
   versionCode: number;
