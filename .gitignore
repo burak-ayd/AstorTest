@@ -20,6 +20,9 @@ node_modules/
 build/
 dist/
 
+CHANGELOG*
+COMMIT_SUMMARY*
+
 # OS & Editor files
 .DS_Store
 Thumbs.db

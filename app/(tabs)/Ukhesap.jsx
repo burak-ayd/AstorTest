@@ -651,7 +651,7 @@ export default function UkHesap({ showToast }) {
 							className="flex-1 bg-primary active:bg-primary/80 rounded-lg p-3 border border-primary/30"
 							activeOpacity={0.7}>
 							<Text className="text-white text-center font-semibold text-sm">
-								💾 Kaydet
+								Kaydet
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
@@ -659,7 +659,7 @@ export default function UkHesap({ showToast }) {
 							className="flex-1 bg-textSecondary/20 active:bg-textSecondary/30 rounded-lg p-3 border border-border"
 							activeOpacity={0.7}>
 							<Text className="text-text text-center font-semibold text-sm">
-								🗑️ Temizle
+								Temizle
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -704,8 +704,8 @@ const styles = StyleSheet.create({
 		fontSize: 11,
 		fontWeight: "500",
 	},
-	unit: { 
-		color: "#888", 
+	unit: {
+		color: "#888",
 		fontSize: 10,
 		fontWeight: "400",
 	},
