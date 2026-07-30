@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Downloads klasörü için -->
+    <external-path name="external_files" path="Download/"/>
+    
+    <!-- Tüm external storage -->
+    <external-path name="external" path="."/>
+    
+    <!-- Cache klasörü -->
+    <cache-path name="cache" path="."/>
+    
+    <!-- Internal files -->
+    <files-path name="files" path="."/>
+</paths>

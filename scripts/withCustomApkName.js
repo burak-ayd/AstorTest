@@ -2,7 +2,6 @@ const { withAppBuildGradle } = require("@expo/config-plugins");
 
 module.exports = function withCustomApkName(config) {
 	const slug = config.slug || "app";
-	const version = config.version || "1.0.0";
 
 	return withAppBuildGradle(config, (config) => {
 		if (config.modResults.language === "groovy") {
@@ -11,10 +10,12 @@ module.exports = function withCustomApkName(config) {
 android.applicationVariants.all { variant ->
     variant.outputs.all { output ->
         def appSlug = "${slug}"
-        def appVersion = "${version}"
+        
+        // Versiyonu app.json yerine doğrudan Gradle'ın derleme anındaki versiyonundan okuyoruz (Otomatik artışlar yakalanır)
+        def appVersion = variant.versionName ?: "${config.version || "1.0.0"}"
+        
         def buildTypeName = variant.buildType.name 
         
-        // Doğru sabit ismi (OutputFile.ABI) kullanıldı
         def abiName = output.getFilter(com.android.build.OutputFile.ABI)
         if (abiName == null) {
             abiName = "universal"
@@ -26,12 +27,17 @@ android.applicationVariants.all { variant ->
 // --- Expo Custom APK Naming Plugin Sonu ---
 `;
 
-			// Eğer daha önce eklenmemişse betiği ekle
+			// Eski script varsa temizle, yenisini ekle
 			if (
-				!config.modResults.contents.includes(
+				config.modResults.contents.includes(
 					"Expo Custom APK Naming Plugin",
 				)
 			) {
+				config.modResults.contents = config.modResults.contents.replace(
+					/\/\/ --- Expo Custom APK Naming Plugin Başlangıcı ---[\s\S]*?\/\/ --- Expo Custom APK Naming Plugin Sonu ---/,
+					renamingScript.trim(),
+				);
+			} else {
 				config.modResults.contents += `\n${renamingScript}`;
 			}
 		}

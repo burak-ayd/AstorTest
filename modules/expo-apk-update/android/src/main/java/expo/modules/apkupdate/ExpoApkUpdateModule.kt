@@ -19,7 +19,9 @@ class ExpoApkUpdateModule : Module() {
 
     // React Native tarafına event gönderirken standart yapı kullanıyoruz
     private fun emitEvent(eventName: String, data: String) {
+        Log.d("APKUpdateModule", "Event gönderiliyor: $eventName = $data")
         this@ExpoApkUpdateModule.sendEvent(eventName, mapOf("status" to data))
+        Log.d("APKUpdateModule", "Event gönderildi: $eventName")
     }
 
     override fun definition() = ModuleDefinition {
@@ -120,6 +122,7 @@ class ExpoApkUpdateModule : Module() {
 
     private fun checkDownloadStatusAndInstall(dm: DownloadManager, downloadId: Long) {
         try {
+            Log.d("APKUpdateModule", "checkDownloadStatusAndInstall başladı, downloadId: $downloadId")
             val cursor = dm.query(DownloadManager.Query().setFilterById(downloadId))
             if (cursor != null && cursor.moveToFirst()) {
                 val statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
@@ -128,6 +131,7 @@ class ExpoApkUpdateModule : Module() {
                 
                 if (statusIndex == -1) {
                     cursor.close()
+                    Log.e("APKUpdateModule", "Status index bulunamadı")
                     emitEvent("APKDownloadComplete", "error: Unable to check download status")
                     return
                 }
@@ -137,29 +141,54 @@ class ExpoApkUpdateModule : Module() {
                 val localUri = if (localUriIndex != -1) cursor.getString(localUriIndex) else null
                 
                 cursor.close()
+                
+                Log.d("APKUpdateModule", "Download status: $status, reason: $reason, localUri: $localUri")
 
                 when (status) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
+                        Log.d("APKUpdateModule", "İndirme başarılı! Event gönderiliyor...")
                         emitEvent("APKDownloadComplete", "success")
+                        Log.d("APKUpdateModule", "APKDownloadComplete event gönderildi")
+                        
                         val apkFile = getDownloadedFile(dm, downloadId, localUri)
                         if (apkFile != null && apkFile.exists() && apkFile.length() > 0) {
+                            Log.d("APKUpdateModule", "APK dosyası bulundu: ${apkFile.absolutePath}, boyut: ${apkFile.length()}")
                             Handler(Looper.getMainLooper()).postDelayed({
+                                Log.d("APKUpdateModule", "installAPK çağrılıyor...")
                                 installAPK(apkFile)
                             }, 500)
                         } else {
+                            Log.e("APKUpdateModule", "APK dosyası bulunamadı veya boş")
                             emitEvent("APKDownloadComplete", "error: Downloaded file is empty or missing")
                         }
                     }
-                    DownloadManager.STATUS_FAILED -> emitEvent("APKDownloadComplete", "failed: Download failed (reason: $reason)")
-                    DownloadManager.STATUS_PENDING -> emitEvent("APKDownloadComplete", "pending")
-                    DownloadManager.STATUS_RUNNING -> emitEvent("APKDownloadComplete", "running")
-                    DownloadManager.STATUS_PAUSED -> emitEvent("APKDownloadComplete", "paused")
-                    else -> emitEvent("APKDownloadComplete", "failed: Unknown status ($status)")
+                    DownloadManager.STATUS_FAILED -> {
+                        Log.e("APKUpdateModule", "İndirme başarısız, reason: $reason")
+                        emitEvent("APKDownloadComplete", "failed: Download failed (reason: $reason)")
+                    }
+                    DownloadManager.STATUS_PENDING -> {
+                        Log.d("APKUpdateModule", "İndirme beklemede")
+                        emitEvent("APKDownloadComplete", "pending")
+                    }
+                    DownloadManager.STATUS_RUNNING -> {
+                        Log.d("APKUpdateModule", "İndirme devam ediyor")
+                        emitEvent("APKDownloadComplete", "running")
+                    }
+                    DownloadManager.STATUS_PAUSED -> {
+                        Log.d("APKUpdateModule", "İndirme duraklatıldı")
+                        emitEvent("APKDownloadComplete", "paused")
+                    }
+                    else -> {
+                        Log.e("APKUpdateModule", "Bilinmeyen durum: $status")
+                        emitEvent("APKDownloadComplete", "failed: Unknown status ($status)")
+                    }
                 }
             } else {
+                Log.e("APKUpdateModule", "Cursor null veya boş")
                 emitEvent("APKDownloadComplete", "failed: No download info")
             }
         } catch (e: Exception) {
+            Log.e("APKUpdateModule", "checkDownloadStatusAndInstall hatası: ${e.message}", e)
             emitEvent("APKDownloadComplete", "error: ${e.message}")
         }
     }
@@ -258,15 +287,24 @@ class ExpoApkUpdateModule : Module() {
 
     private fun installAPK(apkFile: File) {
         try {
+            Log.d("APKUpdateModule", "installAPK başladı, dosya: ${apkFile.absolutePath}")
+            
             if (!apkFile.exists()) {
+                Log.e("APKUpdateModule", "APK dosyası bulunamadı!")
                 emitEvent("APKInstallResult", "error: APK file not found")
                 return
             }
 
-            val context = appContext.reactContext ?: return
+            val context = appContext.reactContext
+            if (context == null) {
+                Log.e("APKUpdateModule", "React context null!")
+                emitEvent("APKInstallResult", "error: React context is null")
+                return
+            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 if (!context.packageManager.canRequestPackageInstalls()) {
+                    Log.e("APKUpdateModule", "Yükleme izni yok!")
                     emitEvent("APKInstallResult", "error: Install permission required")
                     // Otomatik olarak ayarları açıyoruz
                     val activity = appContext.currentActivity
@@ -280,18 +318,23 @@ class ExpoApkUpdateModule : Module() {
                 }
             }
 
+            Log.d("APKUpdateModule", "Intent oluşturuluyor...")
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     try {
+                        Log.d("APKUpdateModule", "FileProvider ile URI oluşturuluyor...")
                         val apkUri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", apkFile)
+                        Log.d("APKUpdateModule", "APK URI: $apkUri")
                         setDataAndType(apkUri, "application/vnd.android.package-archive")
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                     } catch (e: Exception) {
+                        Log.e("APKUpdateModule", "FileProvider hatası: ${e.message}", e)
                         emitEvent("APKInstallResult", "error: FileProvider configuration error: ${e.message}")
                         return
                     }
                 } else {
+                    Log.d("APKUpdateModule", "File URI oluşturuluyor (Android < N)...")
                     val fileUri = Uri.fromFile(apkFile)
                     setDataAndType(fileUri, "application/vnd.android.package-archive")
                 }
@@ -302,12 +345,17 @@ class ExpoApkUpdateModule : Module() {
 
             val resolveInfo = context.packageManager.resolveActivity(intent, 0)
             if (resolveInfo != null) {
+                Log.d("APKUpdateModule", "Yükleyici başlatılıyor...")
                 context.startActivity(intent)
+                Log.d("APKUpdateModule", "Yükleyici başlatıldı! Event gönderiliyor...")
                 emitEvent("APKInstallResult", "install_started")
+                Log.d("APKUpdateModule", "APKInstallResult event gönderildi")
             } else {
+                Log.e("APKUpdateModule", "APK yükleyici bulunamadı!")
                 emitEvent("APKInstallResult", "error: No app can handle APK installation")
             }
         } catch (e: Exception) {
+            Log.e("APKUpdateModule", "installAPK hatası: ${e.message}", e)
             emitEvent("APKInstallResult", "error: ${e.message}")
         }
     }
