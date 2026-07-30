@@ -11,6 +11,7 @@ import { APKUpdateManager } from "../modules/expo-apk-update/src/APKUpdateManage
 
 export default function Index() {
 	const [ready, setReady] = useState(false);
+	const [showUpdateScreen, setShowUpdateScreen] = useState(false);
 	const [updateStatus, setUpdateStatus] = useState(
 		"Güncellemeler kontrol ediliyor...",
 	);
@@ -54,6 +55,7 @@ export default function Index() {
 					},
 					onUpdateAvailable: (version, size, notes) => {
 						console.log("Update available:", version, size);
+						setShowUpdateScreen(true);
 						setUpdateProgress(25);
 					},
 					onUpdateStarted: () => {
@@ -104,7 +106,7 @@ export default function Index() {
 		};
 	}, []);
 
-	if (!ready) {
+	if (!ready && showUpdateScreen) {
 		return <UpdateScreen status={updateStatus} progress={updateProgress} />;
 	}
 
