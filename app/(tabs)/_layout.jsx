@@ -1,8 +1,9 @@
 import CustomToast from "@/components/CustomToast";
 import AppHeader from "@components/AppHeader";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+	BackHandler,
 	Modal,
 	StatusBar,
 	StyleSheet,
@@ -88,6 +89,22 @@ export default function TabLayout() {
 
 		{ id: "99", label: "Geçmiş", key: "History", title: "Geçmiş" },
 	];
+
+	// Android back button handler
+	useEffect(() => {
+		const backHandler = BackHandler.addEventListener(
+			"hardwareBackPress",
+			() => {
+				if (selectedScreen !== "Home") {
+					setSelectedScreen("Home");
+					return true; // Event handled
+				}
+				return false; // Let default behavior (exit app)
+			}
+		);
+
+		return () => backHandler.remove();
+	}, [selectedScreen]);
 
 	const renderScreen = () => {
 		switch (selectedScreen) {

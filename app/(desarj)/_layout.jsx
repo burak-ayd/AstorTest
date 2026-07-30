@@ -1,13 +1,29 @@
 import { DryTransformerIcon } from "@/components/icons/DryTransformerIcon";
 import { OilTransformerIcon } from "@/components/icons/OilTransformerIcon";
 import { ToastProvider } from "@/context/ToastContext";
-import AppHeader from "@components/AppHeader"; // path'i düzenle
-import { Tabs } from "expo-router";
-import { StatusBar, StyleSheet } from "react-native";
+import AppHeader from "@components/AppHeader";
+import { Tabs, useRouter } from "expo-router";
+import { useEffect } from "react";
+import { BackHandler, StatusBar, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DesarjLayout() {
+	const router = useRouter();
+
+	// Android back button handler - HomeScreen'e dön
+	useEffect(() => {
+		const backHandler = BackHandler.addEventListener(
+			"hardwareBackPress",
+			() => {
+				router.push("/(tabs)/HomeScreen");
+				return true; // Event handled
+			}
+		);
+
+		return () => backHandler.remove();
+	}, [router]);
+
 	return (
 		<ToastProvider>
 			<SafeAreaView style={styles.container}>
