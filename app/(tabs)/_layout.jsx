@@ -1,6 +1,6 @@
 import CustomToast from "@/components/CustomToast";
-import AppHeader from "@components/AppHeader";
 import { useRouter } from "expo-router";
+// import AppHeader from "@components/AppHeader";
 import { useEffect, useState } from "react";
 import {
 	BackHandler,
@@ -100,7 +100,7 @@ export default function TabLayout() {
 					return true; // Event handled
 				}
 				return false; // Let default behavior (exit app)
-			}
+			},
 		);
 
 		return () => backHandler.remove();
@@ -139,7 +139,7 @@ export default function TabLayout() {
 				<StatusBar barStyle="light-content" backgroundColor="#000" />
 
 				{/* HEADER - Component kullan */}
-				<AppHeader
+				{/* <AppHeader
 					title={
 						selectedScreen === "Home"
 							? "Ana Sayfa"
@@ -150,7 +150,7 @@ export default function TabLayout() {
 					onMenuPress={() => setMenuVisible(true)}
 					showHomeButton={selectedScreen !== "Home"}
 					onHomePress={() => setSelectedScreen("Home")}
-				/>
+				/> */}
 
 				{/* ACTIVE SCREEN */}
 				<View style={styles.screenContent}>{renderScreen()}</View>

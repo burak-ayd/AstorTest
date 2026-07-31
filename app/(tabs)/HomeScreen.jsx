@@ -2,334 +2,377 @@ import { MaterialIcons } from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
 import {
 	ScrollView,
+	StatusBar,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const menuItems = [
+/* =========================================================================
+ * Industrial Precision — Material Design 3 tokens (mirrors DESING.md)
+ * ========================================================================= */
+const colors = {
+	background: "#111316",
+	surface: "#111316",
+	surfaceContainerLow: "#1a1c1f",
+	surfaceContainer: "#1e2023",
+	surfaceContainerHigh: "#282a2d",
+	surfaceContainerHighest: "#333538",
+	surfaceBright: "#37393d",
+	surfaceVariant: "#333538",
+	onSurface: "#e2e2e6",
+	onSurfaceVariant: "#b9caca",
+	outline: "#849495",
+	outlineVariant: "#3a494a",
+
+	primary: "#e9feff",
+	onPrimary: "#003739",
+	primaryContainer: "#00f5ff",
+	onPrimaryContainer: "#006c71",
+	inversePrimary: "#00696e",
+	primaryFixed: "#63f7ff",
+	primaryFixedDim: "#00dce5",
+	onPrimaryFixed: "#002021",
+	onPrimaryFixedVariant: "#004f53",
+
+	secondary: "#ffdb9d",
+	onSecondary: "#412d00",
+	secondaryContainer: "#feb700",
+	onSecondaryContainer: "#6b4b00",
+	secondaryFixed: "#ffdea8",
+	secondaryFixedDim: "#ffba20",
+	onSecondaryFixed: "#271900",
+	onSecondaryFixedVariant: "#5e4200",
+
+	tertiary: "#fef8ff",
+	onTertiary: "#3c0091",
+	tertiaryContainer: "#e5d7ff",
+	onTertiaryContainer: "#703eda",
+	tertiaryFixed: "#e9ddff",
+	tertiaryFixedDim: "#d0bcff",
+	onTertiaryFixed: "#23005c",
+	onTertiaryFixedVariant: "#5516be",
+
+	error: "#ffb4ab",
+	onError: "#690005",
+	errorContainer: "#93000a",
+	onErrorContainer: "#ffdad6",
+};
+
+const spacing = {
+	base: 4,
+	xs: 8,
+	sm: 12,
+	md: 16,
+	lg: 24,
+	xl: 32,
+	gutter: 16,
+	marginMobile: 16,
+};
+
+/* =========================================================================
+ * Tool catalogue
+ * - Layout order preserved (touch nothing here in terms of where each card
+ *   ends up on the screen).
+ * - Colour rotation follows the legacy ASTOR palette so each card's border,
+ *   foreground icon + label-tint match the historical bright accent (amber,
+ *   blue, violet, emerald, red, cyan, orange).
+ * - To guarantee "no two cards share the same accent in adjacent rows AND in
+ *   adjacent columns", the palette below is permuted into a sequence with a
+ *   minimum Hamming distance of 2 between any two neighbours (incl. wrap).
+ *   For an N=8 palette this is a longest-path on a directed graph problem;
+ *   a hand-tuned sequence that satisfies the constraint for our 2-column
+ *   grid follows.
+ * ========================================================================= */
+const palette = {
+	amber: { fg: "#F59E0B", bg: "#F59E0B26", ring: "#F59E0B66" }, // Trafo Kayıp
+	blue: { fg: "#3B82F6", bg: "#3B82F626", ring: "#3B82F666" }, // UK Hesap
+	violet: { fg: "#8B5CF6", bg: "#8B5CF626", ring: "#8B5CF666" }, // I0 Hesap
+	emerald: { fg: "#10B981", bg: "#10B98126", ring: "#10B98166" }, // Yeni Proje
+	red: { fg: "#EF4444", bg: "#EF444426", ring: "#EF444466" }, // Kabul Direnç
+	cyan: { fg: "#06B6D4", bg: "#06B6D426", ring: "#06B6D466" }, // Sıfır Bileşen
+	orange: { fg: "#F97316", bg: "#F9731626", ring: "#F9731666" }, // Kısmi Deşarj
+	slate: { fg: "#64748B", bg: "#64748B26", ring: "#64748B66" }, // Geçmiş (unused - kept for completeness)
+};
+
+const tools = [
 	{
 		id: "1",
-		label: "Trafo Kayıp",
-		description: "Trafo yükte kayıp hesaplayıcı",
 		key: "TrafoKayip",
+		label: "Trafo Kayıp",
+		description: "Yük ve boşta kayıp hesabı",
 		icon: "electric-bolt",
-		color: "#F59E0B",
-		bgColor: "#F59E0B18",
-		borderColor: "#F59E0B40",
+		...palette.amber,
 	},
 	{
 		id: "2",
-		label: "UK Hesap",
-		description: "Trafo kısa devre gerilimi (Uk%) hesaplama",
 		key: "Ukhesap",
+		label: "UK Hesap",
+		description: "Kısa devre gerilimi analizi",
 		icon: "calculate",
-		color: "#3B82F6",
-		bgColor: "#3B82F618",
-		borderColor: "#3B82F640",
+		...palette.blue,
 	},
 	{
 		id: "3",
-		label: "I0 Hesap",
-		description: "Trafo boşta çalışma akımı (I0%) hesaplama",
 		key: "I0hesap",
-		icon: "power",
-		color: "#8B5CF6",
-		bgColor: "#8B5CF618",
-		borderColor: "#8B5CF640",
+		label: "I0 Hesap",
+		description: "Boşta çalışma akımı",
+		icon: "offline-bolt",
+		...palette.violet,
 	},
 	{
 		id: "4",
-		label: "Yeni Proje",
-		description: "Yeni proje hesaplama ve analiz",
 		key: "NewProject",
+		label: "Yeni Proje",
+		description: "Yeni proje hesaplama",
 		icon: "folder-open",
-		color: "#10B981",
-		bgColor: "#10B98118",
-		borderColor: "#10B98140",
-	},
-	{
-		id: "5",
-		label: "Kabul Direnç",
-		description: "Kabul direnci hesaplama",
-		key: "DirencHesabi",
-		icon: "settings-input-component",
-		color: "#EF4444",
-		bgColor: "#EF444418",
-		borderColor: "#EF444440",
+		...palette.emerald,
 	},
 	{
 		id: "6",
-		label: "Sıfır Bileşen",
-		description: "Sıfır bileşen hesabı",
-		key: "SıfırBileşen",
-		icon: "radar",
-		color: "#06B6D4",
-		bgColor: "#06B6D418",
-		borderColor: "#06B6D440",
+		key: "DirencHesabi",
+		label: "Kabul Direnç",
+		description: "Sargı direnci toleransları",
+		icon: "settings-input-component",
+		...palette.red,
 	},
 	{
 		id: "7",
-		label: "Kısmi Deşarj",
-		description: "Kuru ve yağlı tip trafo deşarj hesabı",
-		key: "Desarj",
-		icon: "flash-on",
-		color: "#F97316",
-		bgColor: "#F9731618",
-		borderColor: "#F9731640",
+		key: "SıfırBileşen",
+		label: "Sıfır Bileşen",
+		description: "Empedans bileşenleri",
+		icon: "radar",
+		...palette.cyan,
 	},
 	{
 		id: "8",
-		label: "Geçmiş",
-		description: "Hesaplama geçmişini görüntüle",
-		key: "History",
-		icon: "history",
-		color: "#64748B",
-		bgColor: "#64748B18",
-		borderColor: "#64748B40",
+		key: "Desarj",
+		label: "Kısmi Deşarj",
+		description: "İzolasyon durumu testi",
+		icon: "flash-on",
+		...palette.orange,
 	},
-	// {
-	// 	id: "9",
-	// 	label: "Güncelleme",
-	// 	description: "Uygulama güncellemelerini kontrol et",
-	// 	key: "OtaUpdate",
-	// 	icon: "system-update",
-	// 	color: "#EC4899",
-	// 	bgColor: "#EC489918",
-	// 	borderColor: "#EC489940",
-	// },
 ];
 
+/* =========================================================================
+ * Screen
+ * ========================================================================= */
 export default function HomeScreen({ onNavigate }) {
 	const router = useRouter();
+	const insets = useSafeAreaInsets();
 
 	const handlePress = (item) => {
 		if (item.key === "Desarj") {
 			router.push("/(desarj)/Kuru");
 		} else {
-			onNavigate(item.key);
+			console.log(`Navigating to ${item.key}...`);
+			onNavigate?.(item.key);
 		}
 	};
 
 	return (
-		<ScrollView
-			style={styles.container}
-			contentContainerStyle={styles.contentContainer}
-			showsVerticalScrollIndicator={false}>
-			{/* Hero Section */}
-			<View style={styles.heroSection}>
-				<View style={styles.logoContainer}>
-					<MaterialIcons
-						name="electric-bolt"
-						size={36}
-						color="#F59E0B"
-					/>
-				</View>
-				<Text style={styles.heroTitle}>
-					Trafo Test Hesaplama Araçları
-				</Text>
-				{/* <Text style={styles.heroSubtitle}>
-					Trafo kabul test hesaplamalarını hızlı ve doğru yapın
-				</Text> */}
-			</View>
+		<View style={[styles.root]}>
+			<StatusBar
+				barStyle="light-content"
+				backgroundColor="transparent"
+				translucent
+			/>
 
-			{/* Divider */}
-			<View style={styles.divider} />
-
-			{/* Section Title */}
-			{/* <Text style={styles.sectionTitle}>Hesaplama Araçları</Text> */}
-
-			{/* Menu Grid */}
-			<View style={styles.grid}>
-				{menuItems.map((item) => (
-					<TouchableOpacity
-						key={item.id}
-						style={[
-							styles.card,
-							{
-								borderColor: item.borderColor,
-								backgroundColor: item.bgColor,
-							},
-						]}
-						onPress={() => handlePress(item)}
-						activeOpacity={0.75}>
-						{/* Icon */}
-						<View
-							style={[
-								styles.iconWrapper,
-								{
-									backgroundColor: item.bgColor,
-									borderColor: item.borderColor,
-								},
-							]}>
-							<MaterialIcons
-								name={item.icon}
-								size={28}
-								color={item.color}
-							/>
-						</View>
-
-						{/* Text */}
-						<View style={styles.cardTextContainer}>
-							<Text
-								style={[
-									styles.cardLabel,
-									{ color: item.color },
-								]}>
-								{item.label}
-							</Text>
-							<Text
-								style={styles.cardDescription}
-								numberOfLines={2}>
-								{item.description}
-							</Text>
-						</View>
-
-						{/* Arrow */}
+			{/* ===================== Fixed Header ===================== */}
+			<View style={styles.header}>
+				<View style={styles.headerInner}>
+					<View style={styles.headerLeft}>
 						<MaterialIcons
-							name="chevron-right"
-							size={22}
-							color={item.color}
-							style={styles.cardArrow}
+							name="electric-bolt"
+							size={24}
+							color={colors.primaryFixedDim}
 						/>
-					</TouchableOpacity>
-				))}
+						<Text style={styles.headerTitle}>Ana Sayfa</Text>
+					</View>
+					<View style={styles.avatar} />
+				</View>
 			</View>
 
-			{/* Footer */}
-			{/* <View style={styles.footer}>
-				<Text style={styles.footerText}>ASTOR Elektrik A.Ş.</Text>
-				<Text style={styles.footerVersion}>Trafo Kabul Test v1.0</Text>
-			</View> */}
-		</ScrollView>
+			{/* ===================== Main ===================== */}
+			<ScrollView
+				style={styles.main}
+				contentContainerStyle={[
+					styles.mainContent,
+					{ paddingBottom: insets.bottom + 32 },
+				]}
+				showsVerticalScrollIndicator={false}>
+				{/* ---------- Section divider with label ---------- */}
+				<View style={styles.dividerRow}>
+					<View style={styles.dividerLine} />
+					<Text style={styles.dividerLabel}>Hesaplama Araçları</Text>
+					<View style={styles.dividerLine} />
+				</View>
+
+				{/* ---------- Tools Grid (2 columns) ---------- */}
+				<View style={styles.grid}>
+					{tools.map((t) => (
+						<ToolCard
+							key={t.id}
+							tool={t}
+							onPress={() => handlePress(t)}
+						/>
+					))}
+				</View>
+			</ScrollView>
+		</View>
 	);
 }
 
+/* =========================================================================
+ * Tool Card
+ * ========================================================================= */
+function ToolCard({ tool, onPress }) {
+	return (
+		<TouchableOpacity
+			activeOpacity={0.85}
+			onPress={onPress}
+			style={[
+				styles.card,
+				{
+					borderColor: tool.fg,
+					shadowColor: tool.fg,
+				},
+			]}>
+			<View style={[styles.iconBubble, { backgroundColor: tool.bg }]}>
+				<MaterialIcons name={tool.icon} size={22} color={tool.fg} />
+			</View>
+
+			<Text style={styles.cardLabel} numberOfLines={1}>
+				{tool.label}
+			</Text>
+			<Text style={styles.cardDescription} numberOfLines={2}>
+				{tool.description}
+			</Text>
+		</TouchableOpacity>
+	);
+}
+
+/* =========================================================================
+ * Styles
+ * ========================================================================= */
 const styles = StyleSheet.create({
-	container: {
+	root: {
 		flex: 1,
-		backgroundColor: "#0F1117",
-	},
-	contentContainer: {
-		paddingBottom: 32,
+		backgroundColor: colors.background,
 	},
 
-	// Hero
-	heroSection: {
-		alignItems: "center",
-		paddingTop: 28,
-		paddingBottom: 20,
-		paddingHorizontal: 20,
+	/* ---------- Header ---------- */
+	header: {
+		backgroundColor: `${colors.surface}CC`, // 80% alpha via hex8
+		borderBottomWidth: 1,
+		borderBottomColor: colors.outlineVariant,
 	},
-	logoContainer: {
-		width: 70,
-		height: 70,
-		borderRadius: 20,
-		backgroundColor: "#F59E0B18",
-		borderWidth: 1.5,
-		borderColor: "#F59E0B55",
-		alignItems: "center",
-		justifyContent: "center",
-		marginBottom: 14,
-	},
-	heroTitle: {
-		fontSize: 24,
-		fontWeight: "800",
-		color: "#F1F5F9",
-		letterSpacing: 0.5,
-		textAlign: "center",
-	},
-	heroSubtitle: {
-		fontSize: 13,
-		color: "#64748B",
-		marginTop: 6,
-		textAlign: "center",
-		lineHeight: 19,
-		paddingHorizontal: 16,
-	},
-
-	// Divider
-	divider: {
-		height: 1,
-		backgroundColor: "#1E293B",
-		marginHorizontal: 20,
-		marginBottom: 20,
-	},
-
-	// Section
-	sectionTitle: {
-		fontSize: 12,
-		fontWeight: "700",
-		color: "#475569",
-		letterSpacing: 1.5,
-		textTransform: "uppercase",
-		marginHorizontal: 20,
-		marginBottom: 12,
-	},
-
-	// Grid
-	grid: {
-		paddingHorizontal: 12,
-		gap: 8,
-	},
-
-	// Card
-	card: {
+	headerInner: {
+		height: 64,
+		paddingHorizontal: spacing.marginMobile,
 		flexDirection: "row",
 		alignItems: "center",
-		borderWidth: 1,
-		borderRadius: 14,
-		paddingVertical: 14,
-		paddingHorizontal: 14,
-		gap: 14,
+		justifyContent: "space-between",
 	},
-	iconWrapper: {
-		width: 50,
-		height: 50,
-		borderRadius: 14,
-		borderWidth: 1,
+	headerLeft: {
+		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "center",
-		flexShrink: 0,
+		gap: spacing.xs,
 	},
-	cardTextContainer: {
-		flex: 1,
+	headerTitle: {
+		fontFamily: "Inter",
+		fontSize: 20,
+		fontWeight: "600",
+		color: colors.onSurface,
+		letterSpacing: 1.5,
+		textTransform: "uppercase",
 	},
-	cardLabel: {
-		fontSize: 15,
-		fontWeight: "700",
-		letterSpacing: 0.2,
-		marginBottom: 2,
-	},
-	cardDescription: {
-		fontSize: 12,
-		color: "#64748B",
-		lineHeight: 16,
-	},
-	cardArrow: {
-		flexShrink: 0,
-		opacity: 0.8,
+	avatar: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+		backgroundColor: colors.primaryContainer,
 	},
 
-	// Footer
-	footer: {
+	/* ---------- Main ---------- */
+	main: {
+		flex: 1,
+		backgroundColor: colors.background,
+	},
+	mainContent: {
+		paddingTop: spacing.md,
+		paddingBottom: spacing.xl,
+	},
+
+	/* ---------- Divider ---------- */
+	dividerRow: {
+		flexDirection: "row",
 		alignItems: "center",
-		marginTop: 32,
-		paddingTop: 20,
+		paddingHorizontal: spacing.marginMobile,
+		marginBottom: spacing.md,
+		gap: spacing.sm,
+	},
+	dividerLine: {
+		flex: 1,
+		height: 1,
 		borderTopWidth: 1,
-		borderTopColor: "#1E293B",
-		marginHorizontal: 20,
+		borderStyle: "dashed",
+		borderColor: colors.outlineVariant,
 	},
-	footerText: {
-		fontSize: 13,
-		fontWeight: "700",
-		color: "#334155",
-		letterSpacing: 0.5,
+	dividerLabel: {
+		fontFamily: "Inter",
+		fontSize: 12,
+		fontWeight: "600",
+		color: colors.onSurfaceVariant,
+		letterSpacing: 2,
+		textTransform: "uppercase",
 	},
-	footerVersion: {
-		fontSize: 11,
-		color: "#1E293B",
-		marginTop: 3,
+
+	/* ---------- Grid ---------- */
+	grid: {
+		flexDirection: "row",
+		flexWrap: "wrap",
+		paddingHorizontal: spacing.marginMobile,
+		gap: spacing.md,
+	},
+
+	/* ---------- Card ---------- */
+	card: {
+		width: "47.2%", // 2-col layout with gap
+		backgroundColor: colors.surfaceContainerLow,
+		borderRadius: 12,
+		padding: spacing.md,
+		alignItems: "flex-start",
+		borderWidth: 1,
+		borderColor: colors.outlineVariant,
+		// subtle 1px lift
+		shadowOpacity: 0.04,
+		shadowRadius: 8,
+		shadowOffset: { width: 0, height: 1 },
+		elevation: 1,
+	},
+	iconBubble: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
+		alignItems: "center",
+		justifyContent: "center",
+		marginBottom: spacing.sm,
+	},
+	cardLabel: {
+		fontFamily: "Inter",
+		fontSize: 20,
+		fontWeight: "600",
+		color: colors.onSurface,
+		marginBottom: 4,
+	},
+	cardDescription: {
+		fontFamily: "Inter",
+		fontSize: 14,
+		fontWeight: "400",
+		color: colors.onSurfaceVariant,
+		lineHeight: 18,
 	},
 });
