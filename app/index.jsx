@@ -30,11 +30,11 @@ export default function Index() {
 
 		const checkUpdates = async () => {
 			// Development modda güncelleme kontrolü yapma (istenirse)
-			// if (__DEV__) {
-			// 	console.log("Development modda güncelleme kontrolü atlanıyor");
-			// 	setReady(true);
-			// 	return;
-			// }
+			if (__DEV__) {
+				console.log("Development modda güncelleme kontrolü atlanıyor");
+				setReady(true);
+				return;
+			}
 
 			// Android'de çalıştır
 			if (Platform.OS !== "android") {
@@ -112,7 +112,7 @@ export default function Index() {
 
 	return (
 		<SafeAreaProvider>
-			<Redirect href="/(tabs)" />
+			<Redirect href="/(main)" />
 		</SafeAreaProvider>
 	);
 }

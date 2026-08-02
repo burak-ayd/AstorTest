@@ -16,9 +16,9 @@ export default function DesarjLayout() {
 		const backHandler = BackHandler.addEventListener(
 			"hardwareBackPress",
 			() => {
-				router.push("/(tabs)/HomeScreen");
+				router.push("/(main)/HomeScreen");
 				return true; // Event handled
-			}
+			},
 		);
 
 		return () => backHandler.remove();
