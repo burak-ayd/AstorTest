@@ -191,7 +191,7 @@ export default function HomeScreen({ onNavigate }) {
 						/>
 						<Text style={styles.headerTitle}>Ana Sayfa</Text>
 					</View>
-					<View style={styles.avatar} />
+					{/* <View style={styles.avatar} /> */}
 				</View>
 			</View>
 

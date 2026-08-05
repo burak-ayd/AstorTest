@@ -86,7 +86,7 @@ android {
         abi {
             enable true
             reset()
-            include "armeabi-v7a", "arm64-v8a"
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
             universalApk true
         }
     }
@@ -100,7 +100,7 @@ android {
         applicationId 'com.burakaydogan.AstorTest'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
+        versionCode 1
         versionName "1.2.98"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
@@ -112,12 +112,6 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release {
-            storeFile file('release.keystore')
-            storePassword '12345678'
-            keyAlias 'key'
-            keyPassword '12345678'
-        }
     }
     buildTypes {
         debug {
@@ -126,7 +120,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds
@@ -202,7 +196,7 @@ android.applicationVariants.all { variant ->
         def appSlug = "AstorTest"
         
         // Versiyonu app.json yerine doğrudan Gradle'ın derleme anındaki versiyonundan okuyoruz (Otomatik artışlar yakalanır)
-        def appVersion = variant.versionName ?: "1.2.97"
+        def appVersion = variant.versionName ?: "1.2.98"
         
         def buildTypeName = variant.buildType.name 
         
