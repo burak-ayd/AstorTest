@@ -16,6 +16,7 @@ import {
 	SafeAreaView,
 	useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import CiftAGKayip from "./CiftAGKayip";
 import DirencHesabi from "./DirencHesabi";
 import History from "./History";
 import HomeScreen from "./HomeScreen";
@@ -52,36 +53,42 @@ export default function TabLayout() {
 		},
 		{
 			id: "2",
+			label: "Çift AG Trafo Kayıp",
+			key: "CiftAGKayip",
+			title: "Trafo Yükte Kayıp Hesaplayıcı",
+		},
+		{
+			id: "3",
 			label: "UK Hesap",
 			key: "Ukhesap",
 			title: "Trafo Uk (%) Hesaplayıcı",
 		},
 		{
-			id: "3",
+			id: "4",
 			label: "I0 Hesap",
 			key: "I0hesap",
 			title: "I0 (%) Hesaplayıcı",
 		},
 		{
-			id: "4",
+			id: "5",
 			label: "Yeni Proje Hesaplama",
 			key: "NewProject",
 			title: "Yeni Proje Hesaplama",
 		},
 		{
-			id: "5",
+			id: "6",
 			label: "Kabul Direnc Hesabı",
 			key: "DirencHesabi",
 			title: "Kabul Direnci Hesabı",
 		},
 		{
-			id: "6",
+			id: "7",
 			label: "Sıfır Bileşen Hesabı",
 			key: "SıfırBileşen",
 			title: "Sıfır Bileşen Hesabı",
 		},
 		{
-			id: "7",
+			id: "8",
 			label: "Kısmi Deşarj Hesabı",
 			key: "Desarj",
 			title: "Kısmi Deşarj Hesabı",
@@ -114,6 +121,8 @@ export default function TabLayout() {
 				);
 			case "TrafoKayip":
 				return <TrafoKayip showToast={showToast} />;
+			case "CiftAGKayip":
+				return <CiftAGKayip showToast={showToast} />;
 			case "Ukhesap":
 				return <UkHesap showToast={showToast} />;
 			case "I0hesap":

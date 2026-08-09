@@ -88,6 +88,7 @@ const spacing = {
  * ========================================================================= */
 const palette = {
 	amber: { fg: "#F59E0B", bg: "#F59E0B26", ring: "#F59E0B66" }, // Trafo Kayıp
+	light_amber: { fg: "#FBBF24", bg: "#FBBF2426", ring: "#FBBF2466" }, // Çift AG Trafo Kayıp
 	blue: { fg: "#3B82F6", bg: "#3B82F626", ring: "#3B82F666" }, // UK Hesap
 	violet: { fg: "#8B5CF6", bg: "#8B5CF626", ring: "#8B5CF666" }, // I0 Hesap
 	emerald: { fg: "#10B981", bg: "#10B98126", ring: "#10B98166" }, // Yeni Proje
@@ -108,6 +109,14 @@ const tools = [
 	},
 	{
 		id: "2",
+		key: "CiftAGKayip",
+		label: "Çift AG Kayıp",
+		description: "Yük ve boşta kayıp hesabı",
+		icon: "electric-bolt",
+		...palette.light_amber,
+	},
+	{
+		id: "3",
 		key: "Ukhesap",
 		label: "UK Hesap",
 		description: "Kısa devre gerilimi analizi",
@@ -115,7 +124,7 @@ const tools = [
 		...palette.blue,
 	},
 	{
-		id: "3",
+		id: "4",
 		key: "I0hesap",
 		label: "I0 Hesap",
 		description: "Boşta çalışma akımı",
@@ -123,7 +132,7 @@ const tools = [
 		...palette.violet,
 	},
 	{
-		id: "4",
+		id: "5",
 		key: "NewProject",
 		label: "Yeni Proje",
 		description: "Yeni proje hesaplama",
@@ -204,11 +213,11 @@ export default function HomeScreen({ onNavigate }) {
 				]}
 				showsVerticalScrollIndicator={false}>
 				{/* ---------- Section divider with label ---------- */}
-				<View style={styles.dividerRow}>
+				{/* <View style={styles.dividerRow}>
 					<View style={styles.dividerLine} />
 					<Text style={styles.dividerLabel}>Hesaplama Araçları</Text>
 					<View style={styles.dividerLine} />
-				</View>
+				</View> */}
 
 				{/* ---------- Tools Grid (2 columns) ---------- */}
 				<View style={styles.grid}>

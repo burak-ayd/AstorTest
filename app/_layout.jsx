@@ -5,6 +5,14 @@ import { useEffect, useRef } from "react";
 import { Alert, AppState } from "react-native";
 import Toast from "react-native-toast-message";
 
+import * as SplashScreen from "expo-splash-screen";
+
+// Set the animation options. This is optional.
+SplashScreen.setOptions({
+	duration: 1000,
+	fade: true,
+});
+
 export default function RootLayout() {
 	const isChecking = useRef(false);
 

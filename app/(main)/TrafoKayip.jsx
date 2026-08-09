@@ -612,7 +612,7 @@ export default function TrafoKayip({ showToast }) {
 						label="YG DİRENÇ"
 						values={[direncAB, direncBC, direncCA]}
 						setters={[setDirencAB, setDirencBC, setDirencCA]}
-						placeholders={["9548", "9576", "9584"]}
+						placeholders={["2,5 Ω", "2,5 Ω", "2,5 Ω"]}
 						accent={colors.tertiaryFixedDim}
 						ratio={formatPct(ygDirençOran)}
 					/>
@@ -620,7 +620,7 @@ export default function TrafoKayip({ showToast }) {
 						label="AG DİRENÇ"
 						values={[direncab, direncbc, direncca]}
 						setters={[setDirencab, setDirencbc, setDirencca]}
-						placeholders={["533", "532", "535"]}
+						placeholders={["1,5 mΩ", "1,5 mΩ", "1,5 mΩ"]}
 						accent={colors.tertiaryFixedDim}
 						ratio={formatPct(agDirençOran)}
 					/>
