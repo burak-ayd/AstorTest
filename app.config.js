@@ -1,6 +1,6 @@
 export default ({ config }) => ({
 	...config,
-	runtimeVersion: "1",
+	runtimeVersion: "2",
 	...{
 		updates: {
 			url: "https://ota.burakaydogan.tk/manifest",

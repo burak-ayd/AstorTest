@@ -196,7 +196,7 @@ export default function HomeScreen({ onNavigate }) {
 						<MaterialIcons
 							name="electric-bolt"
 							size={24}
-							color={colors.primaryFixedDim}
+							color={colors.secondaryFixedDim}
 						/>
 						<Text style={styles.headerTitle}>Ana Sayfa</Text>
 					</View>
