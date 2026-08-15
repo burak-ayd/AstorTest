@@ -15,7 +15,7 @@ export default ({ config }) => ({
 			fallbackToCacheTimeout: 0,
 			requestHeaders: {
 				"expo-channel-name": process.env.RELEASE_CHANNEL,
-				"expo-app-id": "16501b0d-8dfe-4f34-b017-73e8d5b356ef",
+				"expo-app-id": "8e36012d-1bfd-4def-ba32-f1159fb9bee9",
 			},
 		},
 	},
